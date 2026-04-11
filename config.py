@@ -80,15 +80,20 @@ MODIS_SCALE = {
 MODIS_PHASE_MAP = {0: -1, 1: 4, 2: 1, 3: 3, 4: 4, 5: -1, 6: -1}
 
 # Maximum spatial distance (km) allowed when snapping MODIS pixel to AGRI pixel
-MAX_MATCH_DIST_KM = 5.0
+MAX_MATCH_DIST_KM = 10.0
 
 # Maximum time difference (minutes) between AGRI scan and MYD06 granule
 MAX_TIME_DIFF_MIN = 15
 
 # Angle filters
 MAX_VZA_DEG = 65
-MAX_SZA_DEG = 65   # day-only mode; set to 180 to include night
+MAX_SZA_DEG = 180   # day-only mode 65; set to 180 to include night
+# 新增：分类/回归是否强依赖几何过滤
+CLP_USE_GEO_FILTER = False
+REG_USE_GEO_FILTER = False
 
+# 新增：一个 patch 至少要有多少个监督像元才参与训练
+MIN_PATCH_LABEL_PIXELS = 16
 # ─────────────────────────────────────────────────────────────────────────────
 # 7.  Patch / dataset parameters
 # ─────────────────────────────────────────────────────────────────────────────

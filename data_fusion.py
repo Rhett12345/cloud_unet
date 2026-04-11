@@ -96,6 +96,22 @@ def _find_day_folders(root: Path, dates: list) -> list:
 #     return [f for f in modis_files
 #             if (mdt := _parse_modis_datetime(f.name)) and abs(mdt - agri_dt) <= td]
 
+# def _find_matching_modis(agri_dt: datetime, modis_files: list) -> list:
+#     td = timedelta(minutes=cfg.MAX_TIME_DIFF_MIN)
+#     candidates = []
+#
+#     for f in modis_files:
+#         mdt = _parse_modis_datetime(f.name)
+#         if mdt is None:
+#             continue
+#
+#         dt = abs(mdt - agri_dt)
+#         if dt <= td:
+#             candidates.append((dt, f))
+#
+#     candidates.sort(key=lambda x: x[0])
+#     return [candidates[0][1]] if candidates else []
+
 def _find_matching_modis(agri_dt: datetime, modis_files: list) -> list:
     td = timedelta(minutes=cfg.MAX_TIME_DIFF_MIN)
     candidates = []
@@ -110,7 +126,7 @@ def _find_matching_modis(agri_dt: datetime, modis_files: list) -> list:
             candidates.append((dt, f))
 
     candidates.sort(key=lambda x: x[0])
-    return [candidates[0][1]] if candidates else []
+    return [f for _, f in candidates]
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -295,6 +311,21 @@ def _read_agri_latlon_vza_sza_ele(geo_file: Path):
     if np.isfinite(sza).any() and np.nanmax(np.abs(sza)) > 180:
         sza /= 100.0
 
+    log.info(
+        "read geo | %s | lat finite=%.2f%% lon finite=%.2f%% "
+        "| vza finite=%.2f%% min=%.2f max=%.2f "
+        "| sza finite=%.2f%% min=%.2f max=%.2f",
+        geo_file.name,
+        100.0 * np.isfinite(lat).mean(),
+        100.0 * np.isfinite(lon).mean(),
+        100.0 * np.isfinite(vza).mean(),
+        np.nanmin(vza) if np.isfinite(vza).any() else np.nan,
+        np.nanmax(vza) if np.isfinite(vza).any() else np.nan,
+        100.0 * np.isfinite(sza).mean(),
+        np.nanmin(sza) if np.isfinite(sza).any() else np.nan,
+        np.nanmax(sza) if np.isfinite(sza).any() else np.nan,
+    )
+
     lon = _wrap_lon(lon)
     return lat, lon, vza, sza
 
@@ -408,96 +439,318 @@ def _latlon_to_xyz(lat, lon):
     return np.column_stack([x, y, z])
 
 
+# def match_modis_to_agri(agri: dict, modis_list: list) -> Optional[dict]:
+#     if not modis_list:
+#         return None
+#
+#     m_lat = np.concatenate([m["lat"] for m in modis_list])
+#     m_lon = np.concatenate([m["lon"] for m in modis_list])
+#     m_clp = np.concatenate([m["CLP"] for m in modis_list])
+#     m_cer = np.concatenate([m["CER"] for m in modis_list])
+#     m_cot = np.concatenate([m["COT"] for m in modis_list])
+#     m_cth = np.concatenate([m["CTH"] for m in modis_list])
+#
+#     valid = ~(np.isnan(m_lat) | np.isnan(m_lon))
+#     if valid.sum() == 0:
+#         return None
+#
+#     m_xyz = _latlon_to_xyz(m_lat[valid], m_lon[valid])
+#     tree  = cKDTree(m_xyz)
+#
+#     H, W   = agri["lat"].shape
+#     a_flat = agri["lat"].ravel()
+#     b_flat = agri["lon"].ravel()
+#     nan_px = np.isnan(a_flat) | np.isnan(b_flat)
+#
+#     a_xyz = _latlon_to_xyz(
+#         np.where(nan_px, 0, a_flat),
+#         np.where(nan_px, 0, b_flat),
+#     )
+#
+#     # Chord distance on a unit sphere.
+#     # arc_rad = dist_km / R_km  (already in radians — no deg2rad needed)
+#     # chord   = 2 * sin(arc_rad / 2)
+#     arc_rad   = cfg.MAX_MATCH_DIST_KM / 6371.0          # radians
+#     max_chord = 2.0 * np.sin(arc_rad / 2.0)             # unit-sphere chord
+#     dists, idx = tree.query(a_xyz, k=1, distance_upper_bound=max_chord + 1e-6)
+#
+#     valid_match = (dists <= max_chord) & (~nan_px)
+#     full_idx    = np.where(valid)[0]   # maps compressed → full MODIS index
+#
+#     out_clp = np.full(H * W, np.nan)
+#     out_cer = np.full(H * W, np.nan)
+#     out_cot = np.full(H * W, np.nan)
+#     out_cth = np.full(H * W, np.nan)
+#
+#     hits   = np.where(valid_match)[0]
+#     mapped = full_idx[idx[hits]]
+#
+#     out_clp[hits] = m_clp[mapped]
+#     out_cer[hits] = m_cer[mapped]
+#     out_cot[hits] = m_cot[mapped]
+#     out_cth[hits] = m_cth[mapped]
+#
+#     return dict(
+#         CLP=out_clp.reshape(H, W).astype(np.float32),
+#         CER=out_cer.reshape(H, W).astype(np.float32),
+#         COT=out_cot.reshape(H, W).astype(np.float32),
+#         CTH=out_cth.reshape(H, W).astype(np.float32),
+#     )
+
 def match_modis_to_agri(agri: dict, modis_list: list) -> Optional[dict]:
     if not modis_list:
         return None
 
-    m_lat = np.concatenate([m["lat"] for m in modis_list])
-    m_lon = np.concatenate([m["lon"] for m in modis_list])
-    m_clp = np.concatenate([m["CLP"] for m in modis_list])
-    m_cer = np.concatenate([m["CER"] for m in modis_list])
-    m_cot = np.concatenate([m["COT"] for m in modis_list])
-    m_cth = np.concatenate([m["CTH"] for m in modis_list])
-
-    valid = ~(np.isnan(m_lat) | np.isnan(m_lon))
-    if valid.sum() == 0:
-        return None
-
-    m_xyz = _latlon_to_xyz(m_lat[valid], m_lon[valid])
-    tree  = cKDTree(m_xyz)
-
-    H, W   = agri["lat"].shape
-    a_flat = agri["lat"].ravel()
-    b_flat = agri["lon"].ravel()
-    nan_px = np.isnan(a_flat) | np.isnan(b_flat)
+    H, W = agri["lat"].shape
+    a_lat = agri["lat"].ravel()
+    a_lon = agri["lon"].ravel()
+    nan_px = np.isnan(a_lat) | np.isnan(a_lon)
 
     a_xyz = _latlon_to_xyz(
-        np.where(nan_px, 0, a_flat),
-        np.where(nan_px, 0, b_flat),
+        np.where(nan_px, 0, a_lat),
+        np.where(nan_px, 0, a_lon),
     )
 
-    # Chord distance on a unit sphere.
-    # arc_rad = dist_km / R_km  (already in radians — no deg2rad needed)
-    # chord   = 2 * sin(arc_rad / 2)
-    arc_rad   = cfg.MAX_MATCH_DIST_KM / 6371.0          # radians
-    max_chord = 2.0 * np.sin(arc_rad / 2.0)             # unit-sphere chord
-    dists, idx = tree.query(a_xyz, k=1, distance_upper_bound=max_chord + 1e-6)
+    arc_rad   = cfg.MAX_MATCH_DIST_KM / 6371.0
+    max_chord = 2.0 * np.sin(arc_rad / 2.0)
 
-    valid_match = (dists <= max_chord) & (~nan_px)
-    full_idx    = np.where(valid)[0]   # maps compressed → full MODIS index
+    out = {
+        "CLP": np.full(H * W, np.nan, dtype=np.float32),
+        "CER": np.full(H * W, np.nan, dtype=np.float32),
+        "COT": np.full(H * W, np.nan, dtype=np.float32),
+        "CTH": np.full(H * W, np.nan, dtype=np.float32),
+    }
 
-    out_clp = np.full(H * W, np.nan)
-    out_cer = np.full(H * W, np.nan)
-    out_cot = np.full(H * W, np.nan)
-    out_cth = np.full(H * W, np.nan)
+    best_dt   = np.full(H * W, np.inf, dtype=np.float32)
+    best_dist = np.full(H * W, np.inf, dtype=np.float32)
+    best_ok   = np.zeros(H * W, dtype=bool)
 
-    hits   = np.where(valid_match)[0]
-    mapped = full_idx[idx[hits]]
+    modis_list = sorted(modis_list, key=lambda m: m["_dt_min"])
 
-    out_clp[hits] = m_clp[mapped]
-    out_cer[hits] = m_cer[mapped]
-    out_cot[hits] = m_cot[mapped]
-    out_cth[hits] = m_cth[mapped]
+    for m in modis_list:
+        valid_geo = ~(np.isnan(m["lat"]) | np.isnan(m["lon"]))
+        if valid_geo.sum() == 0:
+            continue
 
-    return dict(
-        CLP=out_clp.reshape(H, W).astype(np.float32),
-        CER=out_cer.reshape(H, W).astype(np.float32),
-        COT=out_cot.reshape(H, W).astype(np.float32),
-        CTH=out_cth.reshape(H, W).astype(np.float32),
-    )
+        m_xyz = _latlon_to_xyz(m["lat"][valid_geo], m["lon"][valid_geo])
+        tree  = cKDTree(m_xyz)
+
+        dists, idx = tree.query(
+            a_xyz, k=1, distance_upper_bound=max_chord + 1e-6
+        )
+        valid_match = (dists <= max_chord) & (~nan_px)
+        if not np.any(valid_match):
+            continue
+
+        full_idx = np.where(valid_geo)[0]
+        hits     = np.where(valid_match)[0]
+        mapped   = full_idx[idx[hits]]
+
+        cand_clp = m["CLP"][mapped]
+        cand_cer = m["CER"][mapped]
+        cand_cot = m["COT"][mapped]
+        cand_cth = m["CTH"][mapped]
+
+        # 这里定义“候选标签有效”
+        cand_ok = np.isfinite(cand_clp) & (cand_clp >= 0)
+
+        cur_ok = best_ok[hits]
+        cur_dt = best_dt[hits]
+        cur_ds = best_dist[hits]
+
+        better = (
+            (~cur_ok & cand_ok) |
+            (cur_ok == cand_ok) & (
+                (m["_dt_min"] < cur_dt) |
+                ((m["_dt_min"] == cur_dt) & (dists[hits] < cur_ds))
+            )
+        )
+
+        if not np.any(better):
+            continue
+
+        keep   = hits[better]
+        kmapped = mapped[better]
+
+        out["CLP"][keep] = m["CLP"][kmapped]
+        out["CER"][keep] = m["CER"][kmapped]
+        out["COT"][keep] = m["COT"][kmapped]
+        out["CTH"][keep] = m["CTH"][kmapped]
+
+        best_ok[keep]   = cand_ok[better]
+        best_dt[keep]   = m["_dt_min"]
+        best_dist[keep] = dists[keep]
+
+    return {
+        "CLP": out["CLP"].reshape(H, W),
+        "CER": out["CER"].reshape(H, W),
+        "COT": out["COT"].reshape(H, W),
+        "CTH": out["CTH"].reshape(H, W),
+    }
 
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Quality filter
 # ─────────────────────────────────────────────────────────────────────────────
 
+# def apply_quality_filter(agri: dict, labels: dict) -> dict:
+#     vza = agri["VZA"]
+#     sza = agri["SZA"]
+#
+#     # Clear pixels have no cloud property — set regression targets to NaN so
+#     # that train.py's masked loss ignores them entirely.  Setting to 0.0 forces
+#     # the regression head toward CER=0 µm / CTH=0 m for the majority of
+#     # clear-sky pixels (often 50-80% of a scene), biasing the model low on all
+#     # cloud property retrievals.
+#     clear_mask = labels["CLP"] == 0
+#     for k in ["CER", "COT", "CTH"]:
+#         labels[k][clear_mask] = np.nan
+#
+#     bad_clp = (labels["CLP"] < 0) | (labels["CLP"] >= cfg.CLP_CLASSES)
+#     for k in labels:
+#         labels[k][bad_clp] = np.nan
+#
+#     for k in list(labels.keys()):
+#         labels[k][vza > cfg.MAX_VZA_DEG] = np.nan
+#         labels[k][sza > cfg.MAX_SZA_DEG] = np.nan
+#
+#     bad = (labels["CER"] < 0) | (labels["CER"] > 100)
+#     for k in list(labels.keys()): labels[k][bad] = np.nan
+#     bad = (labels["COT"] < 0) | (labels["COT"] > 200)
+#     for k in list(labels.keys()): labels[k][bad] = np.nan
+#     bad = (labels["CTH"] < 0) | (labels["CTH"] > 25000)
+#     for k in list(labels.keys()): labels[k][bad] = np.nan
+#
+#     return labels
+
 def apply_quality_filter(agri: dict, labels: dict) -> dict:
     vza = agri["VZA"]
     sza = agri["SZA"]
 
-    # Clear pixels have no cloud property — set regression targets to NaN so
-    # that train.py's masked loss ignores them entirely.  Setting to 0.0 forces
-    # the regression head toward CER=0 µm / CTH=0 m for the majority of
-    # clear-sky pixels (often 50-80% of a scene), biasing the model low on all
-    # cloud property retrievals.
-    clear_mask = labels["CLP"] == 0
-    for k in ["CER", "COT", "CTH"]:
-        labels[k][clear_mask] = np.nan
+    # 先看几何量本身是不是有问题
+    log.info(
+        "geo stats | "
+        "VZA finite=%.2f%% min=%.2f max=%.2f | "
+        "SZA finite=%.2f%% min=%.2f max=%.2f",
+        100.0 * np.isfinite(vza).mean(),
+        np.nanmin(vza) if np.isfinite(vza).any() else np.nan,
+        np.nanmax(vza) if np.isfinite(vza).any() else np.nan,
+        100.0 * np.isfinite(sza).mean(),
+        np.nanmin(sza) if np.isfinite(sza).any() else np.nan,
+        np.nanmax(sza) if np.isfinite(sza).any() else np.nan,
+    )
 
-    bad_clp = (labels["CLP"] < 0) | (labels["CLP"] >= cfg.CLP_CLASSES)
-    for k in labels:
-        labels[k][bad_clp] = np.nan
+    geo_ok = (
+        np.isfinite(vza) & np.isfinite(sza) &
+        (vza <= cfg.MAX_VZA_DEG) &
+        (sza <= cfg.MAX_SZA_DEG)
+    )
 
-    for k in list(labels.keys()):
-        labels[k][vza > cfg.MAX_VZA_DEG] = np.nan
-        labels[k][sza > cfg.MAX_SZA_DEG] = np.nan
+    log.info(
+        "filter ratio | geo_ok=%d (%.2f%%) | vza_thr=%.2f | sza_thr=%.2f",
+        int(geo_ok.sum()),
+        100.0 * geo_ok.mean(),
+        cfg.MAX_VZA_DEG,
+        cfg.MAX_SZA_DEG,
+    )
 
-    bad = (labels["CER"] < 0) | (labels["CER"] > 100)
-    for k in list(labels.keys()): labels[k][bad] = np.nan
-    bad = (labels["COT"] < 0) | (labels["COT"] > 200)
-    for k in list(labels.keys()): labels[k][bad] = np.nan
-    bad = (labels["CTH"] < 0) | (labels["CTH"] > 25000)
-    for k in list(labels.keys()): labels[k][bad] = np.nan
+    # 1) 分类单独过滤
+    clp_raw = labels["CLP"].copy()
+
+    clp_ok = (
+        np.isfinite(clp_raw) &
+        (clp_raw >= 0) &
+        (clp_raw < cfg.CLP_CLASSES)
+    )
+
+    overlap_ok = geo_ok & clp_ok
+
+    # 看 clp 有效区和 geo 有效区分别落在图上的哪里
+    hits_clp = np.where(clp_ok)
+    hits_geo = np.where(geo_ok)
+    hits_ovl = np.where(overlap_ok)
+
+    if hits_clp[0].size > 0:
+        log.info(
+            "clp bbox | row=[%d,%d] col=[%d,%d]",
+            hits_clp[0].min(), hits_clp[0].max(),
+            hits_clp[1].min(), hits_clp[1].max(),
+        )
+
+    if hits_geo[0].size > 0:
+        log.info(
+            "geo bbox | row=[%d,%d] col=[%d,%d]",
+            hits_geo[0].min(), hits_geo[0].max(),
+            hits_geo[1].min(), hits_geo[1].max(),
+        )
+
+    if hits_ovl[0].size > 0:
+        log.info(
+            "overlap bbox | row=[%d,%d] col=[%d,%d]",
+            hits_ovl[0].min(), hits_ovl[0].max(),
+            hits_ovl[1].min(), hits_ovl[1].max(),
+        )
+    else:
+        log.info("overlap bbox | empty")
+
+    clear_raw = np.isfinite(clp_raw) & (clp_raw == 0)
+    cloudy_raw = np.isfinite(clp_raw) & (clp_raw > 0)
+
+    log.info(
+        "clp before qc | finite=%d | valid_range=%d | clear=%d | cloudy=%d | overlap_geo=%d",
+        int(np.isfinite(clp_raw).sum()),
+        int(clp_ok.sum()),
+        int(clear_raw.sum()),
+        int(cloudy_raw.sum()),
+        int(overlap_ok.sum()),
+    )
+
+    # 如果 overlap 很低，基本说明“匹配到了，但几乎都落在 geo_ok 外”
+    if clp_ok.sum() > 0:
+        log.info(
+            "clp overlap ratio | overlap/valid_range=%.2f%% | overlap/all_pixels=%.2f%%",
+            100.0 * overlap_ok.sum() / clp_ok.sum(),
+            100.0 * overlap_ok.mean(),
+        )
+
+    labels["CLP"] = np.where(overlap_ok, clp_raw, np.nan)
+
+    log.info(
+        "clp after qc | finite=%d | clear=%d | cloudy=%d",
+        int(np.isfinite(labels["CLP"]).sum()),
+        int((np.isfinite(labels["CLP"]) & (labels["CLP"] == 0)).sum()),
+        int((np.isfinite(labels["CLP"]) & (labels["CLP"] > 0)).sum()),
+    )
+
+    # 2) 回归各自单独过滤
+    cloudy = np.isfinite(labels["CLP"]) & (labels["CLP"] > 0)
+
+    cer_raw = labels["CER"].copy()
+    cot_raw = labels["COT"].copy()
+    cth_raw = labels["CTH"].copy()
+
+    cer_ok = cloudy & np.isfinite(cer_raw) & (cer_raw >= 0) & (cer_raw <= 100)
+    cot_ok = cloudy & np.isfinite(cot_raw) & (cot_raw >= 0) & (cot_raw <= 200)
+    cth_ok = cloudy & np.isfinite(cth_raw) & (cth_raw >= 0) & (cth_raw <= 25000)
+
+    log.info(
+        "reg before qc | CER=%d | COT=%d | CTH=%d | cloudy_mask=%d",
+        int(np.isfinite(cer_raw).sum()),
+        int(np.isfinite(cot_raw).sum()),
+        int(np.isfinite(cth_raw).sum()),
+        int(cloudy.sum()),
+    )
+
+    labels["CER"] = np.where(cer_ok, cer_raw, np.nan)
+    labels["COT"] = np.where(cot_ok, cot_raw, np.nan)
+    labels["CTH"] = np.where(cth_ok, cth_raw, np.nan)
+
+    log.info(
+        "reg after qc | CER=%d | COT=%d | CTH=%d",
+        int(np.isfinite(labels["CER"]).sum()),
+        int(np.isfinite(labels["COT"]).sum()),
+        int(np.isfinite(labels["CTH"]).sum()),
+    )
 
     return labels
 
@@ -787,16 +1040,76 @@ def fuse_day(
             continue
 
         # Read & merge MYD06 granules
-        modis_data_list = [m for f in matched_modis_files if (m := read_myd06(f)) is not None]
+        # modis_data_list = [m for f in matched_modis_files if (m := read_myd06(f)) is not None]
+        # if not modis_data_list:
+        #     continue
+        #
+        # labels = match_modis_to_agri(agri, modis_data_list)
+
+        # Read & merge MYD06 granules
+        modis_data_list = []
+        for mf in matched_modis_files:
+            m = read_myd06(mf)
+            if m is None:
+                continue
+
+            mdt = _parse_modis_datetime(mf.name)
+            if mdt is None:
+                continue
+
+            m["_dt_min"] = abs((mdt - agri_dt).total_seconds()) / 60.0
+            m["_file"] = mf.name
+            modis_data_list.append(m)
+
         if not modis_data_list:
             continue
 
         labels = match_modis_to_agri(agri, modis_data_list)
+        log.info(
+            "before qc | raw_clp=%d raw_cer=%d raw_cot=%d raw_cth=%d | file=%s",
+            int(np.isfinite(labels["CLP"]).sum()),
+            int(np.isfinite(labels["CER"]).sum()),
+            int(np.isfinite(labels["COT"]).sum()),
+            int(np.isfinite(labels["CTH"]).sum()),
+            agri_file.name,
+        )
+
         if labels is None:
             log.debug("No valid MODIS-AGRI matches for %s", agri_file.name)
             continue
 
+        labels_before_qc = {k: v.copy() for k, v in labels.items()}
+        raw_match = np.isfinite(labels_before_qc["CLP"]).sum()
         labels = apply_quality_filter(agri, labels)
+        log.info(
+            "after qc | clp=%d cer=%d cot=%d cth=%d | file=%s",
+            int(np.isfinite(labels["CLP"]).sum()),
+            int(np.isfinite(labels["CER"]).sum()),
+            int(np.isfinite(labels["COT"]).sum()),
+            int(np.isfinite(labels["CTH"]).sum()),
+            agri_file.name,
+        )
+
+        final_clp = np.isfinite(labels["CLP"]).sum()
+        final_cer = np.isfinite(labels["CER"]).sum()
+        final_cot = np.isfinite(labels["COT"]).sum()
+        final_cth = np.isfinite(labels["CTH"]).sum()
+
+        log.info(
+            "match stats | raw=%d | clp=%d | cer=%d | cot=%d | cth=%d | file=%s",
+            raw_match, final_clp, final_cer, final_cot, final_cth, agri_file.name
+        )
+
+        total_px = labels["CLP"].size
+        log.info(
+            "match ratio | raw=%.2f%% | clp=%.2f%% | cer=%.2f%% | cot=%.2f%% | cth=%.2f%% | file=%s",
+            100.0 * raw_match / total_px,
+            100.0 * final_clp / total_px,
+            100.0 * final_cer / total_px,
+            100.0 * final_cot / total_px,
+            100.0 * final_cth / total_px,
+            agri_file.name
+        )
 
         # Check there are enough valid pixels
         valid_px = (~np.isnan(labels["CLP"])).sum()
