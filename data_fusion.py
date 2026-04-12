@@ -39,6 +39,7 @@ from pyhdf.SD import SD, SDC
 from scipy.spatial import cKDTree
 
 import config as cfg
+from sample_filters import get_patch_supervision_thresholds, patch_passes_supervision
 
 log = logging.getLogger(__name__)
 
@@ -394,32 +395,161 @@ def read_agri_scene(agri_file: Path) -> Optional[dict]:
 # MYD06 reader
 # ─────────────────────────────────────────────────────────────────────────────
 
+def _read_scaled_sds(sd: SD, name: str, scale: float) -> np.ndarray:
+    ds = sd.select(name)
+    raw = ds[:].astype(np.float32)
+    attrs = ds.attributes()
+    fv = attrs.get("_FillValue", attrs.get("fill_value", -9999))
+    raw[raw == fv] = np.nan
+    return raw * scale
+
+
+def _read_optional_scaled_sds(
+    sd: SD,
+    name: str,
+    scale: float = 1.0,
+    *,
+    use_sds_scale_factor: bool = False,
+) -> Optional[np.ndarray]:
+    try:
+        ds = sd.select(name)
+        raw = ds[:].astype(np.float32)
+        attrs = ds.attributes()
+        fv = attrs.get("_FillValue", attrs.get("fill_value", -9999))
+        raw[raw == fv] = np.nan
+
+        if use_sds_scale_factor:
+            scale_factor = float(attrs.get("scale_factor", 1.0))
+            add_offset = float(attrs.get("add_offset", 0.0))
+            return raw * scale_factor + add_offset
+
+        return raw * scale
+    except Exception:
+        return None
+
+
+def _read_optional_raw_sds(sd: SD, name: str) -> Optional[np.ndarray]:
+    try:
+        return sd.select(name)[:]
+    except Exception:
+        return None
+
+
+def _decode_cloud_mask_cloudiness(cloud_mask: Optional[np.ndarray]) -> Optional[np.ndarray]:
+    if cloud_mask is None:
+        return None
+    arr = np.asarray(cloud_mask)
+    if arr.ndim >= 3:
+        arr = arr[..., 0]
+    arr = arr.astype(np.uint8)
+    status = arr & np.uint8(0b1)
+    cloudiness = (arr >> np.uint8(1)) & np.uint8(0b11)
+    out = cloudiness.astype(np.float32)
+    out[status == 0] = np.nan
+    return out
+
+
+def _shape_ok(mask: Optional[np.ndarray], ref: np.ndarray) -> bool:
+    return mask is not None and mask.shape == ref.shape
+
+
+def _apply_modis_weak_quality_filter(
+    clp: np.ndarray,
+    cer: np.ndarray,
+    cot: np.ndarray,
+    cth: np.ndarray,
+    cloud_mask_1km: Optional[np.ndarray],
+    cloud_mask_5km: Optional[np.ndarray],
+    cer_unc: Optional[np.ndarray],
+    cot_unc: Optional[np.ndarray],
+) -> Dict[str, np.ndarray]:
+    clp = clp.astype(np.float32, copy=True)
+    cer = cer.astype(np.float32, copy=True)
+    cot = cot.astype(np.float32, copy=True)
+    cth = cth.astype(np.float32, copy=True)
+
+    if not cfg.MODIS_FILTER_WEAK_QUALITY:
+        return {"CLP": clp, "CER": cer, "COT": cot, "CTH": cth}
+
+    if _shape_ok(cloud_mask_1km, clp):
+        allowed_1km = np.isin(cloud_mask_1km, np.asarray(cfg.MODIS_ALLOWED_CLOUD_MASK_FLAGS_1KM))
+        clp[~allowed_1km] = np.nan
+        cer[~allowed_1km] = np.nan
+        cot[~allowed_1km] = np.nan
+    elif cloud_mask_1km is not None:
+        log.warning("Cloud_Mask_1km shape %s != CLP shape %s; skip 1km weak-quality filter", cloud_mask_1km.shape, clp.shape)
+
+    if _shape_ok(cer_unc, cer):
+        cer[(~np.isfinite(cer_unc)) | (cer_unc > cfg.MODIS_MAX_CER_UNCERTAINTY_PCT)] = np.nan
+    elif cer_unc is not None:
+        log.warning("CER uncertainty shape %s != CER shape %s; skip CER uncertainty weak-quality filter", cer_unc.shape, cer.shape)
+
+    if _shape_ok(cot_unc, cot):
+        cot[(~np.isfinite(cot_unc)) | (cot_unc > cfg.MODIS_MAX_COT_UNCERTAINTY_PCT)] = np.nan
+    elif cot_unc is not None:
+        log.warning("COT uncertainty shape %s != COT shape %s; skip COT uncertainty weak-quality filter", cot_unc.shape, cot.shape)
+
+    if _shape_ok(cloud_mask_5km, cth):
+        allowed_5km = np.isin(cloud_mask_5km, np.asarray(cfg.MODIS_ALLOWED_CLOUD_MASK_FLAGS_5KM))
+        cth[~allowed_5km] = np.nan
+    elif cloud_mask_5km is not None:
+        log.warning("Cloud_Mask_5km shape %s != CTH shape %s; skip 5km weak-quality filter", cloud_mask_5km.shape, cth.shape)
+
+    return {"CLP": clp, "CER": cer, "COT": cot, "CTH": cth}
+
+
 def read_myd06(modis_file: Path) -> Optional[dict]:
     try:
-        sd  = SD(str(modis_file), SDC.READ)
+        sd = SD(str(modis_file), SDC.READ)
         lat = sd.select("Latitude")[:]
         lon = sd.select("Longitude")[:]
 
-        def _read(name, scale):
-            ds    = sd.select(name)
-            raw   = ds[:].astype(np.float32)
-            attrs = ds.attributes()
-            fv    = attrs.get("_FillValue", attrs.get("fill_value", -9999))
-            raw[raw == fv] = np.nan
-            return raw * scale
-
         clp_raw = sd.select(cfg.MODIS_VARS["CLP"])[:].astype(np.int32)
-        # clp     = np.vectorize(cfg.MODIS_PHASE_MAP.get)(clp_raw, 0).astype(np.int32)
-        clp = np.vectorize(lambda x: cfg.MODIS_PHASE_MAP.get(int(x), -1))(clp_raw).astype(np.int16)
-        cer     = _read(cfg.MODIS_VARS["CER"], cfg.MODIS_SCALE["CER"])
-        cot     = _read(cfg.MODIS_VARS["COT"], cfg.MODIS_SCALE["COT"])
-        cth     = _read(cfg.MODIS_VARS["CTH"], cfg.MODIS_SCALE["CTH"])
+        clp = np.vectorize(lambda x: cfg.MODIS_PHASE_MAP.get(int(x), -1))(clp_raw).astype(np.float32)
+        cer = _read_scaled_sds(sd, cfg.MODIS_VARS["CER"], cfg.MODIS_SCALE["CER"])
+        cot = _read_scaled_sds(sd, cfg.MODIS_VARS["COT"], cfg.MODIS_SCALE["COT"])
+        cth = _read_scaled_sds(sd, cfg.MODIS_VARS["CTH"], cfg.MODIS_SCALE["CTH"])
+
+        cloud_mask_1km = _decode_cloud_mask_cloudiness(_read_optional_raw_sds(sd, "Cloud_Mask_1km"))
+        cloud_mask_5km = _decode_cloud_mask_cloudiness(_read_optional_raw_sds(sd, "Cloud_Mask_5km"))
+        # cer_unc = _read_optional_scaled_sds(sd, "Cloud_Effective_Radius_Uncertainty", 1.0)
+        # cot_unc = _read_optional_scaled_sds(sd, "Cloud_Optical_Thickness_Uncertainty", 1.0)
+        cer_unc = _read_optional_scaled_sds(
+            sd,
+            "Cloud_Effective_Radius_Uncertainty",
+            use_sds_scale_factor=True,
+        )
+        cot_unc = _read_optional_scaled_sds(
+            sd,
+            "Cloud_Optical_Thickness_Uncertainty",
+            use_sds_scale_factor=True,
+        )
         sd.end()
+
+        filtered = _apply_modis_weak_quality_filter(
+            clp=clp,
+            cer=cer,
+            cot=cot,
+            cth=cth,
+            cloud_mask_1km=cloud_mask_1km,
+            cloud_mask_5km=cloud_mask_5km,
+            cer_unc=cer_unc,
+            cot_unc=cot_unc,
+        )
+
+        log.info(
+            "MYD06 weak-qc | file=%s | clp=%d cer=%d cot=%d cth=%d",
+            modis_file.name,
+            int(np.isfinite(filtered["CLP"]).sum()),
+            int(np.isfinite(filtered["CER"]).sum()),
+            int(np.isfinite(filtered["COT"]).sum()),
+            int(np.isfinite(filtered["CTH"]).sum()),
+        )
 
         return dict(
             lat=lat.ravel(), lon=lon.ravel(),
-            CLP=clp.ravel(), CER=cer.ravel(),
-            COT=cot.ravel(), CTH=cth.ravel(),
+            CLP=filtered["CLP"].ravel(), CER=filtered["CER"].ravel(),
+            COT=filtered["COT"].ravel(), CTH=filtered["CTH"].ravel(),
         )
     except Exception as exc:
         log.warning("Failed to read MYD06 %s: %s", modis_file, exc)
@@ -720,12 +850,8 @@ def _infer_split_from_dir(out_dir: Path) -> str:
 
 
 def _sample_thresholds(mode: str, patch_size: Tuple[int, int]) -> Tuple[int, int]:
-    ph, pw = patch_size
-    min_clp_valid = max(cfg.MIN_PATCH_LABEL_PIXELS, int(ph * pw * 0.05))
-    min_cloudy_valid = max(cfg.MIN_TRAIN_CLOUDY_LABEL_PIXELS, int(ph * pw * 0.05))
-    if mode == "train":
-        return min_clp_valid, min_cloudy_valid
-    return min_clp_valid, 0
+    thresholds = get_patch_supervision_thresholds(mode, patch_size)
+    return thresholds["min_valid_label_pixels"], thresholds["min_valid_cloudy_pixels"]
 
 
 def _iter_supervised_patch_positions(
@@ -763,23 +889,18 @@ def _iter_supervised_patch_positions(
             patch_cot = cot[i:i + ph, j:j + pw]
             patch_cth = cth[i:i + ph, j:j + pw]
 
-            clp_valid = np.isfinite(patch_clp)
-            n_clp_valid = int(clp_valid.sum())
-            if n_clp_valid < min_clp_valid:
-                continue
-
-            cloudy_valid = (
-                clp_valid &
-                (patch_clp > 0) &
-                np.isfinite(patch_cer) &
-                np.isfinite(patch_cot) &
-                np.isfinite(patch_cth)
+            keep, counts, _ = patch_passes_supervision(
+                patch_clp, patch_cer, patch_cot, patch_cth, mode, patch_size
             )
-            n_cloudy_valid = int(cloudy_valid.sum())
-            if mode == "train" and n_cloudy_valid < min_cloudy_valid:
+            if not keep:
                 continue
 
-            positions.append((i, j, n_clp_valid, n_cloudy_valid))
+            positions.append((
+                i,
+                j,
+                counts["valid_label_pixels"],
+                counts["valid_cloudy_pixels"],
+            ))
 
     return positions
 
@@ -823,6 +944,8 @@ def write_supervised_samples_temp_hdf5(
     ph, pw = patch_size
     C = agri["BT"].shape[-1]
 
+    thresholds = get_patch_supervision_thresholds(mode, patch_size)
+
     with h5py.File(temp_path, "w") as f:
         f.attrs["format"] = "samples_v1"
         f.attrs["agri_datetime"] = agri_dt.strftime("%Y%m%d%H%M%S")
@@ -832,6 +955,9 @@ def write_supervised_samples_temp_hdf5(
         f.attrs["split_mode"] = mode
         f.attrs["max_time_diff_min"] = float(cfg.MAX_TIME_DIFF_MIN)
         f.attrs["max_match_dist_km"] = float(cfg.MAX_MATCH_DIST_KM)
+        f.attrs["min_valid_label_pixels"] = int(thresholds["min_valid_label_pixels"])
+        f.attrs["min_valid_cloudy_pixels"] = int(thresholds["min_valid_cloudy_pixels"])
+        f.attrs["modis_filter_weak_quality"] = bool(cfg.MODIS_FILTER_WEAK_QUALITY)
 
         samples = f.create_group("Samples")
         agri_ds = _create_resizable_dataset(samples, "agri", (C, ph, pw), dtype=np.float32)
@@ -1323,16 +1449,33 @@ def fuse_day(
             agri_file.name
         )
 
-        # Check there are enough valid pixels
-        valid_px = (~np.isnan(labels["CLP"])).sum()
-        if valid_px < cfg.PATCH_SIZE[0] * cfg.PATCH_SIZE[1]:
-            log.debug("Too few valid pixels (%d) for %s – skipping", valid_px, agri_file.name)
+        mode = _infer_split_from_dir(out_dir)
+
+        # Check there are enough valid supervised pixels to form at least one patch
+        thresholds = get_patch_supervision_thresholds(mode, tuple(cfg.PATCH_SIZE))
+        valid_label_px = int(np.isfinite(labels["CLP"]).sum())
+        valid_cloudy_px = int((
+            np.isfinite(labels["CLP"]) &
+            (labels["CLP"] > 0) &
+            np.isfinite(labels["CER"]) &
+            np.isfinite(labels["COT"]) &
+            np.isfinite(labels["CTH"])
+        ).sum())
+        if (
+            valid_label_px < thresholds["min_valid_label_pixels"]
+            or valid_cloudy_px < thresholds["min_valid_cloudy_pixels"]
+        ):
+            log.debug(
+                "Too few supervised pixels (label=%d, cloudy=%d) for %s – skipping",
+                valid_label_px,
+                valid_cloudy_px,
+                agri_file.name,
+            )
             continue
 
         # write_paired_hdf5(out_path, agri, labels, agri_dt)
         # paired_count += 1
 
-        mode = _infer_split_from_dir(out_dir)
         try:
             if cfg.FUSION_OUTPUT_MODE == "samples_only":
                 n_samples = safe_write_supervised_hdf5(out_path, agri, labels, agri_dt, mode)

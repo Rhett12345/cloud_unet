@@ -36,6 +36,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 
 import config as cfg
+from sample_filters import get_patch_supervision_thresholds, patch_passes_supervision
 
 log = logging.getLogger(__name__)
 
@@ -78,54 +79,124 @@ class NormStats:
 # Stats: per-file worker (runs in subprocess)
 # ─────────────────────────────────────────────────────────────────────────────
 
+# def _stats_worker(h5_path: str) -> Optional[dict]:
+#     """
+#     Open one paired HDF5 file and return partial sum/sumsq accumulators
+#     plus a small reservoir sample for percentile estimation.
+#
+#     Runs in a worker process spawned by ProcessPoolExecutor.
+#     Kept module-level so it is picklable on all platforms.
+#     """
+#     import h5py, numpy as np, config as cfg
+#
+#     MAX_SAMPLE = 4096   # pixels kept per file for reservoir
+#
+#     try:
+#         # with h5py.File(h5_path, "r") as f:
+#         #     bt_keys = sorted(f["AGRI/BT"].keys())
+#         #     # Read channels one by one to avoid stacking a huge intermediate array
+#         #     H, W = f[f"AGRI/BT/{bt_keys[0]}"].shape
+#         #     n_agri = len(bt_keys)
+#         #
+#         #     sum_bt   = np.zeros(n_agri, dtype=np.float64)
+#         #     sumsq_bt = np.zeros(n_agri, dtype=np.float64)
+#         #
+#         #     # Stack BT in one go (full scene is manageable per-channel)
+#         #     BT = np.stack(
+#         #         [f[f"AGRI/BT/{k}"][()].astype(np.float64) for k in bt_keys],
+#         #         axis=-1
+#         #     )  # (H, W, C)
+#         #
+#         #     CLP = f["Labels/CLP"][()].astype(np.float64)
+#         #     CER = f["Labels/CER"][()].astype(np.float64)
+#         #     COT = f["Labels/COT"][()].astype(np.float64)
+#         #     CTH = f["Labels/CTH"][()].astype(np.float64)
+#
+#         with h5py.File(h5_path, "r") as f:
+#             if "Samples" in f and "agri" in f["Samples"] and "labels" in f["Samples"]:
+#                 BT = f["Samples/agri"][()].astype(np.float64)  # (N, C, H, W)
+#                 lbl = f["Samples/labels"][()].astype(np.float64)  # (N, 4, H, W)
+#                 n_agri = BT.shape[1]
+#                 flat_bt = BT.transpose(0, 2, 3, 1).reshape(-1, n_agri)
+#                 flat_out = lbl.transpose(0, 2, 3, 1).reshape(-1, 4)
+#             else:
+#                 bt_keys = sorted(f["AGRI/BT"].keys())
+#                 H, W = f[f"AGRI/BT/{bt_keys[0]}"].shape
+#                 n_agri = len(bt_keys)
+#
+#                 BT = np.stack(
+#                     [f[f"AGRI/BT/{k}"][()].astype(np.float64) for k in bt_keys],
+#                     axis=-1
+#                 )
+#
+#                 CLP = f["Labels/CLP"][()].astype(np.float64)
+#                 CER = f["Labels/CER"][()].astype(np.float64)
+#                 COT = f["Labels/COT"][()].astype(np.float64)
+#                 CTH = f["Labels/CTH"][()].astype(np.float64)
+#
+#                 # out = np.stack([CLP, CER, COT, CTH], axis=-1)
+#                 # flat_bt = BT.reshape(-1, n_agri)
+#                 # flat_out = out.reshape(-1, 4)
+#
+#     except Exception as exc:
+#         return None   # silently skip; caller will log
+#
+#     out = np.stack([CLP, CER, COT, CTH], axis=-1)   # (H, W, 4)
+#     flat_bt  = BT.reshape(-1, n_agri)
+#     flat_out = out.reshape(-1, 4)
+#
+#     # Keep only pixels where BOTH BT and labels are fully finite
+#     valid = np.isfinite(flat_bt).all(axis=1) & np.isfinite(flat_out).all(axis=1)
+#     if valid.sum() == 0:
+#         return None
+#
+#     flat_bt  = flat_bt[valid]
+#     flat_out = flat_out[valid]
+#     n        = flat_bt.shape[0]
+#
+#     sum_bt   = flat_bt.sum(axis=0)
+#     sumsq_bt = (flat_bt ** 2).sum(axis=0)
+#     sum_out  = flat_out.sum(axis=0)
+#     sumsq_out = (flat_out ** 2).sum(axis=0)
+#
+#     # Reservoir: subsample regression values (CER/COT/CTH)
+#     reg = flat_out[:, 1:]   # (n, 3)
+#     if n > MAX_SAMPLE:
+#         idx = np.random.choice(n, MAX_SAMPLE, replace=False)
+#         reg = reg[idx]
+#
+#     return dict(
+#         n=n,
+#         sum_bt=sum_bt, sumsq_bt=sumsq_bt,
+#         sum_out=sum_out, sumsq_out=sumsq_out,
+#         reg_sample=reg,
+#         path=h5_path,
+#     )
+
 def _stats_worker(h5_path: str) -> Optional[dict]:
-    """
-    Open one paired HDF5 file and return partial sum/sumsq accumulators
-    plus a small reservoir sample for percentile estimation.
+    import h5py, numpy as np
 
-    Runs in a worker process spawned by ProcessPoolExecutor.
-    Kept module-level so it is picklable on all platforms.
-    """
-    import h5py, numpy as np, config as cfg
-
-    MAX_SAMPLE = 4096   # pixels kept per file for reservoir
+    MAX_SAMPLE = 4096
 
     try:
-        # with h5py.File(h5_path, "r") as f:
-        #     bt_keys = sorted(f["AGRI/BT"].keys())
-        #     # Read channels one by one to avoid stacking a huge intermediate array
-        #     H, W = f[f"AGRI/BT/{bt_keys[0]}"].shape
-        #     n_agri = len(bt_keys)
-        #
-        #     sum_bt   = np.zeros(n_agri, dtype=np.float64)
-        #     sumsq_bt = np.zeros(n_agri, dtype=np.float64)
-        #
-        #     # Stack BT in one go (full scene is manageable per-channel)
-        #     BT = np.stack(
-        #         [f[f"AGRI/BT/{k}"][()].astype(np.float64) for k in bt_keys],
-        #         axis=-1
-        #     )  # (H, W, C)
-        #
-        #     CLP = f["Labels/CLP"][()].astype(np.float64)
-        #     CER = f["Labels/CER"][()].astype(np.float64)
-        #     COT = f["Labels/COT"][()].astype(np.float64)
-        #     CTH = f["Labels/CTH"][()].astype(np.float64)
-
         with h5py.File(h5_path, "r") as f:
             if "Samples" in f and "agri" in f["Samples"] and "labels" in f["Samples"]:
-                BT = f["Samples/agri"][()].astype(np.float64)  # (N, C, H, W)
-                lbl = f["Samples/labels"][()].astype(np.float64)  # (N, 4, H, W)
+                # 新格式: Samples/agri -> (N, C, H, W), Samples/labels -> (N, 4, H, W)
+                BT = f["Samples/agri"][()].astype(np.float64)
+                lbl = f["Samples/labels"][()].astype(np.float64)
+
                 n_agri = BT.shape[1]
                 flat_bt = BT.transpose(0, 2, 3, 1).reshape(-1, n_agri)
                 flat_out = lbl.transpose(0, 2, 3, 1).reshape(-1, 4)
+
             else:
+                # 旧格式: AGRI/BT + Labels/*
                 bt_keys = sorted(f["AGRI/BT"].keys())
-                H, W = f[f"AGRI/BT/{bt_keys[0]}"].shape
                 n_agri = len(bt_keys)
 
                 BT = np.stack(
                     [f[f"AGRI/BT/{k}"][()].astype(np.float64) for k in bt_keys],
-                    axis=-1
+                    axis=-1,   # (H, W, C)
                 )
 
                 CLP = f["Labels/CLP"][()].astype(np.float64)
@@ -133,44 +204,42 @@ def _stats_worker(h5_path: str) -> Optional[dict]:
                 COT = f["Labels/COT"][()].astype(np.float64)
                 CTH = f["Labels/CTH"][()].astype(np.float64)
 
-                # out = np.stack([CLP, CER, COT, CTH], axis=-1)
-                # flat_bt = BT.reshape(-1, n_agri)
-                # flat_out = out.reshape(-1, 4)
+                out = np.stack([CLP, CER, COT, CTH], axis=-1)  # (H, W, 4)
+                flat_bt = BT.reshape(-1, n_agri)
+                flat_out = out.reshape(-1, 4)
 
     except Exception as exc:
-        return None   # silently skip; caller will log
+        log.warning("Stats worker failed for %s: %s", h5_path, exc)
+        return None
 
-    out = np.stack([CLP, CER, COT, CTH], axis=-1)   # (H, W, 4)
-    flat_bt  = BT.reshape(-1, n_agri)
-    flat_out = out.reshape(-1, 4)
-
-    # Keep only pixels where BOTH BT and labels are fully finite
+    # 只保留输入和标签都有限的像素
     valid = np.isfinite(flat_bt).all(axis=1) & np.isfinite(flat_out).all(axis=1)
     if valid.sum() == 0:
         return None
 
-    flat_bt  = flat_bt[valid]
+    flat_bt = flat_bt[valid]
     flat_out = flat_out[valid]
-    n        = flat_bt.shape[0]
+    n = flat_bt.shape[0]
 
-    sum_bt   = flat_bt.sum(axis=0)
+    sum_bt = flat_bt.sum(axis=0)
     sumsq_bt = (flat_bt ** 2).sum(axis=0)
-    sum_out  = flat_out.sum(axis=0)
+    sum_out = flat_out.sum(axis=0)
     sumsq_out = (flat_out ** 2).sum(axis=0)
 
-    # Reservoir: subsample regression values (CER/COT/CTH)
-    reg = flat_out[:, 1:]   # (n, 3)
+    reg = flat_out[:, 1:]   # CER/COT/CTH
     if n > MAX_SAMPLE:
         idx = np.random.choice(n, MAX_SAMPLE, replace=False)
         reg = reg[idx]
 
-    return dict(
-        n=n,
-        sum_bt=sum_bt, sumsq_bt=sumsq_bt,
-        sum_out=sum_out, sumsq_out=sumsq_out,
-        reg_sample=reg,
-        path=h5_path,
-    )
+    return {
+        "n": n,
+        "sum_bt": sum_bt,
+        "sumsq_bt": sumsq_bt,
+        "sum_out": sum_out,
+        "sumsq_out": sumsq_out,
+        "reg_sample": reg,
+        "path": h5_path,
+    }
 
 
 def compute_and_save_stats(
@@ -276,24 +345,14 @@ def _build_patch_index(
     h5_files: List[Path],
     patch_size: Tuple[int, int],
     mode: str,
-    min_valid_frac: float = 0.05,
 ) -> List[Tuple[Path, int, int]]:
     """
     Scan all HDF5 files and return a list of (file_path, i_start, j_start)
     tuples that will form the dataset.
 
-    For each candidate patch position we peek at the label slice to check
-    that at least `min_valid_frac` of pixels have finite labels.  This is
-    cheap because HDF5 hyperslab reads are fast, and we do NOT load the full
-    scene into memory.
-
-    Parameters
-    ----------
-    mode : "train" | "val" | "test"
-        Determines stride: 50% overlap for train, non-overlapping for val/test.
-    min_valid_frac : float
-        Minimum fraction of pixels in a patch that must have fully-finite labels.
-        Default 5% (≈ 51 pixels out of 1024 for a 32×32 patch).
+    Patch filtering is shared with data_fusion.py via sample_filters.py so that
+    train / val / test all follow the same supervision thresholds and no stale
+    hard-coded `16 pixels` rule remains in the runtime dataset path.
     """
     ph, pw = patch_size
     index: List[Tuple[Path, int, int]] = []
@@ -303,18 +362,37 @@ def _build_patch_index(
     else:
         sh, sw = ph, pw                              # non-overlapping
 
-    min_valid_px = max(16, int(ph * pw * min_valid_frac))
+    thresholds = get_patch_supervision_thresholds(mode, patch_size)
 
     for h5f in h5_files:
         try:
             with h5py.File(h5f, "r") as f:
                 if "Samples" in f and "agri" in f["Samples"] and "labels" in f["Samples"]:
-                    n_samples = int(f["Samples/agri"].shape[0])
-                    index.extend((h5f, s, -1) for s in range(n_samples))
+                    samples = f["Samples"]
+                    n_samples = int(samples["agri"].shape[0])
+
+                    has_cached_counts = (
+                        "valid_clp_pixels" in samples and "valid_cloudy_pixels" in samples
+                    )
+                    if has_cached_counts:
+                        valid_label_pixels = samples["valid_clp_pixels"][()]
+                        valid_cloudy_pixels = samples["valid_cloudy_pixels"][()]
+                        for s in range(n_samples):
+                            if (
+                                int(valid_label_pixels[s]) >= thresholds["min_valid_label_pixels"]
+                                and int(valid_cloudy_pixels[s]) >= thresholds["min_valid_cloudy_pixels"]
+                            ):
+                                index.append((h5f, s, -1))
+                    else:
+                        for s in range(n_samples):
+                            patch_clp, patch_cer, patch_cot, patch_cth = samples["labels"][s]
+                            keep, _counts, _ = patch_passes_supervision(
+                                patch_clp, patch_cer, patch_cot, patch_cth, mode, patch_size
+                            )
+                            if keep:
+                                index.append((h5f, s, -1))
                     continue
-                # Use CLP as proxy for label validity
-                # CLP = f["Labels/CLP"][()]
-                # H, W = CLP.shape
+
                 CLP = f["Labels/CLP"][()]
                 CER = f["Labels/CER"][()]
                 COT = f["Labels/COT"][()]
@@ -336,41 +414,11 @@ def _build_patch_index(
                         patch_cot = COT[i:i + ph, j:j + pw]
                         patch_cth = CTH[i:i + ph, j:j + pw]
 
-                        # n_valid = int(np.isfinite(patch_clp).sum())
-                        #
-                        # cloud_valid = (
-                        #         np.isfinite(patch_clp) &
-                        #         (patch_clp > 0) &
-                        #         np.isfinite(patch_cer) &
-                        #         np.isfinite(patch_cot) &
-                        #         np.isfinite(patch_cth)
-                        # )
-                        # n_cloud_valid = int(cloud_valid.sum())
-                        #
-                        # if mode == "train":
-                        #     if n_valid >= min_valid_px and n_cloud_valid >= max(16, int(ph * pw * 0.05)):
-                        #         index.append((h5f, i, j))
-                        # else:
-                        #     if n_valid >= min_valid_px:
-                        #         index.append((h5f, i, j))
-
-                        valid_clp = np.isfinite(patch_clp)
-                        valid_reg = (
-                                np.isfinite(patch_cer) |
-                                np.isfinite(patch_cot) |
-                                np.isfinite(patch_cth)
+                        keep, _counts, _ = patch_passes_supervision(
+                            patch_clp, patch_cer, patch_cot, patch_cth, mode, patch_size
                         )
-
-                        valid_any = valid_clp | valid_reg
-                        n_valid_any = int(valid_any.sum())
-
-                        if n_valid_any >= min_valid_px:
+                        if keep:
                             index.append((h5f, i, j))
-
-                        # patch_clp = CLP[i:i + ph, j:j + pw]
-                        # n_valid = int(np.isfinite(patch_clp).sum())
-                        # if n_valid >= min_valid_px:
-                        #     index.append((h5f, i, j))
 
         except Exception as exc:
             log.warning("Skip %s during index build: %s", h5f, exc)
@@ -417,8 +465,15 @@ class AGRIMyd06Dataset(Dataset):
         if not h5_files:
             raise FileNotFoundError(f"No .h5 files found in {paired_dir}")
 
-        log.info("Building patch index from %d files in %s (mode=%s) …",
-                 len(h5_files), paired_dir, mode)
+        thresholds = get_patch_supervision_thresholds(mode, patch_size)
+        log.info(
+            "Building patch index from %d files in %s (mode=%s, min_valid_label=%d, min_valid_cloudy=%d) …",
+            len(h5_files),
+            paired_dir,
+            mode,
+            thresholds["min_valid_label_pixels"],
+            thresholds["min_valid_cloudy_pixels"],
+        )
 
         # Build lightweight index – does NOT load pixel data into RAM
         self._index = _build_patch_index(h5_files, patch_size, mode)

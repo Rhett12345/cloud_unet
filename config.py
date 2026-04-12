@@ -92,8 +92,24 @@ MAX_SZA_DEG = 65   # day-only mode 65; set to 180 to include night
 CLP_USE_GEO_FILTER = False
 REG_USE_GEO_FILTER = False
 
-# 新增：一个 patch 至少要有多少个监督像元才参与训练
-MIN_PATCH_LABEL_PIXELS = 16
+# Patch 监督样本过滤规则（train / val / test 共用同一套默认策略）。
+# 最终门槛 = max(最少像元数, patch_area * 最小占比)。
+# 32×32 patch 下，默认要求：
+#   - 至少 128 个有效 CLP 监督像元（12.5%）
+#   - 至少 64 个“有云且 CER/COT/CTH 同时有效”的监督像元（6.25%）
+# 这样可以显著减少只有零星监督像元的低质量 patch，同时不过分牺牲样本量。
+PATCH_FILTER_RULES = {
+    "default": {
+        "min_valid_label_pixels": 256,
+        "min_valid_label_ratio": 0.25,
+        "min_valid_cloudy_pixels": 128,
+        "min_valid_cloudy_ratio": 0.125,
+    },
+    "train": {},
+    "val": {},
+    "test": {},
+}
+
 # 融合输出只保留有监督样本，不再把整幅全圆盘直接写入训练 HDF5。
 FUSION_OUTPUT_MODE = "samples_only"   # "samples_only" | "full_disk"
 
@@ -101,8 +117,20 @@ FUSION_OUTPUT_MODE = "samples_only"   # "samples_only" | "full_disk"
 TEMP_H5_SUFFIX = ".tmp.h5"
 KEEP_TEMP_H5_ON_ERROR = True
 
-# 训练样本至少要有多少个“云像元 + 三个回归标签都有效”的监督像元。
-MIN_TRAIN_CLOUDY_LABEL_PIXELS = 16
+# 弱质量 MYD06 样本在最早阶段直接过滤，不进入匹配、统计和 patch 采样。
+MODIS_FILTER_WEAK_QUALITY = True
+
+# Cloud_Mask cloudiness: 0=Confident Cloudy, 1=Probably Cloudy,
+#                        2=Probably Clear,  3=Confident Clear
+# 默认仅保留高置信度 cloudy / clear，排除 probably cloudy / probably clear。
+MODIS_ALLOWED_CLOUD_MASK_FLAGS_1KM = (0, 3)
+MODIS_ALLOWED_CLOUD_MASK_FLAGS_5KM = (0, 3)
+
+# 光学厚度 / 有效半径不确定度过大时视为弱质量。
+# 0~200% 是产品公开范围；默认 80% 能过滤明显不稳定的检索结果，
+# 但又不会像 30%/50% 那样过于激进。
+MODIS_MAX_COT_UNCERTAINTY_PCT = 80.0
+MODIS_MAX_CER_UNCERTAINTY_PCT = 80.0
 # ─────────────────────────────────────────────────────────────────────────────
 # 7.  Patch / dataset parameters
 # ─────────────────────────────────────────────────────────────────────────────
