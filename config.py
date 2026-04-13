@@ -129,8 +129,8 @@ MODIS_ALLOWED_CLOUD_MASK_FLAGS_5KM = (0, 3)
 # 光学厚度 / 有效半径不确定度过大时视为弱质量。
 # 0~200% 是产品公开范围；默认 80% 能过滤明显不稳定的检索结果，
 # 但又不会像 30%/50% 那样过于激进。
-MODIS_MAX_COT_UNCERTAINTY_PCT = 80.0
-MODIS_MAX_CER_UNCERTAINTY_PCT = 80.0
+MODIS_MAX_COT_UNCERTAINTY_PCT = 100.0
+MODIS_MAX_CER_UNCERTAINTY_PCT = 100.0
 # ─────────────────────────────────────────────────────────────────────────────
 # 7.  Patch / dataset parameters
 # ─────────────────────────────────────────────────────────────────────────────

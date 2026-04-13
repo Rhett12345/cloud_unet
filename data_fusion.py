@@ -92,27 +92,6 @@ def _find_day_folders(root: Path, dates: list) -> list:
     return sorted(p for p in root.iterdir() if p.is_dir())
 
 
-# def _find_matching_modis(agri_dt: datetime, modis_files: list) -> list:
-#     td = timedelta(minutes=cfg.MAX_TIME_DIFF_MIN)
-#     return [f for f in modis_files
-#             if (mdt := _parse_modis_datetime(f.name)) and abs(mdt - agri_dt) <= td]
-
-# def _find_matching_modis(agri_dt: datetime, modis_files: list) -> list:
-#     td = timedelta(minutes=cfg.MAX_TIME_DIFF_MIN)
-#     candidates = []
-#
-#     for f in modis_files:
-#         mdt = _parse_modis_datetime(f.name)
-#         if mdt is None:
-#             continue
-#
-#         dt = abs(mdt - agri_dt)
-#         if dt <= td:
-#             candidates.append((dt, f))
-#
-#     candidates.sort(key=lambda x: x[0])
-#     return [candidates[0][1]] if candidates else []
-
 def _find_matching_modis(agri_dt: datetime, modis_files: list) -> list:
     td = timedelta(minutes=cfg.MAX_TIME_DIFF_MIN)
     candidates = []
@@ -463,6 +442,7 @@ def _apply_modis_weak_quality_filter(
     cer_unc: Optional[np.ndarray],
     cot_unc: Optional[np.ndarray],
 ) -> Dict[str, np.ndarray]:
+    clp[clp < 0] = np.nan
     clp = clp.astype(np.float32, copy=True)
     cer = cer.astype(np.float32, copy=True)
     cot = cot.astype(np.float32, copy=True)
@@ -569,64 +549,6 @@ def _latlon_to_xyz(lat, lon):
     return np.column_stack([x, y, z])
 
 
-# def match_modis_to_agri(agri: dict, modis_list: list) -> Optional[dict]:
-#     if not modis_list:
-#         return None
-#
-#     m_lat = np.concatenate([m["lat"] for m in modis_list])
-#     m_lon = np.concatenate([m["lon"] for m in modis_list])
-#     m_clp = np.concatenate([m["CLP"] for m in modis_list])
-#     m_cer = np.concatenate([m["CER"] for m in modis_list])
-#     m_cot = np.concatenate([m["COT"] for m in modis_list])
-#     m_cth = np.concatenate([m["CTH"] for m in modis_list])
-#
-#     valid = ~(np.isnan(m_lat) | np.isnan(m_lon))
-#     if valid.sum() == 0:
-#         return None
-#
-#     m_xyz = _latlon_to_xyz(m_lat[valid], m_lon[valid])
-#     tree  = cKDTree(m_xyz)
-#
-#     H, W   = agri["lat"].shape
-#     a_flat = agri["lat"].ravel()
-#     b_flat = agri["lon"].ravel()
-#     nan_px = np.isnan(a_flat) | np.isnan(b_flat)
-#
-#     a_xyz = _latlon_to_xyz(
-#         np.where(nan_px, 0, a_flat),
-#         np.where(nan_px, 0, b_flat),
-#     )
-#
-#     # Chord distance on a unit sphere.
-#     # arc_rad = dist_km / R_km  (already in radians — no deg2rad needed)
-#     # chord   = 2 * sin(arc_rad / 2)
-#     arc_rad   = cfg.MAX_MATCH_DIST_KM / 6371.0          # radians
-#     max_chord = 2.0 * np.sin(arc_rad / 2.0)             # unit-sphere chord
-#     dists, idx = tree.query(a_xyz, k=1, distance_upper_bound=max_chord + 1e-6)
-#
-#     valid_match = (dists <= max_chord) & (~nan_px)
-#     full_idx    = np.where(valid)[0]   # maps compressed → full MODIS index
-#
-#     out_clp = np.full(H * W, np.nan)
-#     out_cer = np.full(H * W, np.nan)
-#     out_cot = np.full(H * W, np.nan)
-#     out_cth = np.full(H * W, np.nan)
-#
-#     hits   = np.where(valid_match)[0]
-#     mapped = full_idx[idx[hits]]
-#
-#     out_clp[hits] = m_clp[mapped]
-#     out_cer[hits] = m_cer[mapped]
-#     out_cot[hits] = m_cot[mapped]
-#     out_cth[hits] = m_cth[mapped]
-#
-#     return dict(
-#         CLP=out_clp.reshape(H, W).astype(np.float32),
-#         CER=out_cer.reshape(H, W).astype(np.float32),
-#         COT=out_cot.reshape(H, W).astype(np.float32),
-#         CTH=out_cth.reshape(H, W).astype(np.float32),
-#     )
-
 def match_modis_to_agri(agri: dict, modis_list: list) -> Optional[dict]:
     if not modis_list:
         return None
@@ -690,7 +612,7 @@ def match_modis_to_agri(agri: dict, modis_list: list) -> Optional[dict]:
 
         better = (
             (~cur_ok & cand_ok) |
-            (cur_ok == cand_ok) & (
+            (cur_ok & cand_ok) & (
                 (m["_dt_min"] < cur_dt) |
                 ((m["_dt_min"] == cur_dt) & (dists[hits] < cur_ds))
             )
@@ -709,9 +631,9 @@ def match_modis_to_agri(agri: dict, modis_list: list) -> Optional[dict]:
 
         best_ok[keep]   = cand_ok[better]
         best_dt[keep]   = m["_dt_min"]
-        best_dist[keep] = dists[keep]
-        best_dt[~best_ok] = np.nan
-        best_dist[~best_ok] = np.nan
+        best_dist[keep] = dists[hits][better]
+    best_dt[~best_ok] = np.nan
+    best_dist[~best_ok] = np.nan
 
     return {
         "CLP": out["CLP"].reshape(H, W),
@@ -726,36 +648,6 @@ def match_modis_to_agri(agri: dict, modis_list: list) -> Optional[dict]:
 # ─────────────────────────────────────────────────────────────────────────────
 # Quality filter
 # ─────────────────────────────────────────────────────────────────────────────
-
-# def apply_quality_filter(agri: dict, labels: dict) -> dict:
-#     vza = agri["VZA"]
-#     sza = agri["SZA"]
-#
-#     # Clear pixels have no cloud property — set regression targets to NaN so
-#     # that train.py's masked loss ignores them entirely.  Setting to 0.0 forces
-#     # the regression head toward CER=0 µm / CTH=0 m for the majority of
-#     # clear-sky pixels (often 50-80% of a scene), biasing the model low on all
-#     # cloud property retrievals.
-#     clear_mask = labels["CLP"] == 0
-#     for k in ["CER", "COT", "CTH"]:
-#         labels[k][clear_mask] = np.nan
-#
-#     bad_clp = (labels["CLP"] < 0) | (labels["CLP"] >= cfg.CLP_CLASSES)
-#     for k in labels:
-#         labels[k][bad_clp] = np.nan
-#
-#     for k in list(labels.keys()):
-#         labels[k][vza > cfg.MAX_VZA_DEG] = np.nan
-#         labels[k][sza > cfg.MAX_SZA_DEG] = np.nan
-#
-#     bad = (labels["CER"] < 0) | (labels["CER"] > 100)
-#     for k in list(labels.keys()): labels[k][bad] = np.nan
-#     bad = (labels["COT"] < 0) | (labels["COT"] > 200)
-#     for k in list(labels.keys()): labels[k][bad] = np.nan
-#     bad = (labels["CTH"] < 0) | (labels["CTH"] > 25000)
-#     for k in list(labels.keys()): labels[k][bad] = np.nan
-#
-#     return labels
 
 def apply_quality_filter(agri: dict, labels: dict) -> dict:
     vza = agri["VZA"]

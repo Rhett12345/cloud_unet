@@ -68,53 +68,6 @@ def _augment(agri: torch.Tensor, lbl: torch.Tensor):
 # Loss helpers
 # ─────────────────────────────────────────────────────────────────────────────
 
-# def _compute_losses(clp_logits, comp_out, labels, ce_loss_fn, reg_loss_fn):
-#     """
-#     labels  : (B, 4, H, W)   ch0=CLP(int class), ch1-3=normalised regression
-#     """
-#     # CLP classification loss
-#     clp_target = labels[:, 0, :, :].long()
-#     loss_clp   = ce_loss_fn(clp_logits, clp_target) * cfg.LOSS_W_CLP
-#
-#     # Regression losses  (CER=ch0, COT=ch1, CTH=ch2 in comp_out)
-#     loss_cer = reg_loss_fn(comp_out[:, 0], labels[:, 1]) * cfg.LOSS_W_CER
-#     loss_cot = reg_loss_fn(comp_out[:, 1], labels[:, 2]) * cfg.LOSS_W_COT
-#     loss_cth = reg_loss_fn(comp_out[:, 2], labels[:, 3]) * cfg.LOSS_W_CTH
-#
-#     total = loss_clp + loss_cer + loss_cot + loss_cth
-#     return total, loss_clp, loss_cer, loss_cot, loss_cth
-#
-# def _compute_losses(clp_logits, comp_out, labels, ce_loss_fn, reg_loss_fn):
-#     """
-#     labels: (B, 4, H, W)
-#     ch0=CLP, ch1-3=regression
-#     """
-#     # ---------- CLP classification ----------
-#     clp_raw = labels[:, 0, :, :]
-#     valid_clp = torch.isfinite(clp_raw) & (clp_raw >= 0) & (clp_raw < cfg.CLP_CLASSES)
-#
-#     clp_target = torch.where(
-#         valid_clp,
-#         clp_raw,
-#         torch.full_like(clp_raw, -100)
-#     ).long()
-#
-#     loss_clp = ce_loss_fn(clp_logits, clp_target) * cfg.LOSS_W_CLP
-#
-#     # ---------- regression masked loss ----------
-#     def masked_reg_loss(pred, target, weight):
-#         valid = torch.isfinite(target)
-#         if valid.any():
-#             return reg_loss_fn(pred[valid], target[valid]) * weight
-#         return pred.new_tensor(0.0)
-#
-#     loss_cer = masked_reg_loss(comp_out[:, 0], labels[:, 1], cfg.LOSS_W_CER)
-#     loss_cot = masked_reg_loss(comp_out[:, 1], labels[:, 2], cfg.LOSS_W_COT)
-#     loss_cth = masked_reg_loss(comp_out[:, 2], labels[:, 3], cfg.LOSS_W_CTH)
-#
-#     total = loss_clp + loss_cer + loss_cot + loss_cth
-#     return total, loss_clp, loss_cer, loss_cot, loss_cth
-
 def _compute_losses(clp_logits, comp_out, labels, ce_loss_fn, reg_loss_fn):
     """
     labels: (B, 4, H, W)
@@ -151,26 +104,6 @@ def _compute_losses(clp_logits, comp_out, labels, ce_loss_fn, reg_loss_fn):
 
     total = loss_clp + loss_cer + loss_cot + loss_cth
     return total, loss_clp, loss_cer, loss_cot, loss_cth
-
-# @torch.no_grad()
-# def _batch_metrics(clp_logits, comp_out, labels, stats: NormStats, device):
-#     """Return OA (%), CER RMSE, COT RMSE, CTH RMSE (de-normalised units)."""
-#     clp_pred = clp_logits.argmax(dim=1)
-#     oa = (clp_pred == labels[:, 0].long()).float().mean().item() * 100.0
-#
-#     out_std  = torch.from_numpy(stats.out_std[1:]).to(device).reshape(1, 3, 1, 1)
-#     out_mean = torch.from_numpy(stats.out_mean[1:]).to(device).reshape(1, 3, 1, 1)
-#
-#     # De-normalise predictions and targets
-#     pred_dn = comp_out * out_std + out_mean
-#     true_dn = labels[:, 1:] * out_std + out_mean
-#
-#     def rmse(a, b):
-#         return torch.sqrt(torch.mean((a - b) ** 2)).item()
-#
-#     return oa, rmse(pred_dn[:, 0], true_dn[:, 0]), \
-#                rmse(pred_dn[:, 1], true_dn[:, 1]), \
-#                rmse(pred_dn[:, 2], true_dn[:, 2])
 
 @torch.no_grad()
 def _batch_metrics(clp_logits, comp_out, labels, stats: NormStats, device):

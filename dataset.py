@@ -79,100 +79,6 @@ class NormStats:
 # Stats: per-file worker (runs in subprocess)
 # ─────────────────────────────────────────────────────────────────────────────
 
-# def _stats_worker(h5_path: str) -> Optional[dict]:
-#     """
-#     Open one paired HDF5 file and return partial sum/sumsq accumulators
-#     plus a small reservoir sample for percentile estimation.
-#
-#     Runs in a worker process spawned by ProcessPoolExecutor.
-#     Kept module-level so it is picklable on all platforms.
-#     """
-#     import h5py, numpy as np, config as cfg
-#
-#     MAX_SAMPLE = 4096   # pixels kept per file for reservoir
-#
-#     try:
-#         # with h5py.File(h5_path, "r") as f:
-#         #     bt_keys = sorted(f["AGRI/BT"].keys())
-#         #     # Read channels one by one to avoid stacking a huge intermediate array
-#         #     H, W = f[f"AGRI/BT/{bt_keys[0]}"].shape
-#         #     n_agri = len(bt_keys)
-#         #
-#         #     sum_bt   = np.zeros(n_agri, dtype=np.float64)
-#         #     sumsq_bt = np.zeros(n_agri, dtype=np.float64)
-#         #
-#         #     # Stack BT in one go (full scene is manageable per-channel)
-#         #     BT = np.stack(
-#         #         [f[f"AGRI/BT/{k}"][()].astype(np.float64) for k in bt_keys],
-#         #         axis=-1
-#         #     )  # (H, W, C)
-#         #
-#         #     CLP = f["Labels/CLP"][()].astype(np.float64)
-#         #     CER = f["Labels/CER"][()].astype(np.float64)
-#         #     COT = f["Labels/COT"][()].astype(np.float64)
-#         #     CTH = f["Labels/CTH"][()].astype(np.float64)
-#
-#         with h5py.File(h5_path, "r") as f:
-#             if "Samples" in f and "agri" in f["Samples"] and "labels" in f["Samples"]:
-#                 BT = f["Samples/agri"][()].astype(np.float64)  # (N, C, H, W)
-#                 lbl = f["Samples/labels"][()].astype(np.float64)  # (N, 4, H, W)
-#                 n_agri = BT.shape[1]
-#                 flat_bt = BT.transpose(0, 2, 3, 1).reshape(-1, n_agri)
-#                 flat_out = lbl.transpose(0, 2, 3, 1).reshape(-1, 4)
-#             else:
-#                 bt_keys = sorted(f["AGRI/BT"].keys())
-#                 H, W = f[f"AGRI/BT/{bt_keys[0]}"].shape
-#                 n_agri = len(bt_keys)
-#
-#                 BT = np.stack(
-#                     [f[f"AGRI/BT/{k}"][()].astype(np.float64) for k in bt_keys],
-#                     axis=-1
-#                 )
-#
-#                 CLP = f["Labels/CLP"][()].astype(np.float64)
-#                 CER = f["Labels/CER"][()].astype(np.float64)
-#                 COT = f["Labels/COT"][()].astype(np.float64)
-#                 CTH = f["Labels/CTH"][()].astype(np.float64)
-#
-#                 # out = np.stack([CLP, CER, COT, CTH], axis=-1)
-#                 # flat_bt = BT.reshape(-1, n_agri)
-#                 # flat_out = out.reshape(-1, 4)
-#
-#     except Exception as exc:
-#         return None   # silently skip; caller will log
-#
-#     out = np.stack([CLP, CER, COT, CTH], axis=-1)   # (H, W, 4)
-#     flat_bt  = BT.reshape(-1, n_agri)
-#     flat_out = out.reshape(-1, 4)
-#
-#     # Keep only pixels where BOTH BT and labels are fully finite
-#     valid = np.isfinite(flat_bt).all(axis=1) & np.isfinite(flat_out).all(axis=1)
-#     if valid.sum() == 0:
-#         return None
-#
-#     flat_bt  = flat_bt[valid]
-#     flat_out = flat_out[valid]
-#     n        = flat_bt.shape[0]
-#
-#     sum_bt   = flat_bt.sum(axis=0)
-#     sumsq_bt = (flat_bt ** 2).sum(axis=0)
-#     sum_out  = flat_out.sum(axis=0)
-#     sumsq_out = (flat_out ** 2).sum(axis=0)
-#
-#     # Reservoir: subsample regression values (CER/COT/CTH)
-#     reg = flat_out[:, 1:]   # (n, 3)
-#     if n > MAX_SAMPLE:
-#         idx = np.random.choice(n, MAX_SAMPLE, replace=False)
-#         reg = reg[idx]
-#
-#     return dict(
-#         n=n,
-#         sum_bt=sum_bt, sumsq_bt=sumsq_bt,
-#         sum_out=sum_out, sumsq_out=sumsq_out,
-#         reg_sample=reg,
-#         path=h5_path,
-#     )
-
 def _stats_worker(h5_path: str) -> Optional[dict]:
     import h5py, numpy as np
 
@@ -515,23 +421,7 @@ class AGRIMyd06Dataset(Dataset):
                     CER = f["Labels/CER"][i:i + ph, j:j + pw].astype(np.float32)
                     COT = f["Labels/COT"][i:i + ph, j:j + pw].astype(np.float32)
                     CTH = f["Labels/CTH"][i:i + ph, j:j + pw].astype(np.float32)
-            # with h5py.File(h5f, "r") as f:
-            #     bt_keys = sorted(f["AGRI/BT"].keys())
-            #     # Each channel is a 2-D (H, W) dataset; slice individually.
-            #     bt_patches = [
-            #         f[f"AGRI/BT/{k}"][i:i + ph, j:j + pw].astype(np.float32)
-            #         for k in bt_keys
-            #     ]
-            #     BT = np.stack(bt_patches, axis=-1)   # (ph, pw, C)
-            #
-            #     lat = f["AGRI/Geolocation/lat"][i:i + ph, j:j + pw].astype(np.float32)
-            #     lon = f["AGRI/Geolocation/lon"][i:i + ph, j:j + pw].astype(np.float32)
-            #     # ele = f["AGRI/Aux/ELE"][i:i + ph, j:j + pw].astype(np.float32)
-            #
-            #     CLP = f["Labels/CLP"][i:i + ph, j:j + pw].astype(np.float32)
-            #     CER = f["Labels/CER"][i:i + ph, j:j + pw].astype(np.float32)
-            #     COT = f["Labels/COT"][i:i + ph, j:j + pw].astype(np.float32)
-            #     CTH = f["Labels/CTH"][i:i + ph, j:j + pw].astype(np.float32)
+           
 
         except Exception as exc:
             # Return a zero tensor on read failure (rare but resilient)
