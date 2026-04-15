@@ -274,7 +274,6 @@ def aggregate_modis_to_agri(
     a_xyz = latlon_to_xyz(a_lat_f[valid_agri], a_lon_f[valid_agri])
     chord_1km = km_to_chord(fc.AGRI_SEARCH_RADIUS_KM)
     # 5km 像元更大，搜索半径扩大到覆盖 5km 对角线的一半
-    chord_5km = max(chord_1km, km_to_chord(4.0))
 
     # -------------------------------------------------------------------
     # 收集缓冲区：用 numpy object array 存 list（避免 Python 逐像元循环）
@@ -309,14 +308,8 @@ def aggregate_modis_to_agri(
             buf_clp_v, buf_clp_w,
             buf_cer_v, buf_cer_w,
             buf_cot_v, buf_cot_w,
-            buf_dt,
-        )
-
-        # ---- 5km 聚合 (CTH) ----
-        _collect_5km(
-            m, a_xyz, valid_agri, chord_5km,
-            file_dt_min, is_fallback,
             buf_cth_v, buf_cth_w,
+            buf_dt,
         )
 
     # -------------------------------------------------------------------
@@ -398,17 +391,13 @@ def aggregate_modis_to_agri(
                 cer_v[cloud_mask], cer_w[cloud_mask]
             )
 
-        # ---- CTH（5km 聚合）----
-        n_5km = len(cth_v)
-        out_vpx5[agri_idx] = n_5km
-        if n_5km > 0:
-            # 时间过滤（5km 用同一 dt 缓冲的前 n_5km 项——5km 单独有 buf_cth_w）
-            # 已在 _collect_5km 中按时间过滤权重
-            cth_ovlp = min(float(n_5km) / max(fc.EXPECTED_5KM_PER_AGRI, 1.0), 1.0)
-            if cth_ovlp >= fc.OVERLAP_FRAC_MIN:
-                cth_val = aggregate_cth(cth_v, cth_w)
-                if np.isfinite(cth_val) and 0 <= cth_val <= 25000:
-                    out_cth[agri_idx] = cth_val
+        # ---- CTH（当前配置按 1km 主标签聚合）----
+        n_cth = len(cth_v)
+        out_vpx5[agri_idx] = n_cth
+        if n_cth > 0:
+            cth_val = aggregate_cth(cth_v, cth_w)
+            if np.isfinite(cth_val) and 0 <= cth_val <= 25000:
+                out_cth[agri_idx] = cth_val
 
         # ---- sample_weight ----
         tw = time_weight(best_dt) if np.isfinite(best_dt) else 0.0
@@ -443,11 +432,13 @@ def _collect_1km(
     buf_clp_v, buf_clp_w,
     buf_cer_v, buf_cer_w,
     buf_cot_v, buf_cot_w,
+    buf_cth_v, buf_cth_w,
     buf_dt,
 ):
     clp_2d = m.get("CLP_1km")
     cer_2d = m.get("CER_1km")
     cot_2d = m.get("COT_1km")
+    cth_2d = m.get("CTH_1km")
     lat_5  = m.get("lat_5km")
     lon_5  = m.get("lon_5km")
     scan_t = m.get("scan_time_1km")   # (H_1km, W_1km) float32 分钟偏移，或 None
@@ -466,6 +457,8 @@ def _collect_1km(
     cer_f = (cer_2d.ravel() if cer_2d is not None
              else np.full(lat_f.shape, np.nan, np.float32))
     cot_f = (cot_2d.ravel() if cot_2d is not None
+             else np.full(lat_f.shape, np.nan, np.float32))
+    cth_f = (cth_2d.ravel() if cth_2d is not None
              else np.full(lat_f.shape, np.nan, np.float32))
 
     # 像元级时间权重
@@ -489,6 +482,7 @@ def _collect_1km(
     clp_k = clp_f[idx_keep]
     cer_k = cer_f[idx_keep]
     cot_k = cot_f[idx_keep]
+    cth_k = cth_f[idx_keep]
     dt_k  = dt_f[idx_keep]
 
     # 时间权重向量（向量化，避免 Python 循环）
@@ -516,6 +510,8 @@ def _collect_1km(
         buf_cer_w[k_a].extend(w_k[nbrs].tolist())
         buf_cot_v[k_a].extend(cot_k[nbrs].tolist())
         buf_cot_w[k_a].extend(w_k[nbrs].tolist())
+        buf_cth_v[k_a].extend(cth_k[nbrs].tolist())
+        buf_cth_w[k_a].extend(w_k[nbrs].tolist())
         buf_dt[k_a].extend(dt_k[nbrs].tolist())
 
 

@@ -49,21 +49,28 @@ RETRIEVAL_DIR = ROOT / "retrieval"
 # ─────────────────────────────────────────────────────────────────────────────
 # 6.  Data fusion parameters
 # ─────────────────────────────────────────────────────────────────────────────
-# AGRI FDI – thermal IR channel indices to use (0-based in the sorted list)
-# Channels 9-15 (indices 8-14) are the thermal bands
-# AGRI_BT_CHANNEL_INDICES = [8, 9, 10, 11, 12, 13, 14]   # 7 thermal channels of FY4B
-AGRI_BT_CHANNEL_INDICES = [7, 8, 9, 10, 11, 12, 13]   # 7 thermal channels of FY4A
+# AGRI FDI – selected channel indices to use (0-based in the sorted list)
+# 当前输入为：ch2(0.65µm) + ch5(1.61µm) + ch8-14(IR)
+# 保留变量名 AGRI_BT_CHANNEL_INDICES 以兼容现有训练/推理代码。
+AGRI_BT_CHANNEL_INDICES = [1, 4, 7, 8, 9, 10, 11, 12, 13]   # 9 channels of FY4A
 
 # AGRI pixel size in degrees (approx) for spatial matching
 AGRI_PIXEL_DEG = 0.04
 
-# MYD06 variables to read and store as labels
-# (dataset name inside the HDF4 file)
+# MYD06 primary supervision variables (all 1km SDS names)
 MODIS_VARS = {
-    "CLP": "Cloud_Phase_Optical_Properties",   # cloud phase  [0-6]
-    "CER": "Cloud_Effective_Radius",           # µm  ×100 stored as int
-    "COT": "Cloud_Optical_Thickness",          # ×100 stored as int
-    "CTH": "Cloud_Top_Height",                 # m
+    "CLP": "Cloud_Phase_Infrared_1km",     # IR phase: clear / water / ice / mixed / undetermined
+    "CER": "Cloud_Effective_Radius_16",    # µm ×100 stored as int
+    "COT": "Cloud_Optical_Thickness_16",   # ×100 stored as int
+    "CTH": "cloud_top_height_1km",         # m
+}
+
+# Auxiliary MYD06 SDS used for quality control only
+MODIS_QC_VARS = {
+    "CLP_OPT": "Cloud_Phase_Optical_Properties",
+    "CTP": "cloud_top_pressure_1km",
+    "CTT": "cloud_top_temperature_1km",
+    "CTM": "cloud_top_method_1km",
 }
 
 # Scale factors applied AFTER reading raw integer values
@@ -74,10 +81,12 @@ MODIS_SCALE = {
     "CTH": 1.0,      # already in metres
 }
 
-# MYD06 QC / Phase mapping  → merged to 5 classes (0=clear,1=water,2=supercool,3=mix,4=ice)
-# MYD06 Cloud_Phase_Optical_Properties: 0=unknown,1=ice,2=water,3=mixed,4=ice,5=undetermined,6=bad
-# MODIS_PHASE_MAP = {0: 0, 1: 4, 2: 1, 3: 3, 4: 4, 5: 0, 6: 0}
-MODIS_PHASE_MAP = {0: -1, 1: 4, 2: 1, 3: 3, 4: 4, 5: -1, 6: -1}
+# IR phase → training phase space (0=clear, 1=water, 2=supercool, 3=mixed, 4=ice)
+# 注意：Cloud_Phase_Infrared_1km 本身不提供 supercool 类，因此当前标签不会覆盖 class=2。
+MODIS_PHASE_MAP = {0: 0, 1: 1, 2: 4, 3: 3, 4: -1, 5: -1, 6: -1}
+
+# Optical phase (QC only) mapped to the same phase space when需要一致性检查。
+MODIS_OPTICAL_PHASE_MAP = {0: -1, 1: 0, 2: 1, 3: 4, 4: -1}
 
 # Maximum spatial distance (km) allowed when snapping MODIS pixel to AGRI pixel
 MAX_MATCH_DIST_KM = 3.0
@@ -131,6 +140,18 @@ MODIS_ALLOWED_CLOUD_MASK_FLAGS_5KM = (0, 3)
 # 但又不会像 30%/50% 那样过于激进。
 MODIS_MAX_COT_UNCERTAINTY_PCT = 100.0
 MODIS_MAX_CER_UNCERTAINTY_PCT = 100.0
+
+# Optical-property retrieval QC：仅保留 Cloud_Phase_Optical_Properties 指示为云的像元
+# 2=liquid water cloud, 3=ice cloud, 4=undetermined phase cloud (retrieval attempted as liquid)
+MODIS_ALLOWED_OPTICAL_PHASES_FOR_COP = (2, 3, 4)
+MODIS_REQUIRE_OPTICAL_PHASE_FOR_COP = True
+
+# 可选：要求 IR phase 与 optical phase 在可比时一致；默认关闭，避免样本过度收缩。
+MODIS_REQUIRE_PHASE_AGREEMENT = False
+
+# Cloud-top auxiliary QC（1km）：method 1/2/3/4 为 CO2-slicing，6 为 IR window。
+MODIS_ALLOWED_CLOUD_TOP_METHODS = (1, 2, 3, 4, 6)
+MODIS_REQUIRE_CTH_AUX = True
 # ─────────────────────────────────────────────────────────────────────────────
 # 7.  Patch / dataset parameters
 # ─────────────────────────────────────────────────────────────────────────────
@@ -146,8 +167,8 @@ TRAIN_DATES = [
     "20190405", "20190415",
     "20190505", "20190515",
     "20190605", "20190615",
-    "20190705", "20190715",
-    "20190805", "20190815",
+    # "20190705", "20190715",
+    # "20190805", "20190815",
     # "20190905", "20190915",
     # "20191005", "20191015",
     # "20191105", "20191115",
@@ -157,7 +178,7 @@ VAL_DATES   = [
     "20190125",
     "20190325",
     "20190525",
-    "20190725",
+    # "20190725",
     # "20190925",
     # "20191125",
 ]
@@ -165,7 +186,7 @@ TEST_DATES  = [
     "20190225",
     "20190425",
     "20190625",
-    "20190825",
+    # "20190825",
     # "20191025",
     # "20191225",
 ]
@@ -173,8 +194,8 @@ TEST_DATES  = [
 # ─────────────────────────────────────────────────────────────────────────────
 # 8.  Model hyper-parameters
 # ─────────────────────────────────────────────────────────────────────────────
-# Network input: only AGRI BT (no GIIRS)
-AGRI_CHANNELS  = len(AGRI_BT_CHANNEL_INDICES)   # 7
+# Network input: selected AGRI channels (VIS/NIR + IR, no GIIRS)
+AGRI_CHANNELS  = len(AGRI_BT_CHANNEL_INDICES)   # 9
 GIIRS_CHANNELS = 0                               # not used
 
 CLP_CLASSES   = 5

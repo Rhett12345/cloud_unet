@@ -31,7 +31,7 @@ import numpy as np
 
 import config as cfg
 import fusion_config as fc
-from fusion_core import aggregate_modis_to_agri, parallax_correction_hook
+from fusion_core import aggregate_modis_to_agri
 from fusion_io import (
     apply_quality_filter, find_day_folders, find_matching_modis,
     parse_agri_datetime, parse_modis_datetime,
@@ -75,19 +75,6 @@ def _fuse_one_scene(agri_file, modis_files, out_path, mode):
 
         if not modis_list:
             return False, out_path, "No MYD06 after reading"
-
-        # 视差修正 Hook（占位）
-        for m in modis_list:
-            cth_f = m["CTH_5km"].ravel() if m.get("CTH_5km") is not None else np.array([])
-            lat_f = m["lat_5km"].ravel() if m.get("lat_5km") is not None else np.array([])
-            lon_f = m["lon_5km"].ravel() if m.get("lon_5km") is not None else np.array([])
-            n = min(len(lat_f), len(cth_f))
-            if n > 0:
-                _, _, m["_parallax_risk"] = parallax_correction_hook(
-                    lat_f[:n], lon_f[:n], cth_f[:n],
-                    vza_deg=np.full(n, np.nan, np.float32),
-                )
-
         labels = aggregate_modis_to_agri(agri["lat"], agri["lon"], modis_list)
         if labels is None:
             return False, out_path, "aggregate returned None"

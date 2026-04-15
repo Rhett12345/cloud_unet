@@ -341,15 +341,25 @@ def _read_scan_time_as_offset_min(sd: SD, file_dt: datetime) -> Optional[np.ndar
 
 
 def _apply_qa_filter(
-    clp: np.ndarray, cer: np.ndarray, cot: np.ndarray, cth: np.ndarray,
-    cm_1km: Optional[np.ndarray], cm_5km: Optional[np.ndarray],
-    cer_unc: Optional[np.ndarray], cot_unc: Optional[np.ndarray],
+    clp: np.ndarray,
+    cer: np.ndarray,
+    cot: np.ndarray,
+    cth: np.ndarray,
+    cm_1km: Optional[np.ndarray],
+    cer_unc: Optional[np.ndarray],
+    cot_unc: Optional[np.ndarray],
+    clp_opt_raw: Optional[np.ndarray] = None,
+    ctp_1km: Optional[np.ndarray] = None,
+    ctt_1km: Optional[np.ndarray] = None,
+    ctm_1km: Optional[np.ndarray] = None,
 ) -> dict:
     """
     前期弱质量过滤（保留 2D 形状）。
-    - 1km Cloud Mask 过滤 CLP/CER/COT
-    - 5km Cloud Mask 过滤 CTH
-    - 不确定度过滤 CER/COT
+    当前配置下 4 个主监督量都按 1km 处理：
+    - Cloud_Mask_1km 统一过滤 CLP/CER/COT/CTH
+    - uncertainty 过滤 CER/COT
+    - Optical phase 仅用于 CER/COT 质量约束
+    - cloud-top 辅助变量仅用于 CTH 质量约束
     """
     clp = clp.astype(np.float32, copy=True)
     cer = cer.astype(np.float32, copy=True)
@@ -359,6 +369,44 @@ def _apply_qa_filter(
 
     if not cfg.MODIS_FILTER_WEAK_QUALITY:
         return dict(CLP=clp, CER=cer, COT=cot, CTH=cth)
+
+    if cm_1km is not None and cm_1km.shape == clp.shape:
+        ok = np.isin(cm_1km, np.asarray(cfg.MODIS_ALLOWED_CLOUD_MASK_FLAGS_1KM))
+        clp[~ok] = np.nan
+        cer[~ok] = np.nan
+        cot[~ok] = np.nan
+        cth[~ok] = np.nan
+
+    if cer_unc is not None and cer_unc.shape == cer.shape:
+        cer[(~np.isfinite(cer_unc)) | (cer_unc > cfg.MODIS_MAX_CER_UNCERTAINTY_PCT)] = np.nan
+    if cot_unc is not None and cot_unc.shape == cot.shape:
+        cot[(~np.isfinite(cot_unc)) | (cot_unc > cfg.MODIS_MAX_COT_UNCERTAINTY_PCT)] = np.nan
+
+    if bool(getattr(cfg, "MODIS_REQUIRE_OPTICAL_PHASE_FOR_COP", False)) and clp_opt_raw is not None and clp_opt_raw.shape == clp.shape:
+        allowed = np.asarray(getattr(cfg, "MODIS_ALLOWED_OPTICAL_PHASES_FOR_COP", ()), dtype=np.int32)
+        ok_opt = np.isin(clp_opt_raw.astype(np.int32), allowed)
+        cer[~ok_opt] = np.nan
+        cot[~ok_opt] = np.nan
+
+        if bool(getattr(cfg, "MODIS_REQUIRE_PHASE_AGREEMENT", False)):
+            opt_map = np.vectorize(lambda x: cfg.MODIS_OPTICAL_PHASE_MAP.get(int(x), -1))(clp_opt_raw).astype(np.float32)
+            comparable = np.isfinite(clp) & np.isfinite(opt_map) & (clp >= 0) & (opt_map >= 0)
+            agree = comparable & (clp == opt_map)
+            cer[comparable & ~agree] = np.nan
+            cot[comparable & ~agree] = np.nan
+
+    if bool(getattr(cfg, "MODIS_REQUIRE_CTH_AUX", False)):
+        cth_ok = np.isfinite(cth)
+        if ctp_1km is not None and ctp_1km.shape == cth.shape:
+            cth_ok &= np.isfinite(ctp_1km) & (ctp_1km > 0)
+        if ctt_1km is not None and ctt_1km.shape == cth.shape:
+            cth_ok &= np.isfinite(ctt_1km)
+        if ctm_1km is not None and ctm_1km.shape == cth.shape:
+            allowed_methods = np.asarray(getattr(cfg, "MODIS_ALLOWED_CLOUD_TOP_METHODS", ()), dtype=np.int32)
+            cth_ok &= np.isin(ctm_1km.astype(np.int32), allowed_methods)
+        cth[~cth_ok] = np.nan
+
+    return dict(CLP=clp, CER=cer, COT=cot, CTH=cth)
 
     # 1km Cloud Mask -> CLP/CER/COT
     if cm_1km is not None and cm_1km.shape == clp.shape:
@@ -383,11 +431,8 @@ def read_myd06(modis_file: Path, agri_dt: Optional[datetime] = None) -> Optional
     """
     读取 MYD06 文件，返回保留 2D 空间形状的变量字典。
 
-    关键改动（相较于原版的 ravel() 版本）：
-    - CLP/CER/COT 保留 1km 2D 形状
-    - CTH 保留 5km 2D 形状
-    - 新增 scan_time_1km（像元级时间偏移，分钟）
-    - 不做 ravel()，聚合函数中处理
+    当前配置下 4 个主监督量都按 1km SDS 处理；若产品只提供 5km 经纬度，
+    则在聚合阶段按现有逻辑上采样到 1km 标签形状。
     """
     try:
         sd = SD(str(modis_file), SDC.READ)
@@ -395,27 +440,25 @@ def read_myd06(modis_file: Path, agri_dt: Optional[datetime] = None) -> Optional
         lat_5km = sd.select("Latitude")[:]
         lon_5km = sd.select("Longitude")[:]
 
-        # 1km 变量
         clp_raw = sd.select(cfg.MODIS_VARS["CLP"])[:].astype(np.int32)
-        clp_1km = np.vectorize(
-            lambda x: cfg.MODIS_PHASE_MAP.get(int(x), -1)
-        )(clp_raw).astype(np.float32)
+        clp_1km = np.vectorize(lambda x: cfg.MODIS_PHASE_MAP.get(int(x), -1))(clp_raw).astype(np.float32)
         cer_1km = _sds_scaled(sd, cfg.MODIS_VARS["CER"], cfg.MODIS_SCALE["CER"])
         cot_1km = _sds_scaled(sd, cfg.MODIS_VARS["COT"], cfg.MODIS_SCALE["COT"])
+        cth_1km = _sds_scaled(sd, cfg.MODIS_VARS["CTH"], cfg.MODIS_SCALE["CTH"])
 
-        # 5km 变量
-        cth_5km = _sds_scaled(sd, cfg.MODIS_VARS["CTH"], cfg.MODIS_SCALE["CTH"])
-
-        # QA
-        cm_1km  = _decode_cloud_mask(_sds_optional(sd, "Cloud_Mask_1km"))
-        cm_5km  = _decode_cloud_mask(_sds_optional(sd, "Cloud_Mask_5km"))
+        cm_1km = _decode_cloud_mask(_sds_optional(sd, "Cloud_Mask_1km"))
         cer_unc = _sds_optional(sd, "Cloud_Effective_Radius_Uncertainty", use_sds_sf=True)
         cot_unc = _sds_optional(sd, "Cloud_Optical_Thickness_Uncertainty", use_sds_sf=True)
 
-        # 像元级时间
-        file_dt  = parse_modis_datetime(modis_file.name)
-        ref_dt   = agri_dt or file_dt
-        scan_t   = None
+        qc_vars = getattr(cfg, "MODIS_QC_VARS", {}) or {}
+        clp_opt_raw = _sds_optional(sd, qc_vars.get("CLP_OPT", "")) if qc_vars.get("CLP_OPT") else None
+        ctp_1km = _sds_optional(sd, qc_vars.get("CTP", ""), use_sds_sf=True) if qc_vars.get("CTP") else None
+        ctt_1km = _sds_optional(sd, qc_vars.get("CTT", ""), use_sds_sf=True) if qc_vars.get("CTT") else None
+        ctm_1km = _sds_optional(sd, qc_vars.get("CTM", "")) if qc_vars.get("CTM") else None
+
+        file_dt = parse_modis_datetime(modis_file.name)
+        ref_dt = agri_dt or file_dt
+        scan_t = None
         fallback = True
         if ref_dt is not None:
             scan_t = _read_scan_time_as_offset_min(sd, ref_dt)
@@ -423,10 +466,18 @@ def read_myd06(modis_file: Path, agri_dt: Optional[datetime] = None) -> Optional
 
         sd.end()
 
-        # 前期 QA 过滤（1km 和 5km 分开，绝不混用）
         filt = _apply_qa_filter(
-            clp_1km, cer_1km, cot_1km, cth_5km,
-            cm_1km, cm_5km, cer_unc, cot_unc,
+            clp_1km,
+            cer_1km,
+            cot_1km,
+            cth_1km,
+            cm_1km,
+            cer_unc,
+            cot_unc,
+            clp_opt_raw=clp_opt_raw,
+            ctp_1km=ctp_1km,
+            ctt_1km=ctt_1km,
+            ctm_1km=ctm_1km,
         )
 
         if fc.FUSION_LOG_PIXEL_STATS:
@@ -441,9 +492,12 @@ def read_myd06(modis_file: Path, agri_dt: Optional[datetime] = None) -> Optional
             )
 
         return dict(
-            lat_5km=lat_5km, lon_5km=lon_5km,
-            CLP_1km=filt["CLP"], CER_1km=filt["CER"],
-            COT_1km=filt["COT"], CTH_5km=filt["CTH"],
+            lat_5km=lat_5km,
+            lon_5km=lon_5km,
+            CLP_1km=filt["CLP"],
+            CER_1km=filt["CER"],
+            COT_1km=filt["COT"],
+            CTH_1km=filt["CTH"],
             scan_time_1km=scan_t,
             _scan_time_is_fallback=fallback,
         )
