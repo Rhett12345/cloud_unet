@@ -210,7 +210,8 @@ def evaluate(stats: NormStats, checkpoint: Optional[Path] = None):
     cloudy = clp_for_reg > 0
     v_cer  = cloudy & (cer_true >= 0) & (cer_true <= 100) & np.isfinite(cer_true)
     v_cot  = cloudy & (cot_true >= 0) & (cot_true <= 200) & np.isfinite(cot_true)
-    v_cth  = cloudy & (cth_true >= 0) & (cth_true <= 25000) & np.isfinite(cth_true)
+    max_cth = getattr(cfg, "MAX_CTH_M", 18000)
+    v_cth  = cloudy & (cth_true >= 0) & (cth_true <= max_cth) & np.isfinite(cth_true)
 
     # ── CLP metrics ───────────────────────────────────────────────────────
     valid_ratio = float(valid_clp_pixels / total_pixels) if total_pixels > 0 else np.nan

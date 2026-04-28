@@ -247,7 +247,7 @@ def train(stats: NormStats):
     log.info("val iters/epoch   = %d", len(val_dl))
 
     model     = build_model().to(device)
-    optimizer = optim.AdamW(model.parameters(), lr=cfg.LEARNING_RATE, weight_decay=1e-4)
+    optimizer = optim.AdamW(model.parameters(), lr=cfg.LEARNING_RATE, weight_decay=1e-3)
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(
         optimizer, mode="min", factor=cfg.LR_FACTOR,
         patience=cfg.LR_PATIENCE, min_lr=cfg.MIN_LR

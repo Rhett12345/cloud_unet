@@ -129,10 +129,13 @@ MAX_MATCH_DIST_KM = 3.0
 # Maximum time difference (minutes) between AGRI scan and MYD06 granule
 MAX_TIME_DIFF_MIN = 5
 
-# Angle filters
-MAX_VZA_DEG = 65
-MAX_SZA_DEG = 65   # day-only mode 65; set to 180 to include night
-# 新增：分类/回归是否强依赖几何过滤
+# Angle filters  (CLP 放宽以保留更多分类监督；回归保持严格)
+MAX_VZA_DEG     = _env_float("UNET_MAX_VZA_DEG", 65)
+MAX_SZA_DEG     = _env_float("UNET_MAX_SZA_DEG", 65)
+MAX_VZA_DEG_CLP = _env_float("UNET_MAX_VZA_DEG_CLP", 75)
+MAX_SZA_DEG_CLP = _env_float("UNET_MAX_SZA_DEG_CLP", 75)
+MAX_CTH_M       = _env_float("UNET_MAX_CTH_M", 18000)
+# 分类/回归是否强依赖几何过滤
 CLP_USE_GEO_FILTER = True
 REG_USE_GEO_FILTER = True
 
@@ -279,7 +282,7 @@ QUALITY_MIN_PHASE_CONSIST = _env_float("UNET_QUALITY_MIN_PHASE_CONSIST", 0.0)
 QUALITY_MIN_CLOUD_FRAC = _env_float("UNET_QUALITY_MIN_CLOUD_FRAC", 0.0)
 QUALITY_MIN_VALID_CLOUDY_PIXELS = int(os.environ.get("UNET_QUALITY_MIN_VALID_CLOUDY_PIXELS", "0"))
 
-CHECKPOINT_MONITOR = os.environ.get("UNET_CHECKPOINT_MONITOR", "val_loss")
+CHECKPOINT_MONITOR = os.environ.get("UNET_CHECKPOINT_MONITOR", "val_macro_acc")
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 10. Checkpoint naming

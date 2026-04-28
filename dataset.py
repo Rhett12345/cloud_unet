@@ -513,7 +513,8 @@ class AGRIMyd06Dataset(Dataset):
         bad_clp = (CLP < 0) | (CLP >= cfg.CLP_CLASSES)
         bad_cer = (CER < 0) | (CER > 100)
         bad_cot = (COT < 0) | (COT > 200)
-        bad_cth = (CTH < 0) | (CTH > 25000)
+        max_cth = getattr(cfg, "MAX_CTH_M", 18000)
+        bad_cth = (CTH < 0) | (CTH > max_cth)
 
         CLP[bad_clp] = np.nan
         CER[bad_cer] = np.nan

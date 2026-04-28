@@ -23,12 +23,12 @@ REQUIRE_SCAN_TIME = os.environ.get("FUSION_REQUIRE_SCAN_TIME", "1") == "1"
 # ─────────────────────────────────────────────────────────────────────────────
 # 空间聚合参数
 # ─────────────────────────────────────────────────────────────────────────────
-# AGRI 4km footprint 搜索半径 (km)。设为 3km 覆盖 ±1.5km，与 4km 像元匹配。
-AGRI_SEARCH_RADIUS_KM  = float(os.environ.get("FUSION_AGRI_SEARCH_RADIUS_KM", "3.0"))
+# AGRI 4km footprint 搜索半径 (km)。设为 2.5km 以减少 MODIS 混合像元引入的标签噪声。
+AGRI_SEARCH_RADIUS_KM  = float(os.environ.get("FUSION_AGRI_SEARCH_RADIUS_KM", "2.5"))
 
 # 期望落入一个 AGRI 4km 像元的 MYD06 1km / 5km 像元数
-# 面积比: (4km/1km)^2 = 16;  (4km/5km)^2 ≈ 0.64
-EXPECTED_1KM_PER_AGRI  = float(os.environ.get("FUSION_EXPECTED_1KM_PER_AGRI",  "16.0"))
+# 面积比: π*(2.5)² ≈ 19.6 km²，约 20 个 1km 像元，保留最近 12 个
+EXPECTED_1KM_PER_AGRI  = float(os.environ.get("FUSION_EXPECTED_1KM_PER_AGRI",  "12.0"))
 EXPECTED_5KM_PER_AGRI  = float(os.environ.get("FUSION_EXPECTED_5KM_PER_AGRI",  "1.0"))
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -44,7 +44,7 @@ PURE_CLOUD_ONLY         = os.environ.get("FUSION_PURE_CLOUD_ONLY", "0") == "1"
 PURE_CLOUD_FRAC         = float(os.environ.get("FUSION_PURE_CLOUD_FRAC",       "0.9"))
 
 # 回归标签最终门控比 CLP 更严格；分类可保留边界/clear 样本，CER/COT/CTH 宁可少而准。
-REG_TIME_MAX_MIN        = float(os.environ.get("FUSION_REG_TIME_MAX_MIN",        "2.0"))
+REG_TIME_MAX_MIN        = float(os.environ.get("FUSION_REG_TIME_MAX_MIN",        "3.0"))
 REG_OVERLAP_FRAC_MIN    = float(os.environ.get("FUSION_REG_OVERLAP_FRAC_MIN",    str(OVERLAP_FRAC_MIN)))
 REG_CLOUD_FRAC_MIN      = float(os.environ.get("FUSION_REG_CLOUD_FRAC_MIN",      str(CLOUD_FRAC_MIN_CLOUDY)))
 REG_PHASE_CONSISTENCY_MIN = float(os.environ.get("FUSION_REG_PHASE_CONSISTENCY_MIN", "0.8"))

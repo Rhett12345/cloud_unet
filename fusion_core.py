@@ -27,6 +27,7 @@ from typing import List, Optional, Tuple
 import numpy as np
 from scipy.spatial import cKDTree
 
+import config as cfg
 import fusion_config as fc
 
 log = logging.getLogger(__name__)
@@ -416,7 +417,8 @@ def aggregate_modis_to_agri(
         out_vpx5[agri_idx] = n_cth
         if cloud_ok and n_cth > 0:
             cth_val = aggregate_cth(cth_v[phase_cloud_mask], cth_w[phase_cloud_mask])
-            if np.isfinite(cth_val) and 0 <= cth_val <= 25000:
+            max_cth = getattr(cfg, "MAX_CTH_M", 18000)
+            if np.isfinite(cth_val) and 0 <= cth_val <= max_cth:
                 out_cth[agri_idx] = cth_val
 
         # ---- sample_weight ----

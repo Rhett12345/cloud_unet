@@ -728,10 +728,17 @@ def apply_quality_filter(agri: dict, labels: dict, diagnostics: Optional[dict] =
     - VZA/SZA 几何过滤（可选，由 cfg 控制）
     """
     vza, sza = agri["VZA"], agri["SZA"]
-    geo_ok = (
+    geo_ok_reg = (
         np.isfinite(vza) & np.isfinite(sza) &
         (vza <= cfg.MAX_VZA_DEG) & (sza <= cfg.MAX_SZA_DEG)
     )
+    max_vza_clp = getattr(cfg, "MAX_VZA_DEG_CLP", cfg.MAX_VZA_DEG)
+    max_sza_clp = getattr(cfg, "MAX_SZA_DEG_CLP", cfg.MAX_SZA_DEG)
+    geo_ok_clp = (
+        np.isfinite(vza) & np.isfinite(sza) &
+        (vza <= max_vza_clp) & (sza <= max_sza_clp)
+    )
+    geo_ok = geo_ok_reg  # keep compat alias for diagnostics
 
     dt   = labels.get("MATCH_DT_MIN")
     dt_max = labels.get("MATCH_DT_MAX", dt)
@@ -759,8 +766,8 @@ def apply_quality_filter(agri: dict, labels: dict, diagnostics: Optional[dict] =
     overlap_ok = (np.isfinite(ovlp) & (ovlp >= fc.OVERLAP_FRAC_MIN))  if ovlp is not None else np.ones(labels["CLP"].shape, bool)
     phase_ok   = (~np.isfinite(phcon)) | (phcon >= fc.PHASE_CONSISTENCY_MIN) if phcon is not None else np.ones(labels["CLP"].shape, bool)
     reg_time_ok = (
-        np.isfinite(dt_max) & (dt_max <= fc.REG_TIME_MAX_MIN)
-        if dt_max is not None else np.zeros(labels["CLP"].shape, bool)
+        np.isfinite(dt) & (dt <= fc.REG_TIME_MAX_MIN)
+        if dt is not None else np.zeros(labels["CLP"].shape, bool)
     )
     reg_overlap_ok = (
         np.isfinite(ovlp) & (ovlp >= fc.REG_OVERLAP_FRAC_MIN)
@@ -781,19 +788,20 @@ def apply_quality_filter(agri: dict, labels: dict, diagnostics: Optional[dict] =
         time_ok & overlap_ok & phase_ok
     )
     if cfg.CLP_USE_GEO_FILTER:
-        clp_ok &= geo_ok
+        clp_ok &= geo_ok_clp
     labels["CLP"] = np.where(clp_ok, clp_raw, np.nan)
 
     cloudy = np.isfinite(labels["CLP"]) & (labels["CLP"] > 0)
 
-    for k, lo, hi in [("CER", 0, 100), ("COT", 0, 200), ("CTH", 0, 25000)]:
+    max_cth = getattr(cfg, "MAX_CTH_M", 18000)
+    for k, lo, hi in [("CER", 0, 100), ("COT", 0, 200), ("CTH", 0, max_cth)]:
         raw = labels[k].copy()
         ok  = (
             cloudy & np.isfinite(raw) & (raw >= lo) & (raw <= hi) &
             reg_time_ok & reg_overlap_ok & reg_cloud_ok & reg_phase_ok
         )
         if cfg.REG_USE_GEO_FILTER:
-            ok &= geo_ok
+            ok &= geo_ok_reg
         labels[k] = np.where(ok, raw, np.nan)
 
     valid = np.isfinite(labels["CLP"])
@@ -814,7 +822,7 @@ def apply_quality_filter(agri: dict, labels: dict, diagnostics: Optional[dict] =
     if diagnostics is not None:
         _build_qc_diagnostics_row(
             diagnostics, agri, labels, raw_diag_labels, clp_raw,
-            time_ok, overlap_ok, geo_ok, phase_ok,
+            time_ok, overlap_ok, geo_ok_clp, phase_ok,
             reg_time_ok, reg_overlap_ok, reg_cloud_ok, reg_phase_ok,
         )
 
