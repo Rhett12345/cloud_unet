@@ -1,268 +1,124 @@
 """
 model.py
 ========
-HIR_COMP_UNet_DATrans_CLPenhance – AGRI-only (no GIIRS) variant.
+Simple U-Net for cloud property retrieval from AGRI data.
 
 Architecture:
-  ConvNeXt encoder × 4 → DA-Block (PAM + CAM) → Transformer bottleneck →
-  ConvNeXt decoder × 3 → split head: CLP (CrossEntropy) + COMP (SmoothL1)
-  with CLP feature enhancement injected into the regression branch.
+  Standard U-Net with double-conv blocks, max-pooling down, bilinear up,
+  skip connections via concatenation.  Geo fields (lat, lon, VZA, SZA)
+  are concatenated to the BT channels before the first encoder block.
 """
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 
 import config as cfg
 
+GEO_CHANNELS = 4   # lat, lon, VZA, SZA
 
-# ─────────────────────────────────────────────────────────────────────────────
-# Building blocks
-# ─────────────────────────────────────────────────────────────────────────────
 
-class ConvNextBlock(nn.Module):
-    """
-    Depthwise → LayerNorm → pointwise×2 (GELU) with residual scaling.
-    """
-    def __init__(self, channels: int):
+class DoubleConv(nn.Module):
+    """Conv → BN → ReLU → Conv → BN → ReLU"""
+
+    def __init__(self, in_ch: int, out_ch: int):
         super().__init__()
-        self.dw   = nn.Conv2d(channels, channels, 5, padding=2, groups=channels)
-        self.norm = nn.LayerNorm(channels)
-        self.pw1  = nn.Conv2d(channels, 2 * channels, 1)
-        self.gelu = nn.GELU()
-        self.pw2  = nn.Conv2d(2 * channels, channels, 1)
-        self.gamma = nn.Parameter(torch.ones(1) * 1e-6)
+        self.conv = nn.Sequential(
+            nn.Conv2d(in_ch, out_ch, 3, padding=1, bias=False),
+            nn.BatchNorm2d(out_ch),
+            nn.ReLU(inplace=True),
+            nn.Conv2d(out_ch, out_ch, 3, padding=1, bias=False),
+            nn.BatchNorm2d(out_ch),
+            nn.ReLU(inplace=True),
+        )
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        res = x
-        x = self.dw(x)
-        x = x.permute(0, 2, 3, 1)
-        x = self.norm(x)
-        x = x.permute(0, 3, 1, 2)
-        x = self.pw2(self.gelu(self.pw1(x)))
-        return res + self.gamma * x
+        return self.conv(x)
 
 
-class PAM_Module(nn.Module):
-    """Position Attention Module (non-local self-attention)."""
-    def __init__(self, channels: int):
-        super().__init__()
-        mid = max(1, channels // 8)
-        self.q  = nn.Conv2d(channels, mid, 1)
-        self.k  = nn.Conv2d(channels, mid, 1)
-        self.v  = nn.Conv2d(channels, channels, 1)
-        self.gamma = nn.Parameter(torch.zeros(1))
+class SimpleUNet(nn.Module):
+    """Standard U-Net with concatenation skip connections.
 
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        B, C, H, W = x.shape
-        q = self.q(x).view(B, -1, H * W).permute(0, 2, 1)
-        k = self.k(x).view(B, -1, H * W)
-        attn = torch.softmax(torch.bmm(q, k), dim=-1)          # (B, HW, HW)
-        v    = self.v(x).view(B, -1, H * W)
-        out  = torch.bmm(v, attn.permute(0, 2, 1)).view(B, C, H, W)
-        return self.gamma * out + x
-
-
-class CAM_Module(nn.Module):
-    """Channel Attention Module."""
-    def __init__(self, channels: int):
-        super().__init__()
-        self.beta = nn.Parameter(torch.zeros(1))
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        B, C, H, W = x.shape
-        flat = x.view(B, C, -1)
-        attn = torch.softmax(torch.bmm(flat, flat.permute(0, 2, 1)), dim=-1)
-        out  = torch.bmm(attn, flat).view(B, C, H, W)
-        return self.beta * out + x
-
-
-class DA_Block(nn.Module):
-    """Dual Attention Block: PAM ⊕ CAM."""
-    def __init__(self, channels: int):
-        super().__init__()
-        self.pam  = PAM_Module(channels)
-        self.cam  = CAM_Module(channels)
-        self.fuse = nn.Conv2d(channels, channels, 1)
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        return self.fuse(self.pam(x) + self.cam(x))
-
-
-class TransformerEncoder(nn.Module):
-    """Lightweight ViT-style encoder operating on flattened spatial tokens."""
-    def __init__(self, dim: int, depth: int, heads: int, mlp_dim: int, dropout: float = 0.2):
-        super().__init__()
-        self.layers = nn.ModuleList([
-            nn.ModuleList([
-                nn.LayerNorm(dim),
-                nn.MultiheadAttention(dim, heads, dropout=dropout, batch_first=True),
-                nn.LayerNorm(dim),
-                nn.Sequential(
-                    nn.Linear(dim, mlp_dim), nn.GELU(), nn.Dropout(dropout),
-                    nn.Linear(mlp_dim, dim), nn.Dropout(dropout),
-                ),
-            ])
-            for _ in range(depth)
-        ])
-
-    def forward(self, x: torch.Tensor) -> torch.Tensor:
-        B, C, H, W = x.shape
-        t = x.flatten(2).transpose(1, 2)              # (B, T, C)
-        for norm1, attn, norm2, mlp in self.layers:
-            res, _ = attn(norm1(t), norm1(t), norm1(t))
-            t = t + res
-            t = t + mlp(norm2(t))
-        return t.transpose(1, 2).reshape(B, C, H, W)
-
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Main model
-# ─────────────────────────────────────────────────────────────────────────────
-
-class CloudPropertyNet(nn.Module):
-    """
-    HIR_COMP_UNet – AGRI-only variant.
-
-    Outputs:
-        clp_logits  : (B, CLP_CLASSES, H, W)  – raw logits for CrossEntropy
-        comp_out    : (B, COMP_CHANNELS, H, W) – normalised regression values
-                      channels: [CER, COT, CTH]
+    Input:  agri (B, AGRI_CHANNELS, H, W), geo (B, 4, H, W)
+    Output: clp_logits (B, CLP_CLASSES, H, W), comp_out (B, COMP_CHANNELS, H, W)
     """
 
     def __init__(
         self,
-        agri_channels:  int = cfg.AGRI_CHANNELS,
-        clp_classes:    int = cfg.CLP_CLASSES,
-        comp_channels:  int = cfg.COMP_CHANNELS,
-        base_ch:        int = cfg.MODEL_BASE_CHANNELS,
-        trans_depth:    int = cfg.TRANSFORMER_DEPTH,
-        trans_heads:    int = cfg.TRANSFORMER_HEADS,
-        trans_mlp_dim:  int = cfg.TRANSFORMER_MLP_DIM,
+        agri_channels: int = cfg.AGRI_CHANNELS,
+        geo_channels: int = GEO_CHANNELS,
+        clp_classes: int = cfg.CLP_CLASSES,
+        comp_channels: int = cfg.COMP_CHANNELS,
+        base_ch: int = cfg.UNET_BASE_CHANNELS,
     ):
         super().__init__()
-        self.clp_classes   = clp_classes
+        self.clp_classes = clp_classes
         self.comp_channels = comp_channels
+        out_ch = clp_classes + comp_channels
         C = base_ch
+        in_ch = agri_channels + geo_channels
 
-        # ── Geo encoder (lat/lon → channel-wise gate) ─────────────────────
-        self.geo_embed = nn.Sequential(
-            nn.Conv2d(2, 8, 1),
-            nn.ReLU(),
-            nn.Conv2d(8, agri_channels, 1),
-            nn.Sigmoid(),
-        )
+        self.enc1 = DoubleConv(in_ch, C)
+        self.enc2 = DoubleConv(C, 2 * C)
+        self.enc3 = DoubleConv(2 * C, 4 * C)
+        self.enc4 = DoubleConv(4 * C, 8 * C)
+        self.bottleneck = DoubleConv(8 * C, 16 * C)
 
-        # ── Encoder ──────────────────────────────────────────────────────
-        self.enc1 = self._block(agri_channels, C)
-        self.enc2 = self._block(C,     2 * C)
-        self.enc3 = self._block(2 * C, 4 * C)
-        self.enc4 = self._block(4 * C, 8 * C)
+        self.dec3 = DoubleConv(16 * C + 8 * C, 8 * C)
+        self.dec2 = DoubleConv(8 * C + 4 * C, 4 * C)
+        self.dec1 = DoubleConv(4 * C + 2 * C, 2 * C)
+        self.dec0 = DoubleConv(2 * C + C, C)
 
-        # ── DA-Blocks ────────────────────────────────────────────────────
-        self.da1 = DA_Block(C)
-        self.da2 = DA_Block(2 * C)
-        self.da3 = DA_Block(4 * C)
-        self.da4 = DA_Block(8 * C)
+        self.head = nn.Conv2d(C, out_ch, 1)
 
-        # ── Bottleneck ───────────────────────────────────────────────────
-        self.bottleneck = TransformerEncoder(
-            dim=8 * C, depth=trans_depth, heads=trans_heads, mlp_dim=trans_mlp_dim
-        )
-
-        # ── Decoder ──────────────────────────────────────────────────────
-        self.dec3 = self._up_block(8 * C, 4 * C)
-        self.dec2 = self._up_block(4 * C, 2 * C)
-        self.dec1 = self._up_block(2 * C, C)
-
-        # ── Output heads ─────────────────────────────────────────────────
-        self.head = nn.Conv2d(C, clp_classes + comp_channels, 1)
-
-        # ── CLP-enhance branch ───────────────────────────────────────────
-        self.clp_enhance = nn.Sequential(
-            nn.Conv2d(clp_classes, comp_channels, 1),
-            nn.GroupNorm(num_groups=1, num_channels=comp_channels),
-            nn.ReLU(),
-        )
-
-    # ── helpers ──────────────────────────────────────────────────────────────
-
-    @staticmethod
-    def _block(in_ch: int, out_ch: int) -> nn.Sequential:
-        return nn.Sequential(
-            nn.Conv2d(in_ch, out_ch, 1),
-            ConvNextBlock(out_ch),
-        )
-
-    @staticmethod
-    def _up_block(in_ch: int, out_ch: int) -> nn.Sequential:
-        return nn.Sequential(
-            nn.Upsample(scale_factor=2, mode="bilinear", align_corners=True),
-            nn.Conv2d(in_ch, out_ch, 3, padding=1),
-            ConvNextBlock(out_ch),
-        )
-
-    @staticmethod
-    def _crop(x: torch.Tensor, target: torch.Tensor) -> torch.Tensor:
-        """Spatial crop x to match target's H×W."""
-        _, _, H, W = target.shape
-        return x[:, :, :H, :W]
-
-    # ── forward ──────────────────────────────────────────────────────────────
+        self.pool = nn.MaxPool2d(2)
+        self.up = nn.Upsample(scale_factor=2, mode="bilinear", align_corners=True)
 
     def forward(self, agri: torch.Tensor, geo: torch.Tensor = None):
-        """
-        agri : (B, AGRI_CHANNELS, H, W)
-        geo  : (B, 2, H, W) optional lat/lon
-        Returns:
-            clp_logits : (B, CLP_CLASSES,   H, W)
-            comp_out   : (B, COMP_CHANNELS,  H, W)
-        """
         if geo is not None:
-            geo_gate = self.geo_embed(geo)
-            agri = agri * (1.0 + 0.1 * geo_gate)
+            x = torch.cat([agri, geo], dim=1)
+        else:
+            # pad with zeros to match expected input channels
+            missing = self.enc1.conv[0].in_channels - agri.shape[1]
+            zeros = torch.zeros(agri.shape[0], missing, *agri.shape[2:],
+                                device=agri.device, dtype=agri.dtype)
+            x = torch.cat([agri, zeros], dim=1)
 
-        # Encoder
-        e1 = self.da1(self.enc1(agri))
-        e2 = self.da2(self.enc2(F.max_pool2d(e1, 2)))
-        e3 = self.da3(self.enc3(F.max_pool2d(e2, 2)))
-        e4 = self.da4(self.enc4(F.max_pool2d(e3, 2)))
+        e1 = self.enc1(x)
+        e2 = self.enc2(self.pool(e1))
+        e3 = self.enc3(self.pool(e2))
+        e4 = self.enc4(self.pool(e3))
 
-        # Bottleneck
-        b = self.bottleneck(e4)
+        b = self.bottleneck(self.pool(e4))
 
-        # Decoder with skip connections
-        d3 = self.dec3(b  + self._crop(e4, b))
-        d2 = self.dec2(d3 + self._crop(e3, d3))
-        d1 = self.dec1(d2 + self._crop(e2, d2))
+        d3 = self.dec3(torch.cat([self.up(b), e4], dim=1))
+        d2 = self.dec2(torch.cat([self.up(d3), e3], dim=1))
+        d1 = self.dec1(torch.cat([self.up(d2), e2], dim=1))
+        d0 = self.dec0(torch.cat([self.up(d1), e1], dim=1))
 
-        out = self.head(d1)
-        clp_logits = out[:, :self.clp_classes, :, :]
-        comp_raw   = out[:, self.clp_classes:,  :, :]
-
-        # Enhance regression with classification features
-        comp_out = comp_raw + self.clp_enhance(clp_logits)
+        out = self.head(d0)
+        clp_logits = out[:, :self.clp_classes]
+        comp_out = out[:, self.clp_classes:]
 
         return clp_logits, comp_out
 
 
-def build_model() -> CloudPropertyNet:
-    return CloudPropertyNet(
+def build_model() -> SimpleUNet:
+    return SimpleUNet(
         agri_channels=cfg.AGRI_CHANNELS,
+        geo_channels=GEO_CHANNELS,
         clp_classes=cfg.CLP_CLASSES,
         comp_channels=cfg.COMP_CHANNELS,
-        base_ch=cfg.MODEL_BASE_CHANNELS,
-        trans_depth=cfg.TRANSFORMER_DEPTH,
-        trans_heads=cfg.TRANSFORMER_HEADS,
-        trans_mlp_dim=cfg.TRANSFORMER_MLP_DIM,
+        base_ch=cfg.UNET_BASE_CHANNELS,
     )
 
 
 if __name__ == "__main__":
     model = build_model()
-    dummy = torch.randn(4, cfg.AGRI_CHANNELS, 32, 32)
-    clp, comp = model(dummy)
+    dummy_agri = torch.randn(4, cfg.AGRI_CHANNELS, 32, 32)
+    dummy_geo = torch.randn(4, GEO_CHANNELS, 32, 32)
+    clp, comp = model(dummy_agri, dummy_geo)
     total = sum(p.numel() for p in model.parameters())
     print(f"CLP  shape : {clp.shape}")
     print(f"COMP shape : {comp.shape}")
     print(f"Parameters : {total:,}")
+

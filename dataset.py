@@ -115,6 +115,9 @@ def _stats_worker(h5_path: str) -> Optional[dict]:
                 lbl = f["Samples/labels"][()].astype(np.float64)
 
                 n_agri = BT.shape[1]
+                if n_agri != cfg.AGRI_CHANNELS:
+                    log.warning("Skip %s: BT channels=%d, expected=%d", h5_path, n_agri, cfg.AGRI_CHANNELS)
+                    return None
                 flat_bt = BT.transpose(0, 2, 3, 1).reshape(-1, n_agri)
                 flat_out = lbl.transpose(0, 2, 3, 1).reshape(-1, 4)
 
@@ -122,6 +125,9 @@ def _stats_worker(h5_path: str) -> Optional[dict]:
                 # 旧格式: AGRI/BT + Labels/*
                 bt_keys = sorted(f["AGRI/BT"].keys())
                 n_agri = len(bt_keys)
+                if n_agri != cfg.AGRI_CHANNELS:
+                    log.warning("Skip %s: BT channels=%d, expected=%d", h5_path, n_agri, cfg.AGRI_CHANNELS)
+                    return None
 
                 BT = np.stack(
                     [f[f"AGRI/BT/{k}"][()].astype(np.float64) for k in bt_keys],
@@ -342,6 +348,12 @@ def _build_patch_index(
             with h5py.File(h5f, "r") as f:
                 if "Samples" in f and "agri" in f["Samples"] and "labels" in f["Samples"]:
                     samples = f["Samples"]
+                    # Validate compressed data is readable before indexing
+                    try:
+                        _ = samples["agri"][0]
+                    except Exception:
+                        log.warning("Skip %s: corrupted HDF5 data (filter read failure)", h5f.name)
+                        continue
                     n_samples = int(samples["agri"].shape[0])
 
                     has_cached_counts = (
@@ -415,9 +427,8 @@ class AGRIMyd06Dataset(Dataset):
     number of files rather than O(N_files × scene_size).
 
     Each item is a tuple:
-        agri   : FloatTensor  (n_agri_channels, patch_H, patch_W) – z-score normalised
-        geo    : FloatTensor  (3, patch_H, patch_W)  [lat, lon, ELE] – raw
-        geo    : FloatTensor  (2, patch_H, patch_W)  [lat, lon] – raw
+        agri   : FloatTensor  (8, patch_H, patch_W) – z-score normalised BT
+        geo    : FloatTensor  (4, patch_H, patch_W) – [lat/90, lon/180, VZA/90, SZA/90]
         labels : FloatTensor  (4, patch_H, patch_W)
                    ch0 = CLP (float, integer class 0-2)
                    ch1 = CER (µm,  z-score normalised, NaN for clear/missing)
@@ -463,43 +474,52 @@ class AGRIMyd06Dataset(Dataset):
         ph, pw = self.ph, self.pw
 
         # ── Read only the required patch via HDF5 hyperslab ───────────────
-        try:
-            with h5py.File(h5f, "r") as f:
-                if j < 0 and "Samples" in f and "agri" in f["Samples"]:
-                    agri_patch = f["Samples/agri"][i].astype(np.float32)  # (C, H, W)
-                    geo_patch = f["Samples/geo"][i].astype(np.float32)  # (4, H, W)
-                    label_patch = f["Samples/labels"][i].astype(np.float32)  # (4, H, W)
+        for attempt in range(10):
+            try:
+                with h5py.File(h5f, "r") as f:
+                    if j < 0 and "Samples" in f and "agri" in f["Samples"]:
+                        agri_patch = f["Samples/agri"][i].astype(np.float32)  # (C, H, W)
+                        geo_patch  = f["Samples/geo"][i].astype(np.float32)   # (4, H, W): lat,lon,VZA,SZA
+                        label_patch = f["Samples/labels"][i].astype(np.float32)  # (4, H, W)
 
-                    BT = agri_patch.transpose(1, 2, 0)
-                    lat = geo_patch[0]
-                    lon = geo_patch[1]
-                    CLP, CER, COT, CTH = label_patch
-                else:
-                    bt_keys = sorted(f["AGRI/BT"].keys())
-                    bt_patches = [
-                        f[f"AGRI/BT/{k}"][i:i + ph, j:j + pw].astype(np.float32)
-                        for k in bt_keys
-                    ]
-                    BT = np.stack(bt_patches, axis=-1)
+                        BT = agri_patch.transpose(1, 2, 0)
+                        geo = geo_patch   # (4, H, W)
+                        CLP, CER, COT, CTH = label_patch
+                    else:
+                        bt_keys = sorted(f["AGRI/BT"].keys())
+                        bt_patches = [
+                            f[f"AGRI/BT/{k}"][i:i + ph, j:j + pw].astype(np.float32)
+                            for k in bt_keys
+                        ]
+                        BT = np.stack(bt_patches, axis=-1)
 
-                    lat = f["AGRI/Geolocation/lat"][i:i + ph, j:j + pw].astype(np.float32)
-                    lon = f["AGRI/Geolocation/lon"][i:i + ph, j:j + pw].astype(np.float32)
+                        lat = f["AGRI/Geolocation/lat"][i:i + ph, j:j + pw].astype(np.float32)
+                        lon = f["AGRI/Geolocation/lon"][i:i + ph, j:j + pw].astype(np.float32)
+                        vza = np.zeros_like(lat)
+                        sza = np.zeros_like(lat)
+                        geo = np.stack([lat, lon, vza, sza], axis=0)  # (4, H, W)
 
-                    CLP = f["Labels/CLP"][i:i + ph, j:j + pw].astype(np.float32)
-                    CER = f["Labels/CER"][i:i + ph, j:j + pw].astype(np.float32)
-                    COT = f["Labels/COT"][i:i + ph, j:j + pw].astype(np.float32)
-                    CTH = f["Labels/CTH"][i:i + ph, j:j + pw].astype(np.float32)
-           
+                        CLP = f["Labels/CLP"][i:i + ph, j:j + pw].astype(np.float32)
+                        CER = f["Labels/CER"][i:i + ph, j:j + pw].astype(np.float32)
+                        COT = f["Labels/COT"][i:i + ph, j:j + pw].astype(np.float32)
+                        CTH = f["Labels/CTH"][i:i + ph, j:j + pw].astype(np.float32)
+                break  # read succeeded
 
-        except Exception as exc:
-            # Return a zero tensor on read failure (rare but resilient)
-            log.warning("Read error at %s [%d,%d]: %s", h5f.name, i, j, exc)
-            C = len(cfg.AGRI_BT_CHANNEL_INDICES)
-            agri_t = torch.zeros(C, ph, pw, dtype=torch.float32)
-            # geo_t  = torch.zeros(3, ph, pw, dtype=torch.float32)
-            geo_t = torch.zeros(2, ph, pw, dtype=torch.float32)
-            lbl_t  = torch.full((4, ph, pw), float("nan"), dtype=torch.float32)
-            return agri_t, geo_t, lbl_t
+            except Exception as exc:
+                if attempt == 0:
+                    if not hasattr(self, "_warned_files"):
+                        self._warned_files = set()
+                    if h5f.name not in self._warned_files:
+                        log.warning("Read error at %s [%d,%d]: %s", h5f.name, i, j, exc)
+                        self._warned_files.add(h5f)
+                if attempt == 9:
+                    log.error("All read retries exhausted, returning zero sample")
+                    C = len(cfg.AGRI_BT_CHANNEL_INDICES)
+                    agri_t = torch.zeros(C, ph, pw, dtype=torch.float32)
+                    geo_t = torch.zeros(4, ph, pw, dtype=torch.float32)
+                    lbl_t = torch.full((4, ph, pw), float("nan"), dtype=torch.float32)
+                    return agri_t, geo_t, lbl_t
+                h5f, i, j = self._index[np.random.randint(0, len(self._index))]
 
         # ── CLP label remap/QC (supports old 5-class H5 files) ───────────
         remap = getattr(cfg, "CLP_LABEL_REMAP", None)
@@ -525,37 +545,76 @@ class AGRIMyd06Dataset(Dataset):
         agri_norm = (BT - self.stats.agri_mean) / (self.stats.agri_std + 1e-8)
         agri_norm = np.nan_to_num(agri_norm, nan=0.0)
 
+        # ── Normalise geo: lat/90, lon/180, VZA/90, SZA/90 → roughly [-1,1] ─
+        # geo is (4, H, W): [lat, lon, VZA, SZA]
+        geo_norm = geo.copy()
+        geo_norm[0] = geo[0] / 90.0
+        geo_norm[1] = geo[1] / 180.0
+        geo_norm[2] = geo[2] / 90.0
+        geo_norm[3] = geo[3] / 90.0
+        geo_norm = np.nan_to_num(geo_norm, nan=0.0)  # (4, H, W)
+        geo_norm = geo_norm.transpose(1, 2, 0)        # (H, W, 4)
+
         # ── Normalise regression labels; keep CLP raw; keep NaN in labels ─
         lbl = np.stack([CLP, CER, COT, CTH], axis=-1)   # (ph, pw, 4)
         lbl[..., 1:] = (lbl[..., 1:] - self.stats.out_mean[1:]) / (self.stats.out_std[1:] + 1e-8)
 
-        # geo = np.stack([lat, lon, ele], axis=-1)
-        geo = np.stack([lat, lon], axis=-1)
-        geo = np.nan_to_num(geo, nan=0.0)
-
-        # ── Gaussian noise on BTs (train only, simulates sensor noise) ──
+        # ── Train augmentations ───────────────────────────────────────────
         if self.mode == "train":
+            # Gaussian noise on BTs
             agri_norm = agri_norm + np.random.randn(*agri_norm.shape).astype(np.float32) * 0.02
 
-        # ── Geometric augmentation (train only) ───────────────────────────
-        if self.mode == "train":
+            # Random horizontal / vertical flip
             if np.random.rand() < 0.5:
                 agri_norm = np.flip(agri_norm, axis=1).copy()
-                geo       = np.flip(geo,       axis=1).copy()
+                geo_norm  = np.flip(geo_norm,  axis=1).copy()
                 lbl       = np.flip(lbl,       axis=1).copy()
             if np.random.rand() < 0.5:
                 agri_norm = np.flip(agri_norm, axis=0).copy()
-                geo       = np.flip(geo,       axis=0).copy()
+                geo_norm  = np.flip(geo_norm,  axis=0).copy()
                 lbl       = np.flip(lbl,       axis=0).copy()
+
+            # Random 90° rotation
             k = np.random.randint(0, 4)
             if k:
                 agri_norm = np.rot90(agri_norm, k=k, axes=(0, 1)).copy()
-                geo       = np.rot90(geo,       k=k, axes=(0, 1)).copy()
+                geo_norm  = np.rot90(geo_norm,  k=k, axes=(0, 1)).copy()
                 lbl       = np.rot90(lbl,       k=k, axes=(0, 1)).copy()
+
+            # Random scale (90% – 110%) + pad/crop back to 32×32
+            if np.random.rand() < 0.5:
+                scale = np.random.uniform(0.9, 1.1)
+                new_h = max(16, int(ph * scale))
+                new_w = max(16, int(pw * scale))
+                # Resize via simple crop/pad (no interpolation for labels)
+                h0 = max(0, (ph - new_h) // 2)
+                w0 = max(0, (pw - new_w) // 2)
+                # Crop centre region then pad back
+                agri_crop = agri_norm[h0:h0+new_h, w0:w0+new_w, :]
+                geo_crop  = geo_norm[h0:h0+new_h, w0:w0+new_w, :]
+                lbl_crop  = lbl[h0:h0+new_h, w0:w0+new_w, :]
+                # Pad back to original size
+                pad_h = ph - agri_crop.shape[0]
+                pad_w = pw - agri_crop.shape[1]
+                if pad_h > 0 or pad_w > 0:
+                    agri_crop = np.pad(agri_crop, ((0, max(0, pad_h)), (0, max(0, pad_w)), (0, 0)),
+                                       mode="reflect")
+                    geo_crop  = np.pad(geo_crop,  ((0, max(0, pad_h)), (0, max(0, pad_w)), (0, 0)),
+                                       mode="reflect")
+                    lbl_crop  = np.pad(lbl_crop,  ((0, max(0, pad_h)), (0, max(0, pad_w)), (0, 0)),
+                                       mode="constant", constant_values=np.nan)
+                agri_norm = agri_crop[:ph, :pw, :]
+                geo_norm  = geo_crop[:ph, :pw, :]
+                lbl       = lbl_crop[:ph, :pw, :]
+
+            # Random BT brightness jitter (global shift per channel, simulates calibration bias)
+            if np.random.rand() < 0.3:
+                jitter = np.random.randn(agri_norm.shape[-1]).astype(np.float32) * 0.05
+                agri_norm = agri_norm + jitter
 
         # ── (H, W, C) → (C, H, W) for PyTorch ───────────────────────────
         agri_t = torch.from_numpy(agri_norm.transpose(2, 0, 1))
-        geo_t  = torch.from_numpy(geo.transpose(2, 0, 1))
+        geo_t  = torch.from_numpy(geo_norm.transpose(2, 0, 1))
         lbl_t  = torch.from_numpy(lbl.transpose(2, 0, 1))
 
         return agri_t, geo_t, lbl_t

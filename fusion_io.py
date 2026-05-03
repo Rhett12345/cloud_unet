@@ -30,7 +30,6 @@ import fusion_config as fc
 from sample_filters import get_patch_supervision_thresholds, patch_passes_supervision
 
 log = logging.getLogger(__name__)
-_QC_DIAG_MISSING_WARNED = set()
 
 
 # ---------------------------------------------------------------------------
@@ -621,18 +620,8 @@ def read_myd06(modis_file: Path, agri_dt: Optional[datetime] = None, myd03_file:
 # 质量后处理（apply_quality_filter）
 # ---------------------------------------------------------------------------
 
-def _warn_missing_qc_field_once(name: str):
-    if name not in _QC_DIAG_MISSING_WARNED:
-        log.warning("QC diagnostics field unavailable: %s; writing NaN/null where needed", name)
-        _QC_DIAG_MISSING_WARNED.add(name)
-
-
 def _finite_count(arr) -> int:
     return int(np.isfinite(arr).sum()) if arr is not None else 0
-
-
-def _bool_count(mask) -> int:
-    return int(np.asarray(mask, dtype=bool).sum()) if mask is not None else 0
 
 
 def _finite_stat(arr, fn):
@@ -650,34 +639,22 @@ def _mean_finite(arr):
 
 def _build_qc_diagnostics_row(
     diagnostics: dict,
-    agri: dict,
     labels: dict,
     raw_labels: dict,
     clp_raw: np.ndarray,
     time_ok: np.ndarray,
-    overlap_ok: np.ndarray,
-    geo_ok: np.ndarray,
-    phase_ok: np.ndarray,
+    geo_ok_clp: np.ndarray,
     reg_time_ok: np.ndarray,
-    reg_overlap_ok: np.ndarray,
-    reg_cloud_ok: np.ndarray,
-    reg_phase_ok: np.ndarray,
+    geo_ok_reg: np.ndarray,
 ):
-    shape = labels["CLP"].shape
-    ones = np.ones(shape, dtype=bool)
     clp_base = np.isfinite(clp_raw) & (clp_raw >= 0) & (clp_raw < cfg.CLP_CLASSES)
-    geo_gate = geo_ok if (cfg.CLP_USE_GEO_FILTER or cfg.REG_USE_GEO_FILTER) else ones
 
     cumulative_after_time = clp_base & time_ok
-    cumulative_after_overlap = cumulative_after_time & overlap_ok
-    cumulative_after_geo = cumulative_after_overlap & geo_gate
-    cumulative_after_phase = cumulative_after_geo & phase_ok
+    cumulative_after_geo = cumulative_after_time & geo_ok_clp
 
-    reg_base = cumulative_after_phase & (clp_raw > 0)
+    reg_base = cumulative_after_geo & (clp_raw > 0)
     cumulative_after_reg_time = reg_base & reg_time_ok
-    cumulative_after_reg_overlap = cumulative_after_reg_time & reg_overlap_ok
-    cumulative_after_reg_cloud = cumulative_after_reg_overlap & reg_cloud_ok
-    cumulative_after_reg_phase = cumulative_after_reg_cloud & reg_phase_ok
+    cumulative_after_reg_geo = cumulative_after_reg_time & geo_ok_reg
 
     row = {
         "scene_id": diagnostics.get("scene_id"),
@@ -688,23 +665,15 @@ def _build_qc_diagnostics_row(
         "raw_cer_valid_px": _finite_count(raw_labels.get("CER")),
         "raw_cot_valid_px": _finite_count(raw_labels.get("COT")),
         "raw_cth_valid_px": _finite_count(raw_labels.get("CTH")),
-        "time_ok_px": _bool_count(time_ok),
-        "overlap_ok_px": _bool_count(overlap_ok),
-        "geo_ok_px": _bool_count(geo_ok),
-        "phase_ok_px": _bool_count(phase_ok),
-        "reg_time_ok_px": _bool_count(reg_time_ok),
-        "reg_overlap_ok_px": _bool_count(reg_overlap_ok),
-        "reg_cloud_ok_px": _bool_count(reg_cloud_ok),
-        "reg_phase_ok_px": _bool_count(reg_phase_ok),
+        "time_ok_px": int(time_ok.sum()),
+        "geo_ok_px": int(geo_ok_clp.sum()),
+        "reg_time_ok_px": int(reg_time_ok.sum()),
+        "reg_geo_ok_px": int(geo_ok_reg.sum()),
         "cumulative_base_px": int(clp_base.sum()),
         "cumulative_after_time_px": int(cumulative_after_time.sum()),
-        "cumulative_after_overlap_px": int(cumulative_after_overlap.sum()),
         "cumulative_after_geo_px": int(cumulative_after_geo.sum()),
-        "cumulative_after_phase_px": int(cumulative_after_phase.sum()),
         "cumulative_after_reg_time_px": int(cumulative_after_reg_time.sum()),
-        "cumulative_after_reg_overlap_px": int(cumulative_after_reg_overlap.sum()),
-        "cumulative_after_reg_cloud_px": int(cumulative_after_reg_cloud.sum()),
-        "cumulative_after_reg_phase_px": int(cumulative_after_reg_phase.sum()),
+        "cumulative_after_reg_geo_px": int(cumulative_after_reg_geo.sum()),
         "final_clp_px": _finite_count(labels.get("CLP")),
         "final_cer_px": _finite_count(labels.get("CER")),
         "final_cot_px": _finite_count(labels.get("COT")),
@@ -712,20 +681,16 @@ def _build_qc_diagnostics_row(
         "time_delta_min_p50": _finite_stat(raw_labels.get("MATCH_DT_MIN"), lambda v: np.percentile(v, 50)),
         "time_delta_min_p90": _finite_stat(raw_labels.get("MATCH_DT_MIN"), lambda v: np.percentile(v, 90)),
         "time_delta_min_max": _finite_stat(raw_labels.get("MATCH_DT_MIN"), np.max),
-        "overlap_ratio": _mean_finite(raw_labels.get("OVERLAP_FRACTION")),
-        "cloud_frac": _mean_finite(raw_labels.get("CLOUD_FRACTION")),
-        "phase_consistency": _mean_finite(raw_labels.get("PHASE_CONSISTENCY")),
     }
     diagnostics["row"] = row
 
 
 def apply_quality_filter(agri: dict, labels: dict, diagnostics: Optional[dict] = None) -> dict:
     """
-    融合后的最终质量过滤。
-    - 时间差 > TIME_LOW_Q → NaN
-    - overlap < OVERLAP_FRAC_MIN → NaN
-    - phase_consistency < PHASE_CONSISTENCY_MIN → CLP NaN
-    - VZA/SZA 几何过滤（可选，由 cfg 控制）
+    融合后的质量控制。单像元最近邻模式下只保留有意义的门控：
+      - 时间：CLP 要求 dt <= TIME_LOW_Q_MIN，回归要求 dt <= REG_TIME_MAX_MIN
+      - 几何：VZA/SZA 角度限制（可选，由 cfg 控制）
+      - 值域：CER [0,100], COT [0,200], CTH [0, MAX_CTH_M]
     """
     vza, sza = agri["VZA"], agri["SZA"]
     geo_ok_reg = (
@@ -738,54 +703,25 @@ def apply_quality_filter(agri: dict, labels: dict, diagnostics: Optional[dict] =
         np.isfinite(vza) & np.isfinite(sza) &
         (vza <= max_vza_clp) & (sza <= max_sza_clp)
     )
-    geo_ok = geo_ok_reg  # keep compat alias for diagnostics
 
-    dt   = labels.get("MATCH_DT_MIN")
-    dt_max = labels.get("MATCH_DT_MAX", dt)
-    ovlp = labels.get("OVERLAP_FRACTION")
-    phcon= labels.get("PHASE_CONSISTENCY")
-    cfrac = labels.get("CLOUD_FRACTION")
+    dt = labels.get("MATCH_DT_MIN")
+    shape = labels["CLP"].shape
+
+    time_ok = (np.isfinite(dt) & (dt <= fc.TIME_LOW_Q_MIN)) if dt is not None else np.ones(shape, bool)
+    reg_time_ok = (np.isfinite(dt) & (dt <= fc.REG_TIME_MAX_MIN)) if dt is not None else np.zeros(shape, bool)
+
     raw_diag_labels = None
     if diagnostics is not None:
         raw_diag_labels = {
             k: (v.copy() if isinstance(v, np.ndarray) else v)
             for k, v in labels.items()
         }
-    if diagnostics is not None:
-        for name, arr in [
-            ("MATCH_DT_MIN", dt),
-            ("MATCH_DT_MAX", dt_max),
-            ("OVERLAP_FRACTION", ovlp),
-            ("PHASE_CONSISTENCY", phcon),
-            ("CLOUD_FRACTION", cfrac),
-        ]:
-            if arr is None:
-                _warn_missing_qc_field_once(name)
 
-    time_ok    = (np.isfinite(dt) & (dt <= fc.TIME_LOW_Q_MIN)) if dt   is not None else np.ones(labels["CLP"].shape, bool)
-    overlap_ok = (np.isfinite(ovlp) & (ovlp >= fc.OVERLAP_FRAC_MIN))  if ovlp is not None else np.ones(labels["CLP"].shape, bool)
-    phase_ok   = (~np.isfinite(phcon)) | (phcon >= fc.PHASE_CONSISTENCY_MIN) if phcon is not None else np.ones(labels["CLP"].shape, bool)
-    reg_time_ok = (
-        np.isfinite(dt) & (dt <= fc.REG_TIME_MAX_MIN)
-        if dt is not None else np.zeros(labels["CLP"].shape, bool)
-    )
-    reg_overlap_ok = (
-        np.isfinite(ovlp) & (ovlp >= fc.REG_OVERLAP_FRAC_MIN)
-        if ovlp is not None else np.zeros(labels["CLP"].shape, bool)
-    )
-    reg_cloud_ok = (
-        np.isfinite(cfrac) & (cfrac >= fc.REG_CLOUD_FRAC_MIN)
-        if cfrac is not None else np.zeros(labels["CLP"].shape, bool)
-    )
-    reg_phase_ok = (
-        np.isfinite(phcon) & (phcon >= fc.REG_PHASE_CONSISTENCY_MIN)
-        if phcon is not None else np.zeros(labels["CLP"].shape, bool)
-    )
-
+    # ── CLP 过滤 ──
     clp_raw = labels["CLP"].copy()
-    clp_ok  = (
+    clp_ok = (
         np.isfinite(clp_raw) & (clp_raw >= 0) & (clp_raw < cfg.CLP_CLASSES) &
-        time_ok & overlap_ok & phase_ok
+        time_ok
     )
     if cfg.CLP_USE_GEO_FILTER:
         clp_ok &= geo_ok_clp
@@ -793,17 +729,19 @@ def apply_quality_filter(agri: dict, labels: dict, diagnostics: Optional[dict] =
 
     cloudy = np.isfinite(labels["CLP"]) & (labels["CLP"] > 0)
 
+    # ── 回归变量过滤 ──
     max_cth = getattr(cfg, "MAX_CTH_M", 18000)
     for k, lo, hi in [("CER", 0, 100), ("COT", 0, 200), ("CTH", 0, max_cth)]:
         raw = labels[k].copy()
-        ok  = (
+        ok = (
             cloudy & np.isfinite(raw) & (raw >= lo) & (raw <= hi) &
-            reg_time_ok & reg_overlap_ok & reg_cloud_ok & reg_phase_ok
+            reg_time_ok
         )
         if cfg.REG_USE_GEO_FILTER:
             ok &= geo_ok_reg
         labels[k] = np.where(ok, raw, np.nan)
 
+    # ── 质量字段：仅在 CLP 有效处保留 ──
     valid = np.isfinite(labels["CLP"])
     for k in ["MATCH_DT_MIN", "MATCH_DT_MEAN", "MATCH_DT_MAX",
               "MATCH_DIST_MEAN_KM", "MATCH_DIST_P95_KM",
@@ -821,22 +759,25 @@ def apply_quality_filter(agri: dict, labels: dict, diagnostics: Optional[dict] =
 
     if diagnostics is not None:
         _build_qc_diagnostics_row(
-            diagnostics, agri, labels, raw_diag_labels, clp_raw,
-            time_ok, overlap_ok, geo_ok_clp, phase_ok,
-            reg_time_ok, reg_overlap_ok, reg_cloud_ok, reg_phase_ok,
+            diagnostics, labels, raw_diag_labels, clp_raw,
+            time_ok, geo_ok_clp, reg_time_ok, geo_ok_reg,
         )
 
     if fc.FUSION_LOG_PIXEL_STATS:
+        wt_values = labels.get("SAMPLE_WEIGHT", np.array([np.nan]))
+        wt_valid = wt_values[np.isfinite(wt_values)]
+        dt_values = labels.get("MATCH_DT_MIN", np.array([np.nan]))
+        dt_valid = dt_values[np.isfinite(dt_values)]
         log.info(
             "post-qc | clp=%d cer=%d cot=%d cth=%d | "
             "clp_pct=%.1f%% wt_mean=%.3f dt_mean=%.2fmin",
-            int(np.isfinite(labels["CLP"]).sum()),
+            int(valid.sum()),
             int(np.isfinite(labels["CER"]).sum()),
             int(np.isfinite(labels["COT"]).sum()),
             int(np.isfinite(labels["CTH"]).sum()),
-            100.0 * np.isfinite(labels["CLP"]).mean(),
-            float(np.nanmean(labels.get("SAMPLE_WEIGHT", np.array([np.nan])))),
-            float(np.nanmean(labels.get("MATCH_DT_MIN",  np.array([np.nan])))),
+            100.0 * valid.mean(),
+            float(np.nanmean(wt_valid)) if wt_valid.size else float("nan"),
+            float(np.nanmean(dt_valid)) if dt_valid.size else float("nan"),
         )
 
     return labels
@@ -924,15 +865,8 @@ def write_fused_samples(
             "patch_size": list(patch_size),
             "scene_shape": list(agri["lat"].shape),
             "mode": mode,
-            "time_high_q_min": fc.TIME_HIGH_Q_MIN,
             "time_low_q_min":  fc.TIME_LOW_Q_MIN,
-            "overlap_frac_min": fc.OVERLAP_FRAC_MIN,
-            "cloud_frac_min":   fc.CLOUD_FRAC_MIN_CLOUDY,
-            "phase_consist_min":fc.PHASE_CONSISTENCY_MIN,
             "reg_time_max_min": fc.REG_TIME_MAX_MIN,
-            "reg_overlap_frac_min": fc.REG_OVERLAP_FRAC_MIN,
-            "reg_cloud_frac_min": fc.REG_CLOUD_FRAC_MIN,
-            "reg_phase_consist_min": fc.REG_PHASE_CONSISTENCY_MIN,
             "min_valid_label_px": thresh["min_valid_label_pixels"],
             "min_valid_cloudy_px":thresh["min_valid_cloudy_pixels"],
             "clp_class_names": ",".join(getattr(cfg, "CLP_CLASS_NAMES", [])),

@@ -31,7 +31,7 @@ import numpy as np
 
 import config as cfg
 import fusion_config as fc
-from fusion_core import aggregate_modis_to_agri
+from fusion_core import aggregate_modis_to_agri, check_modis_in_agri_disk
 from fusion_io import (
     apply_quality_filter, find_day_folders, find_matching_modis, find_matching_myd03,
     parse_agri_datetime, parse_modis_datetime,
@@ -49,15 +49,14 @@ _find_day_folders = find_day_folders
 QC_DIAGNOSTIC_FIELDS = [
     "scene_id", "agri_file", "myd06_file", "myd03_file",
     "raw_clp_valid_px", "raw_cer_valid_px", "raw_cot_valid_px", "raw_cth_valid_px",
-    "time_ok_px", "overlap_ok_px", "geo_ok_px", "phase_ok_px",
-    "reg_time_ok_px", "reg_overlap_ok_px", "reg_cloud_ok_px", "reg_phase_ok_px",
-    "cumulative_base_px", "cumulative_after_time_px", "cumulative_after_overlap_px",
-    "cumulative_after_geo_px", "cumulative_after_phase_px",
-    "cumulative_after_reg_time_px", "cumulative_after_reg_overlap_px",
-    "cumulative_after_reg_cloud_px", "cumulative_after_reg_phase_px",
+    "time_ok_px", "geo_ok_px",
+    "reg_time_ok_px", "reg_geo_ok_px",
+    "cumulative_base_px", "cumulative_after_time_px",
+    "cumulative_after_geo_px",
+    "cumulative_after_reg_time_px",
+    "cumulative_after_reg_geo_px",
     "final_clp_px", "final_cer_px", "final_cot_px", "final_cth_px",
     "time_delta_min_p50", "time_delta_min_p90", "time_delta_min_max",
-    "overlap_ratio", "cloud_frac", "phase_consistency",
 ]
 
 
@@ -135,6 +134,15 @@ def _fuse_one_scene(agri_file, modis_files, out_path, mode, qc_diagnostics_enabl
             m = read_myd06(mf, agri_dt=agri_dt, myd03_file=myd03_file)
             if m is None:
                 continue
+
+            # 检查 MODIS 条带是否完整落入 AGRI 圆盘
+            modis_lat = m.get("lat_1km") if m.get("lat_1km") is not None else m.get("lat_5km")
+            modis_lon = m.get("lon_1km") if m.get("lon_1km") is not None else m.get("lon_5km")
+            if modis_lat is None or modis_lon is None:
+                continue
+            if not check_modis_in_agri_disk(modis_lat, modis_lon, agri["lat"], agri["lon"]):
+                continue
+
             mdt = parse_modis_datetime(mf.name)
             if mdt is None:
                 continue
@@ -144,6 +152,23 @@ def _fuse_one_scene(agri_file, modis_files, out_path, mode, qc_diagnostics_enabl
 
         if not modis_list:
             return False, out_path, "No MYD06 after reading", diag_row
+
+        # 收集 MODIS 条带边界框（用于地理可视化验证）
+        modis_bounds = []
+        for m in modis_list:
+            mlat = m.get("lat_1km") if m.get("lat_1km") is not None else m.get("lat_5km")
+            mlon = m.get("lon_1km") if m.get("lon_1km") is not None else m.get("lon_5km")
+            if mlat is not None and mlon is not None:
+                valid = np.isfinite(mlat) & np.isfinite(mlon)
+                if valid.any():
+                    modis_bounds.append({
+                        "lat_min": float(mlat[valid].min()),
+                        "lat_max": float(mlat[valid].max()),
+                        "lon_min": float(mlon[valid].min()),
+                        "lon_max": float(mlon[valid].max()),
+                        "file": m.get("_file", ""),
+                    })
+
         labels = aggregate_modis_to_agri(agri["lat"], agri["lon"], modis_list)
         if labels is None:
             return False, out_path, "aggregate returned None", diag_row
@@ -176,13 +201,159 @@ def _fuse_one_scene(agri_file, modis_files, out_path, mode, qc_diagnostics_enabl
         out.parent.mkdir(parents=True, exist_ok=True)
         if cfg.FUSION_OUTPUT_MODE == "samples_only":
             n_s = write_fused_samples(out, agri, labels, agri_dt, mode)
+            _make_geo_figure(agri, labels, agri_dt, modis_bounds,
+                             out.with_name(out.stem + "_geo.png"))
             return True, out_path, f"OK samples={n_s}", diag_row
         else:
             write_full_disk_hdf5(out, agri, labels, agri_dt)
+            _make_geo_figure(agri, labels, agri_dt, modis_bounds,
+                             out.with_name(out.stem + "_geo.png"))
             return True, out_path, "OK full_disk", diag_row
 
     except Exception:
         return False, out_path, f"Exception:\n{traceback.format_exc()}", diag_row
+
+
+def _make_geo_figure(agri, labels, agri_dt, modis_bounds, save_path):
+    """生成地理定位验证图：AGRI 圆盘边界 + MODIS CLP 覆盖 + 经纬度网格。
+
+    用于在融合完成后快速排查 MODIS 数据是否正确完整落入 AGRI 圆盘。
+    """
+    try:
+        import matplotlib; matplotlib.use("Agg")
+        import matplotlib.pyplot as plt
+        from matplotlib.colors import BoundaryNorm, ListedColormap
+
+        lat = agri["lat"]
+        lon = agri["lon"]
+        clp = labels["CLP"]
+
+        clp_names = getattr(cfg, "CLP_CLASS_NAMES", ["Clear", "Water", "Ice"])
+        clp_cmap = ListedColormap(["#eeeeee", "#4c78a8", "#f58518"][:len(clp_names)])
+        clp_norm = BoundaryNorm(np.arange(len(clp_names) + 1) - 0.5, len(clp_names))
+        clp_cmap.set_bad("white")
+
+        fig, axes = plt.subplots(1, 2, figsize=(18, 8))
+        ax_map, ax_stats = axes
+
+        # ── 左图：经纬度空间覆盖 ──
+        # AGRI 有效像元散点（下采样，灰色背景参考）
+        valid_agri = np.isfinite(lat) & np.isfinite(lon)
+        if valid_agri.any():
+            y_agri, x_agri = lat[valid_agri], lon[valid_agri]
+            step = max(1, len(y_agri) // 6000)
+            ax_map.scatter(x_agri[::step], y_agri[::step], s=0.2, alpha=0.25,
+                           color="lightgrey", rasterized=True, zorder=1)
+
+        # AGRI 圆盘边界线
+        _draw_disk_outline(ax_map, lat, lon, color="royalblue", lw=1.8, label="AGRI disk boundary")
+
+        # MODIS CLP 覆盖（按相态着色）
+        clp_valid = np.isfinite(clp) & (clp >= 0) & (clp < len(clp_names))
+        if clp_valid.any():
+            y_c, x_c = lat[clp_valid], lon[clp_valid]
+            step_c = max(1, len(y_c) // 8000)
+            ax_map.scatter(x_c[::step_c], y_c[::step_c], c=clp[clp_valid][::step_c],
+                           cmap=clp_cmap, norm=clp_norm, s=1.2, alpha=0.8,
+                           rasterized=True, zorder=3)
+
+        # MODIS 条带边界框（来自原始 MODIS 经纬度范围）
+        colors_swath = plt.cm.tab10(np.linspace(0, 1, max(len(modis_bounds), 1)))
+        for i, mb in enumerate(modis_bounds):
+            lat_min, lat_max = mb["lat_min"], mb["lat_max"]
+            lon_min, lon_max = mb["lon_min"], mb["lon_max"]
+            rect = plt.Rectangle((lon_min, lat_min), lon_max - lon_min, lat_max - lat_min,
+                                 fill=False, edgecolor=colors_swath[i], lw=1.2,
+                                 linestyle="--", alpha=0.7, zorder=2,
+                                 label=f"MODIS swath {i+1}" if i == 0 else None)
+            ax_map.add_patch(rect)
+
+        ax_map.set_xlabel("Longitude (°)", fontsize=10)
+        ax_map.set_ylabel("Latitude (°)", fontsize=10)
+        ax_map.set_title(f"MODIS→AGRI Geo Coverage | {agri_dt:%Y-%m-%d %H:%M:%S} UTC", fontsize=11)
+        ax_map.grid(True, alpha=0.35, linestyle="--", linewidth=0.5)
+        ax_map.legend(loc="lower right", fontsize=7, markerscale=4)
+        ax_map.set_aspect("equal")
+
+        # ── 右图：覆盖统计 ──
+        n_total = int(np.isfinite(lat).sum()) if valid_agri.any() else 0
+        n_clp = int(clp_valid.sum())
+        coverage = 100.0 * n_clp / max(n_total, 1)
+
+        # 相态分布
+        if clp_valid.any():
+            clp_int = clp[clp_valid].astype(int)
+            counts = np.bincount(clp_int, minlength=len(clp_names))[:len(clp_names)]
+        else:
+            counts = np.zeros(len(clp_names), dtype=int)
+
+        x_pos = np.arange(len(clp_names))
+        bars = ax_stats.bar(x_pos, counts, color=clp_cmap.colors, edgecolor="grey", linewidth=0.5)
+        for bar, cnt in zip(bars, counts):
+            ax_stats.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + max(counts.max(), 1) * 0.03,
+                          str(cnt), ha="center", fontsize=9, fontweight="bold")
+        ax_stats.set_xticks(x_pos)
+        ax_stats.set_xticklabels(clp_names, fontsize=10)
+        ax_stats.set_ylabel("Pixel Count", fontsize=10)
+        ax_stats.set_title(f"CLP Phase Distribution\nAGRI valid px={n_total:,}  |  "
+                           f"MODIS coverage={coverage:.1f}%  |  cloudy={counts[1:].sum():,}", fontsize=10)
+
+        # 附加文字信息
+        info_lines = [
+            f"AGRI datetime: {agri_dt:%Y-%m-%d %H:%M:%S}",
+            f"AGRI valid pixels: {n_total:,}",
+            f"MODIS CLP valid: {n_clp:,} ({coverage:.1f}%)",
+            f"Clear px: {counts[0]:,}",
+            f"Water px: {counts[1]:,}",
+            f"Ice px: {counts[2]:,}",
+        ]
+        if modis_bounds:
+            info_lines.append(f"MODIS granules: {len(modis_bounds)}")
+            for i, mb in enumerate(modis_bounds):
+                info_lines.append(f"  swath {i+1}: lon=[{mb['lon_min']:.2f}, {mb['lon_max']:.2f}] "
+                                  f"lat=[{mb['lat_min']:.2f}, {mb['lat_max']:.2f}]")
+        ax_stats.text(1.05, 0.5, "\n".join(info_lines), transform=ax_stats.transAxes,
+                      fontsize=7.5, fontfamily="monospace", verticalalignment="center",
+                      bbox=dict(boxstyle="round,pad=0.5", facecolor="whitesmoke", alpha=0.8))
+
+        fig.suptitle(f"Fusion Geo Verification — {agri_dt:%Y%m%d_%H%M%S}",
+                     fontsize=13, fontweight="bold")
+        fig.tight_layout()
+        save_path.parent.mkdir(parents=True, exist_ok=True)
+        fig.savefig(save_path, dpi=110, bbox_inches="tight")
+        plt.close(fig)
+        log.info("Geo figure saved -> %s", save_path)
+    except Exception as exc:
+        log.warning("Geo figure failed for %s: %s",
+                    agri_dt.strftime("%Y%m%d_%H%M%S") if agri_dt else "unknown", exc)
+
+
+def _draw_disk_outline(ax, lat, lon, **kwargs):
+    """在 ax 上画出 AGRI 有效像元的外轮廓（极角分箱近似凸包）。"""
+    valid = np.isfinite(lat) & np.isfinite(lon)
+    if valid.sum() < 3:
+        return
+    y, x = lat[valid], lon[valid]
+    center_lat, center_lon = np.median(y), np.median(x)
+    angles = np.arctan2(y - center_lat, x - center_lon)
+    n_bins = 72
+    bins = np.linspace(-np.pi, np.pi, n_bins + 1)
+    hull_lat, hull_lon = [], []
+    for i in range(n_bins):
+        mask = (angles >= bins[i]) & (angles < bins[i + 1])
+        if not mask.any():
+            continue
+        dist = np.sqrt((y[mask] - center_lat) ** 2 + (x[mask] - center_lon) ** 2)
+        idx = np.argmax(dist)
+        hull_lat.append(y[mask][idx])
+        hull_lon.append(x[mask][idx])
+    if len(hull_lat) < 3:
+        return
+    hull_lat = np.array(hull_lat)
+    hull_lon = np.array(hull_lon)
+    order = np.argsort(np.arctan2(hull_lat - center_lat, hull_lon - center_lon))
+    ax.plot(np.append(hull_lon[order], hull_lon[order[0]]),
+            np.append(hull_lat[order], hull_lat[order[0]]), **kwargs)
 
 
 def _make_qc_figure(out_h5: Path, qc_path: Path):

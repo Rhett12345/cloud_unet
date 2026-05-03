@@ -101,3 +101,5 @@ conda run -n cloudunet python tools/balance_split.py --suggest --seed 42
 - Prefer CSV/JSON outputs for diagnostics
 - Put new fusion outputs under separate experiment dirs, don't overwrite old results
 - Run `pytest -p no:cacheprovider tests` after changes to verify nothing broke
+
+ 每次回复前先说"打报告"。

@@ -84,7 +84,10 @@ RETRIEVAL_DIR = ROOT / "retrieval"
 # AGRI FDI – selected channel indices to use (0-based in the sorted list)
 # 当前输入为：ch2(0.65µm) + ch5(1.61µm) + ch8-14(IR)
 # 保留变量名 AGRI_BT_CHANNEL_INDICES 以兼容现有训练/推理代码。
-AGRI_BT_CHANNEL_INDICES = [1, 4, 8, 9, 10, 11, 12, 13]   # 9 channels of FY4A
+AGRI_BT_CHANNEL_INDICES = [
+    1, 4,
+    8, 9, 10, 11, 12, 13
+]   # ch2(0.65µm) + ch5(1.61µm) + ch8-14(IR) = 8 channels
 
 # AGRI pixel size in degrees (approx) for spatial matching
 AGRI_PIXEL_DEG = 0.04
@@ -132,8 +135,8 @@ MAX_TIME_DIFF_MIN = 5
 # Angle filters  (CLP 放宽以保留更多分类监督；回归保持严格)
 MAX_VZA_DEG     = _env_float("UNET_MAX_VZA_DEG", 65)
 MAX_SZA_DEG     = _env_float("UNET_MAX_SZA_DEG", 65)
-MAX_VZA_DEG_CLP = _env_float("UNET_MAX_VZA_DEG_CLP", 75)
-MAX_SZA_DEG_CLP = _env_float("UNET_MAX_SZA_DEG_CLP", 75)
+MAX_VZA_DEG_CLP = _env_float("UNET_MAX_VZA_DEG_CLP", 65)
+MAX_SZA_DEG_CLP = _env_float("UNET_MAX_SZA_DEG_CLP", 65)
 MAX_CTH_M       = _env_float("UNET_MAX_CTH_M", 18000)
 # 分类/回归是否强依赖几何过滤
 CLP_USE_GEO_FILTER = True
@@ -194,8 +197,8 @@ MODIS_MAX_COT_UNCERTAINTY_PCT = 100.0
 MODIS_MAX_CER_UNCERTAINTY_PCT = 100.0
 
 # Optical-property retrieval QC：仅保留 Cloud_Phase_Optical_Properties 指示为云的像元
-# 2=liquid water cloud, 3=ice cloud, 4=undetermined phase cloud (retrieval attempted as liquid)
-MODIS_ALLOWED_OPTICAL_PHASES_FOR_COP = (2, 3, 4)
+# 1=water cloud, 2=ice cloud, 3/4=undetermined
+MODIS_ALLOWED_OPTICAL_PHASES_FOR_COP = (1, 2, 3, 4)
 MODIS_REQUIRE_OPTICAL_PHASE_FOR_COP = True
 
 # 可选：要求 IR phase 与 optical phase 在可比时一致；默认关闭，避免样本过度收缩。
@@ -241,16 +244,13 @@ TEST_DATES  = _env_list("UNET_TEST_DATES", [
 # 8.  Model hyper-parameters
 # ─────────────────────────────────────────────────────────────────────────────
 # Network input: selected AGRI channels (VIS/NIR + IR, no GIIRS)
-AGRI_CHANNELS  = len(AGRI_BT_CHANNEL_INDICES)   # 9
+AGRI_CHANNELS  = len(AGRI_BT_CHANNEL_INDICES)   # 8
 GIIRS_CHANNELS = 0                               # not used
 
 CLP_CLASSES   = len(CLP_CLASS_NAMES)
 COMP_CHANNELS = 3   # CER, COT, CTH
 
-MODEL_BASE_CHANNELS = 32
-TRANSFORMER_DEPTH   = 4
-TRANSFORMER_HEADS   = 8
-TRANSFORMER_MLP_DIM = 256
+UNET_BASE_CHANNELS  = 16
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 9.  Training hyper-parameters
