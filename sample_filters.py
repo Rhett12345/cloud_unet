@@ -52,8 +52,6 @@ def count_supervision_pixels(
     valid_cloudy = (
         valid_label
         & (patch_clp > 0)
-        & np.isfinite(patch_cer)
-        & np.isfinite(patch_cot)
         & np.isfinite(patch_cth)
     )
     return {

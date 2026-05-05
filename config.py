@@ -85,7 +85,7 @@ RETRIEVAL_DIR = ROOT / "retrieval"
 # 当前输入为：ch2(0.65µm) + ch5(1.61µm) + ch8-14(IR)
 # 保留变量名 AGRI_BT_CHANNEL_INDICES 以兼容现有训练/推理代码。
 AGRI_BT_CHANNEL_INDICES = [
-    1, 4,
+    # 1, 4,
     8, 9, 10, 11, 12, 13
 ]   # ch2(0.65µm) + ch5(1.61µm) + ch9-14(IR) = 8 channels
 
@@ -97,9 +97,9 @@ AGRI_PIXEL_DEG = 0.04
 # and higher model prediction accuracy (CLP OA 48.6% vs 45.0% with combined).
 # Uncertainty SDS: Cloud_Effective_Radius_Uncertainty_16 / Cloud_Optical_Thickness_Uncertainty_16
 MODIS_VARS = {
-    "CLP": "Cloud_Phase_Infrared_1km",     # IR phase: clear / water / ice / mixed / undetermined
-    "CER": "Cloud_Effective_Radius_16",    # µm ×100 stored as int (1.6 µm retrieval)
-    "COT": "Cloud_Optical_Thickness_16",   # ×100 stored as int (1.6 µm retrieval)
+    "CLP": "Cloud_Phase_Infrared_1km",     # IR phase: clear / water / ice / undetermined
+    # "CER": "Cloud_Effective_Radius_16",  # removed: focus on CLP+CTH only
+    # "COT": "Cloud_Optical_Thickness_16", # removed: focus on CLP+CTH only
     "CTH": "cloud_top_height_1km",         # m
 }
 
@@ -111,11 +111,11 @@ MODIS_QC_VARS = {
     "CTM": "cloud_top_method_1km",
 }
 
-# Scale factors applied AFTER reading raw integer values (same for all CER/COT variants)
+# Scale factors applied AFTER reading raw integer values
 MODIS_SCALE = {
     "CLP": 1.0,
-    "CER": 0.01,     # integer → µm  (scale_factor=0.01, valid_range [0, 10000])
-    "COT": 0.01,     # integer → unitless
+    # "CER": 0.01,     # removed: focus on CLP+CTH only
+    # "COT": 0.01,     # removed: focus on CLP+CTH only
     "CTH": 1.0,      # already in metres
 }
 
@@ -153,23 +153,23 @@ REG_USE_GEO_FILTER = True
 # 回归监督缺失时训练 loss 会自动 mask，不影响 CLP 分类学习。
 PATCH_FILTER_RULES = {
     "default": {
-        "min_valid_label_pixels": 256,
-        "min_valid_label_ratio": 0.25,
-        "min_valid_cloudy_pixels": 0,
-        "min_valid_cloudy_ratio": 0.0,
+        "min_valid_label_pixels": 512,
+        "min_valid_label_ratio": 0.50,
+        "min_valid_cloudy_pixels": 150,
+        "min_valid_cloudy_ratio": 0.15,
     },
     "train": {},
     "val": {
-        "min_valid_label_pixels": 128,
-        "min_valid_label_ratio": 0.125,
-        "min_valid_cloudy_pixels": 0,
-        "min_valid_cloudy_ratio": 0.0,
+        "min_valid_label_pixels": 256,
+        "min_valid_label_ratio": 0.25,
+        "min_valid_cloudy_pixels": 75,
+        "min_valid_cloudy_ratio": 0.075,
     },
     "test": {
-        "min_valid_label_pixels": 128,
-        "min_valid_label_ratio": 0.125,
-        "min_valid_cloudy_pixels": 0,
-        "min_valid_cloudy_ratio": 0.0,
+        "min_valid_label_pixels": 256,
+        "min_valid_label_ratio": 0.25,
+        "min_valid_cloudy_pixels": 75,
+        "min_valid_cloudy_ratio": 0.075,
     },
 }
 
@@ -253,7 +253,7 @@ AGRI_CHANNELS  = len(AGRI_BT_CHANNEL_INDICES)   # 8
 GIIRS_CHANNELS = 0                               # not used
 
 CLP_CLASSES   = len(CLP_CLASS_NAMES)
-COMP_CHANNELS = 3   # CER, COT, CTH
+COMP_CHANNELS = 1   # CTH only (CER/COT removed)
 
 UNET_BASE_CHANNELS  = 16
 
@@ -272,11 +272,11 @@ NUM_WORKERS   = 5
 # Early stopping
 EARLY_STOP_PATIENCE = 10
 
-# Loss weights  (CLP_CE + w_cer*CER + w_cot*COT + w_cth*CTH)
+# Loss weights  (CLP_CE + w_cth*CTH)
 # 原来 CLP=0.5 被回归任务淹没，改为等权；待模型收敛后可再调整
 LOSS_W_CLP = _env_float("UNET_LOSS_W_CLP", 1.0)
-LOSS_W_CER = _env_float("UNET_LOSS_W_CER", 1.0)
-LOSS_W_COT = _env_float("UNET_LOSS_W_COT", 1.0)
+# LOSS_W_CER = _env_float("UNET_LOSS_W_CER", 1.0)  # removed
+# LOSS_W_COT = _env_float("UNET_LOSS_W_COT", 1.0)  # removed
 LOSS_W_CTH = _env_float("UNET_LOSS_W_CTH", 1.0)
 
 # Optional sample-level quality gate for upper-bound experiments.

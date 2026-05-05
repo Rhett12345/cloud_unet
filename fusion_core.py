@@ -383,8 +383,6 @@ def aggregate_modis_to_agri(
     geo_sources = sorted({str(m.get("_geo_source", "unknown")) for m in modis_list})
     return {
         "CLP":               out_clp.reshape(H_a, W_a),
-        "CER":               out_cer.reshape(H_a, W_a),
-        "COT":               out_cot.reshape(H_a, W_a),
         "CTH":               out_cth.reshape(H_a, W_a),
         "MATCH_DT_MIN":      out_dt.reshape(H_a, W_a),
         "MATCH_DT_MEAN":     out_dt_mean.reshape(H_a, W_a),
@@ -495,8 +493,7 @@ def _empty_output(H: int, W: int) -> dict:
     zero2d = np.zeros((H, W), np.float32)
     int2d  = np.zeros((H, W), np.int32)
     return {
-        "CLP": nan2d.copy(), "CER": nan2d.copy(),
-        "COT": nan2d.copy(), "CTH": nan2d.copy(),
+        "CLP": nan2d.copy(), "CTH": nan2d.copy(),
         "MATCH_DT_MIN": nan2d.copy(), "MATCH_DT_MEAN": nan2d.copy(), "MATCH_DT_MAX": nan2d.copy(),
         "MATCH_DIST_MEAN_KM": nan2d.copy(), "MATCH_DIST_P95_KM": nan2d.copy(),
         "OVERLAP_FRACTION": zero2d.copy(),

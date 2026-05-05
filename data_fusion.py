@@ -189,6 +189,7 @@ def _fuse_one_scene(agri_file, modis_files, out_path, mode, qc_diagnostics_enabl
             return False, out_path, "No MYD06 after reading", diag_row
 
         # 收集 MODIS 条带轮廓和边界（用于地理可视化验证）
+        sub_lon = float(getattr(fc, "AGRI_SUB_LON", 104.7))
         modis_bounds = []
         for m in modis_list:
             mlat = m.get("lat_1km") if m.get("lat_1km") is not None else m.get("lat_5km")
@@ -196,7 +197,8 @@ def _fuse_one_scene(agri_file, modis_files, out_path, mode, qc_diagnostics_enabl
             if mlat is not None and mlon is not None:
                 valid = np.isfinite(mlat) & np.isfinite(mlon)
                 if valid.any():
-                    outline = _compute_swath_outline(mlat, mlon, valid)
+                    # outline = _compute_swath_outline(mlat, mlon, valid)
+                    outline = _compute_swath_outline(mlat, mlon, valid, sub_lon=sub_lon)
                     border_ok = _check_modis_border_in_agri(
                         mlat, mlon, valid, agri["lat"], agri["lon"])
                     modis_bounds.append({
@@ -229,7 +231,6 @@ def _fuse_one_scene(agri_file, modis_files, out_path, mode, qc_diagnostics_enabl
         n_clp = int(np.isfinite(labels["CLP"]).sum())
         n_cld = int((
             np.isfinite(labels["CLP"]) & (labels["CLP"] > 0) &
-            np.isfinite(labels["CER"]) & np.isfinite(labels["COT"]) &
             np.isfinite(labels["CTH"])
         ).sum())
         if (n_clp < thresh["min_valid_label_pixels"] or
@@ -257,49 +258,103 @@ def _fuse_one_scene(agri_file, modis_files, out_path, mode, qc_diagnostics_enabl
         return False, out_path, f"Exception:\n{traceback.format_exc()}", diag_row
 
 
-def _compute_swath_outline(lat, lon, valid):
+# def _compute_swath_outline(lat, lon, valid):
+#     """计算 MODIS 条带有效区域的轮廓（极角分箱近似凸包）。
+#
+#     内部在 [0,360] 计算避免日期变更线撕裂，输出时为 [-180,180]
+#     供 cartopy PlateCarree data transform 使用。
+#     """
+#     y, x_raw = lat[valid], lon[valid]
+#     if len(y) < 3:
+#         return {"lat": np.array([]), "lon": np.array([])}
+#
+#     x_360 = np.where(x_raw < 0, x_raw + 360.0, x_raw)
+#     center_lat = np.median(y)
+#     center_lon_360 = np.median(x_360)
+#
+#     dlon = x_360 - center_lon_360
+#     angles = np.arctan2(y - center_lat, dlon)
+#     angles_2pi = np.where(angles < 0, angles + 2.0 * np.pi, angles)
+#
+#     n_bins = 72
+#     bins = np.linspace(0, 2.0 * np.pi, n_bins + 1)
+#     hull_lat, hull_lon_360 = [], []
+#     for i in range(n_bins):
+#         mask = (angles_2pi >= bins[i]) & (angles_2pi < bins[i + 1])
+#         if not mask.any():
+#             continue
+#         dist = np.sqrt((y[mask] - center_lat) ** 2 + (x_360[mask] - center_lon_360) ** 2)
+#         idx = np.argmax(dist)
+#         hull_lat.append(float(y[mask][idx]))
+#         hull_lon_360.append(float(x_360[mask][idx]))
+#
+#     if len(hull_lat) < 3:
+#         return {"lat": np.array([]), "lon": np.array([])}
+#
+#     hull_lat = np.array(hull_lat)
+#     hull_lon_360 = np.array(hull_lon_360)
+#
+#     hull_dlon = hull_lon_360 - center_lon_360
+#     hull_angles = np.arctan2(hull_lat - center_lat, hull_dlon)
+#     hull_angles_2pi = np.where(hull_angles < 0, hull_angles + 2.0 * np.pi, hull_angles)
+#     order = np.argsort(hull_angles_2pi)
+#
+#     hull_lon_plot = np.where(hull_lon_360 > 180.0, hull_lon_360 - 360.0, hull_lon_360)
+#     return {"lat": hull_lat[order], "lon": hull_lon_plot[order]}
+
+def _compute_swath_outline(lat, lon, valid, sub_lon=104.7):
     """计算 MODIS 条带有效区域的轮廓（极角分箱近似凸包）。
 
-    内部在 [0,360] 计算避免日期变更线撕裂，输出时为 [-180,180]
-    供 cartopy PlateCarree data transform 使用。
+    注意：这里不再使用普通 [-180, 180] 经度直接闭合轮廓。
+    先把经度转换成以 AGRI 星下点 sub_lon 为中心的相对经度，
+    避免跨日期变更线时出现错误连线。
     """
     y, x_raw = lat[valid], lon[valid]
     if len(y) < 3:
         return {"lat": np.array([]), "lon": np.array([])}
 
-    x_360 = np.where(x_raw < 0, x_raw + 360.0, x_raw)
-    center_lat = np.median(y)
-    center_lon_360 = np.median(x_360)
+    # 转成以 sub_lon 为中心的连续经度坐标，范围约为 [-180, 180]
+    x_rel = ((x_raw - sub_lon + 180.0) % 360.0) - 180.0
 
-    dlon = x_360 - center_lon_360
+    center_lat = np.median(y)
+    center_lon_rel = np.median(x_rel)
+
+    dlon = x_rel - center_lon_rel
     angles = np.arctan2(y - center_lat, dlon)
     angles_2pi = np.where(angles < 0, angles + 2.0 * np.pi, angles)
 
     n_bins = 72
     bins = np.linspace(0, 2.0 * np.pi, n_bins + 1)
-    hull_lat, hull_lon_360 = [], []
+    hull_lat, hull_lon_rel = [], []
+
     for i in range(n_bins):
         mask = (angles_2pi >= bins[i]) & (angles_2pi < bins[i + 1])
         if not mask.any():
             continue
-        dist = np.sqrt((y[mask] - center_lat) ** 2 + (x_360[mask] - center_lon_360) ** 2)
+
+        dist = np.sqrt(
+            (y[mask] - center_lat) ** 2 +
+            (x_rel[mask] - center_lon_rel) ** 2
+        )
         idx = np.argmax(dist)
+
         hull_lat.append(float(y[mask][idx]))
-        hull_lon_360.append(float(x_360[mask][idx]))
+        hull_lon_rel.append(float(x_rel[mask][idx]))
 
     if len(hull_lat) < 3:
         return {"lat": np.array([]), "lon": np.array([])}
 
     hull_lat = np.array(hull_lat)
-    hull_lon_360 = np.array(hull_lon_360)
+    hull_lon_rel = np.array(hull_lon_rel)
 
-    hull_dlon = hull_lon_360 - center_lon_360
+    hull_dlon = hull_lon_rel - center_lon_rel
     hull_angles = np.arctan2(hull_lat - center_lat, hull_dlon)
     hull_angles_2pi = np.where(hull_angles < 0, hull_angles + 2.0 * np.pi, hull_angles)
     order = np.argsort(hull_angles_2pi)
 
-    hull_lon_plot = np.where(hull_lon_360 > 180.0, hull_lon_360 - 360.0, hull_lon_360)
-    return {"lat": hull_lat[order], "lon": hull_lon_plot[order]}
+    # 注意：这里返回的是相对经度，不转回普通经度
+    # 因为后面绘图会用 transform=map_crs
+    return {"lat": hull_lat[order], "lon": hull_lon_rel[order]}
 
 
 def _check_modis_border_in_agri(modis_lat, modis_lon, modis_valid, agri_lat, agri_lon):
@@ -372,16 +427,22 @@ def _make_geo_figure(agri, labels, agri_dt, modis_bounds, save_path,
                            color="lightgrey", rasterized=True, zorder=1,
                            transform=data_crs, label="AGRI full disk")
                 # 全圆盘轮廓
-                _draw_disk_outline(ax, full_lat, full_lon,
+                _draw_disk_outline(ax, full_lat, full_lon, sub_lon=sub_lon,
                                    color="lightgrey", lw=1.0, linestyle="--", alpha=0.5,
-                                   label=None, transform=data_crs)
+                                   label=None, transform=map_crs)
+                # _draw_disk_outline(ax, full_lat, full_lon,
+                #                    color="lightgrey", lw=1.0, linestyle="--", alpha=0.5,
+                #                    label=None, transform=data_crs)
 
         # ── 收紧后保留区域轮廓（蓝色）──
         lat, lon = agri["lat"], agri["lon"]
         valid_agri = np.isfinite(lat) & np.isfinite(lon)
         if valid_agri.any():
-            _draw_disk_outline(ax, lat, lon, color="royalblue", lw=2.2,
-                               label="Retained region", transform=data_crs)
+            _draw_disk_outline(ax, lat, lon, sub_lon=sub_lon,
+                               color="royalblue", lw=2.2,
+                               label="Retained region", transform=map_crs)
+            # _draw_disk_outline(ax, lat, lon, color="royalblue", lw=2.2,
+            #                    label="Retained region", transform=data_crs)
 
         # ── MODIS 条带（按文件着色）──
         swath_colors = plt.cm.tab10(np.linspace(0, 1, max(len(modis_bounds), 1)))
@@ -394,14 +455,19 @@ def _make_geo_figure(agri, labels, agri_dt, modis_bounds, save_path,
             short_name = mb.get("file", "MODIS")[:35]
 
             if len(olat) > 2:
-                ax.fill(olon, olat, alpha=0.10, color=color, zorder=2,
-                        transform=data_crs)
                 ax.plot(np.append(olon, olon[0]), np.append(olat, olat[0]),
                         color=color, lw=1.6, linestyle="--", alpha=0.85, zorder=3,
-                        transform=data_crs, label=f"[{status}] {short_name}")
+                        transform=map_crs, label=f"[{status}] {short_name}")
+                # ax.fill(olon, olat, alpha=0.10, color=color, zorder=2,
+                #         transform=data_crs)
+                # ax.plot(np.append(olon, olon[0]), np.append(olat, olat[0]),
+                #         color=color, lw=1.6, linestyle="--", alpha=0.85, zorder=3,
+                #         transform=data_crs, label=f"[{status}] {short_name}")
+
 
         # ── 视图范围：以星下点为中心 ±85° ──
-        ax.set_extent([-85, 85, -85, 85], crs=map_crs)
+        # ax.set_extent([-85, 85, -85, 85], crs=map_crs)
+        ax.set_extent([sub_lon - 85.0, sub_lon + 85.0, -85.0, 85.0], crs=data_crs)
 
         # ── 标注 ──
         gl = ax.gridlines(draw_labels=True, alpha=0.35, linestyle="--", linewidth=0.5)
@@ -414,15 +480,13 @@ def _make_geo_figure(agri, labels, agri_dt, modis_bounds, save_path,
         verdict = "ALL MODIS INSIDE" if all_in else ("SOME OUTSIDE" if any_out else "UNKNOWN")
         n_clp = int(np.isfinite(labels["CLP"]).sum())
         n_total = int(valid_agri.sum()) if valid_agri.any() else 1
-        n_cer = int(np.isfinite(labels["CER"]).sum())
-        n_cot = int(np.isfinite(labels["COT"]).sum())
         n_cth = int(np.isfinite(labels["CTH"]).sum())
         ax.set_title(
             f"MODIS -> AGRI  Geo Verification\n"
             f"{agri_dt:%Y-%m-%d %H:%M} UTC  |  "
             f"{len(modis_bounds)} MODIS granule(s)  |  {verdict}  |  "
             f"CLP: {n_clp}/{n_total} ({100.*n_clp/max(n_total,1):.1f}%)  |  "
-            f"CER: {n_cer}  COT: {n_cot}  CTH: {n_cth}",
+            f"CTH: {n_cth}",
             fontsize=12, fontweight="bold")
 
         ax.legend(loc="upper left", fontsize=6.5, markerscale=2, ncol=1,
@@ -438,63 +502,120 @@ def _make_geo_figure(agri, labels, agri_dt, modis_bounds, save_path,
                     agri_dt.strftime("%Y%m%d_%H%M%S") if agri_dt else "unknown", exc)
 
 
-def _draw_disk_outline(ax, lat, lon, **kwargs):
+# def _draw_disk_outline(ax, lat, lon, **kwargs):
+#     """画出有效像元外轮廓（极角分箱近似凸包）。
+#
+#     AGRI 全圆盘经度在 [0,360] 下为连续区间 ~[24.1°, 185.3°]，
+#     但 _derive_latlon 输出经 _wrap_lon 转成了 [-180,180]，
+#     导致圆盘在 ±180° 日期变更线处被撕裂。
+#     因此内部计算统一转到 [0,360]（连续），绘图前再转回 [-180,180]
+#     交给 cartopy PlateCarree transform 处理。
+#     """
+#     valid = np.isfinite(lat) & np.isfinite(lon)
+#     if valid.sum() < 3:
+#         return
+#     y = lat[valid]
+#     x_raw = lon[valid]
+#
+#     # ── 转到 [0, 360]：AGRI 圆盘在此范围连续 ──
+#     x_360 = np.where(x_raw < 0, x_raw + 360.0, x_raw)
+#
+#     center_lat = np.median(y)
+#     center_lon_360 = np.median(x_360)
+#
+#     # dlon 在 [0,360] 下连续（约 -80.6° ~ +80.6°），无需 wrap
+#     dlon = x_360 - center_lon_360
+#     angles = np.arctan2(y - center_lat, dlon)
+#     # 转到 [0, 2π)：atan2 分支切割在 ±π（西边缘赤道），
+#     # +2π 后该处变为 angle=π，整个圆盘轮廓角度连续
+#     angles_2pi = np.where(angles < 0, angles + 2.0 * np.pi, angles)
+#
+#     n_bins = 72
+#     bins = np.linspace(0, 2.0 * np.pi, n_bins + 1)
+#     hull_lat, hull_lon = [], []
+#     for i in range(n_bins):
+#         mask = (angles_2pi >= bins[i]) & (angles_2pi < bins[i + 1])
+#         if not mask.any():
+#             continue
+#         dist = np.sqrt((y[mask] - center_lat) ** 2 + (x_360[mask] - center_lon_360) ** 2)
+#         idx = np.argmax(dist)
+#         hull_lat.append(y[mask][idx])
+#         hull_lon.append(x_360[mask][idx])
+#
+#     if len(hull_lat) < 3:
+#         return
+#
+#     hull_lat = np.array(hull_lat)
+#     hull_lon_360 = np.array(hull_lon)
+#
+#     # 按角度排序闭合路径（仍在 [0,2π) 下，连续无跳变）
+#     hull_dlon = hull_lon_360 - center_lon_360
+#     hull_angles = np.arctan2(hull_lat - center_lat, hull_dlon)
+#     hull_angles_2pi = np.where(hull_angles < 0, hull_angles + 2.0 * np.pi, hull_angles)
+#     order = np.argsort(hull_angles_2pi)
+#
+#     # 转回 [-180, 180] 供 cartopy PlateCarree data transform
+#     hull_lon_plot = np.where(hull_lon_360 > 180.0, hull_lon_360 - 360.0, hull_lon_360)
+#
+#     plot_lon = np.append(hull_lon_plot[order], hull_lon_plot[order[0]])
+#     plot_lat = np.append(hull_lat[order], hull_lat[order[0]])
+#     ax.plot(plot_lon, plot_lat, **kwargs)
+
+def _draw_disk_outline(ax, lat, lon, sub_lon=104.7, **kwargs):
     """画出有效像元外轮廓（极角分箱近似凸包）。
 
-    AGRI 全圆盘经度在 [0,360] 下为连续区间 ~[24.1°, 185.3°]，
-    但 _derive_latlon 输出经 _wrap_lon 转成了 [-180,180]，
-    导致圆盘在 ±180° 日期变更线处被撕裂。
-    因此内部计算统一转到 [0,360]（连续），绘图前再转回 [-180,180]
-    交给 cartopy PlateCarree transform 处理。
+    这里使用以 AGRI 星下点 sub_lon 为中心的相对经度坐标。
+    这样 AGRI 圆盘在绘图坐标中是连续的，不会在 ±180° 附近撕裂。
     """
     valid = np.isfinite(lat) & np.isfinite(lon)
     if valid.sum() < 3:
         return
+
     y = lat[valid]
     x_raw = lon[valid]
 
-    # ── 转到 [0, 360]：AGRI 圆盘在此范围连续 ──
-    x_360 = np.where(x_raw < 0, x_raw + 360.0, x_raw)
+    # 转成以 sub_lon 为中心的连续经度坐标
+    x_rel = ((x_raw - sub_lon + 180.0) % 360.0) - 180.0
 
     center_lat = np.median(y)
-    center_lon_360 = np.median(x_360)
+    center_lon_rel = np.median(x_rel)
 
-    # dlon 在 [0,360] 下连续（约 -80.6° ~ +80.6°），无需 wrap
-    dlon = x_360 - center_lon_360
+    dlon = x_rel - center_lon_rel
     angles = np.arctan2(y - center_lat, dlon)
-    # 转到 [0, 2π)：atan2 分支切割在 ±π（西边缘赤道），
-    # +2π 后该处变为 angle=π，整个圆盘轮廓角度连续
     angles_2pi = np.where(angles < 0, angles + 2.0 * np.pi, angles)
 
     n_bins = 72
     bins = np.linspace(0, 2.0 * np.pi, n_bins + 1)
-    hull_lat, hull_lon = [], []
+    hull_lat, hull_lon_rel = [], []
+
     for i in range(n_bins):
         mask = (angles_2pi >= bins[i]) & (angles_2pi < bins[i + 1])
         if not mask.any():
             continue
-        dist = np.sqrt((y[mask] - center_lat) ** 2 + (x_360[mask] - center_lon_360) ** 2)
+
+        dist = np.sqrt(
+            (y[mask] - center_lat) ** 2 +
+            (x_rel[mask] - center_lon_rel) ** 2
+        )
         idx = np.argmax(dist)
+
         hull_lat.append(y[mask][idx])
-        hull_lon.append(x_360[mask][idx])
+        hull_lon_rel.append(x_rel[mask][idx])
 
     if len(hull_lat) < 3:
         return
 
     hull_lat = np.array(hull_lat)
-    hull_lon_360 = np.array(hull_lon)
+    hull_lon_rel = np.array(hull_lon_rel)
 
-    # 按角度排序闭合路径（仍在 [0,2π) 下，连续无跳变）
-    hull_dlon = hull_lon_360 - center_lon_360
+    hull_dlon = hull_lon_rel - center_lon_rel
     hull_angles = np.arctan2(hull_lat - center_lat, hull_dlon)
     hull_angles_2pi = np.where(hull_angles < 0, hull_angles + 2.0 * np.pi, hull_angles)
     order = np.argsort(hull_angles_2pi)
 
-    # 转回 [-180, 180] 供 cartopy PlateCarree data transform
-    hull_lon_plot = np.where(hull_lon_360 > 180.0, hull_lon_360 - 360.0, hull_lon_360)
-
-    plot_lon = np.append(hull_lon_plot[order], hull_lon_plot[order[0]])
+    plot_lon = np.append(hull_lon_rel[order], hull_lon_rel[order[0]])
     plot_lat = np.append(hull_lat[order], hull_lat[order[0]])
+
     ax.plot(plot_lon, plot_lat, **kwargs)
 
 

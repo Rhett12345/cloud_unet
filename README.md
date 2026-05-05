@@ -1,7 +1,8 @@
 # AGRI + MYD06 Cloud Property Retrieval Pipeline
 
-Retrieves cloud properties (CLP, CER, COT, CTH) from FY-4B AGRI FDI/GEO data,
-supervised by MYD06 (Aqua/MODIS) labels, using the HIR-COMP-UNet architecture.
+Retrieves cloud properties (CLP, CTH) from FY-4A AGRI FDI/GEO data,
+supervised by MYD06 (Aqua/MODIS) labels with MYD03 1km geolocation,
+using a simple U-Net architecture.
 
 ---
 
@@ -9,15 +10,24 @@ supervised by MYD06 (Aqua/MODIS) labels, using the HIR-COMP-UNet architecture.
 
 ```
 .
-├── config.py         ← ALL paths and hyper-parameters (edit here only)
-├── data_fusion.py    ← Stage 1: match AGRI + MYD06, write paired HDF5
-├── dataset.py        ← Stage 2: Dataset class + normalisation statistics
-├── model.py          ← Network architecture (AGRI-only variant)
-├── train.py          ← Stage 3: training loop
-├── test.py           ← Stage 4: evaluation + metrics
-├── inference.py      ← Stage 5: full-disk retrieval
-├── main.py           ← Orchestrator (single entry point)
-└── requirements.txt
+├── config.py          ← ALL paths and hyper-parameters (edit here only)
+├── fusion_config.py   ← Fusion thresholds: time window, match radius, QC gates
+├── fusion_core.py     ← MODIS→AGRI aggregation engine (pure numeric, no IO)
+├── fusion_io.py       ← AGRI / MYD06 / MYD03 file IO, QC filters, HDF5 write
+├── data_fusion.py     ← Stage 1: multi-process fusion scheduler
+├── sample_filters.py  ← Patch / sample supervision quality filters
+├── dataset.py         ← Stage 2: PyTorch Dataset + normalisation statistics
+├── model.py           ← Simple U-Net architecture (AGRI-only)
+├── train.py           ← Stage 3: training loop with AMP, multi-checkpoint saving
+├── test.py            ← Stage 4: evaluation (CLP OA, per-class acc, CTH regression)
+├── inference.py       ← Stage 5: full-disk sliding-window inference
+├── main.py            ← Orchestrator (single entry point for all stages)
+├── requirements.txt
+├── tools/             ← Diagnostic and utility scripts
+│   ├── balance_split.py
+│   ├── visualize_fusion_geo.py
+│   └── visualize_h5_paired_batch.py
+└── tests/             ← Unit tests
 ```
 
 ---
@@ -25,32 +35,47 @@ supervised by MYD06 (Aqua/MODIS) labels, using the HIR-COMP-UNet architecture.
 ## Quick start
 
 ### 1 · Install dependencies
+
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2 · Edit config.py
-Set at minimum:
-```python
-AGRI_ROOT  = Path("/your/AGRI/data")    # parent of YYYYMMDD/ day-folders
-MODIS_ROOT = Path("/your/MYD06/data")   # parent of YYYYMMDD/ day-folders
-ROOT       = Path("/your/project")      # all outputs written here
-TRAIN_DATES = ["20230601", "20230602"]  # or leave [] to use all folders
-VAL_DATES   = ["20230615"]
-TEST_DATES  = ["20230701"]
+### 2 · Environment
+
+Always use the `cloudunet` conda environment:
+
+```bash
+conda activate cloudunet
 ```
 
-### 3 · Run the full pipeline
+GPU: 2× NVIDIA GeForce RTX 4090. Set `CUDA_VISIBLE_DEVICES=1` if GPU 0 is occupied.
+
+### 3 · Edit config.py
+
+Set at minimum the data paths (defaults point to `/data/Data_yuq/`):
+
+```python
+AGRI_ROOT  = Path("/your/AGRI/data")     # parent of YYYYMMDD/ day-folders
+MODIS_ROOT = Path("/your/MYD06/data")    # parent of YYYYMMDD/ day-folders
+MYD03_ROOT = Path("/your/MYD03/data")    # parent of YYYYMMDD/ day-folders
+ROOT       = Path("/your/workdir")       # all outputs written here
+```
+
+Date splits can be overridden via env vars `UNET_TRAIN_DATES`, `UNET_VAL_DATES`, `UNET_TEST_DATES`.
+
+### 4 · Run the full pipeline
+
 ```bash
 python main.py --stages fuse stats train test
 ```
 
 Or step by step:
-```bash
-# Fuse training data (one day at a time if needed)
-python main.py --stages fuse --split train --day 20230601
 
-# Compute normalisation statistics (uses PAIRED_TRAIN_DIR)
+```bash
+# Fuse one day of training data
+python main.py --stages fuse --split train --day 20190105 --workers 8
+
+# Compute normalisation statistics from train split
 python main.py --stages stats
 
 # Train the model
@@ -59,8 +84,9 @@ python main.py --stages train
 # Evaluate on test split
 python main.py --stages test
 
-# Full-disk inference on a new AGRI file
-python main.py --stages infer --agri_file /data/raw/AGRI/20230815/FY4B_AGRI_*.HDF
+# Full-disk inference on new AGRI scenes
+python main.py --stages infer --agri_file /data/FY4A/20190105/FY4A-_AGRI--_N_DISK_*_L1.HDF
+python main.py --stages infer --agri_dir  /data/FY4A/20190105/
 ```
 
 ---
@@ -69,19 +95,19 @@ python main.py --stages infer --agri_file /data/raw/AGRI/20230815/FY4B_AGRI_*.HD
 
 ```
 AGRI_ROOT/
-  20230601/
-    FY4B-_AGRI--_N_DISK_xxxxxxxx_20230601060000_L1.HDF
-    FY4B-_AGRI--_N_DISK_xxxxxxxx_20230601061500_L1.HDF
-    ...
-  20230602/
+  20190105/
+    FY4A-_AGRI--_N_DISK_xxx_20190105060000_L1.HDF   (FDI)
+    FY4A-_AGRI--_N_DISK_xxx_20190105060000_L1_GEO.HDF (GEO)
     ...
 
 MODIS_ROOT/
-  20230601/
-    MYD06_L2.A2023152.0600.061.*.hdf
-    MYD06_L2.A2023152.0605.061.*.hdf
+  20190105/
+    MYD06_L2.A2019005.0600.061.*.hdf
     ...
-  20230602/
+
+MYD03_ROOT/
+  20190105/
+    MYD03.A2019005.0600.061.*.hdf
     ...
 ```
 
@@ -98,18 +124,19 @@ ROOT/
   stats/
     norm_stats.npz
   model/
-    HIR_COMP_UNet_AGRIonly_best.pth
-    HIR_COMP_UNet_AGRIonly_last.pth
+    HIR_COMP_UNet_AGRIonly_best.pth        (best by monitored metric)
+    HIR_COMP_UNet_AGRIonly_best_loss.pth   (best by val loss)
+    HIR_COMP_UNet_AGRIonly_best_oa.pth     (best by overall accuracy)
+    HIR_COMP_UNet_AGRIonly_best_macro.pth  (best by macro accuracy)
+    HIR_COMP_UNet_AGRIonly_last.pth        (most recent epoch)
   logs/
     pipeline.log
     train_log.csv
   retrieval/
-    <stem>_retrieval.npz   (lat, lon, CLP_pred, CER_pred, COT_pred, CTH_pred, CLP_prob)
+    <stem>_retrieval.npz   (lat, lon, CLP_pred, CTH_pred, CLP_prob)
   eval/
     metrics_summary.csv
     confusion_matrix.png
-    scatter_CER.png
-    scatter_COT.png
     scatter_CTH.png
 ```
 
@@ -117,40 +144,130 @@ ROOT/
 
 ## Paired HDF5 format (produced by data_fusion.py)
 
+Default mode is `samples_v2` — each HDF5 file contains a collection of patches:
+
 ```
-/AGRI/Geolocation/{lat, lon, VZA, SZA}   float32 (H, W)
-/AGRI/Aux/ELE                             float32 (H, W)   surface elevation (m)
-/AGRI/BT/ch{NN}                           float32 (H, W)   brightness temperature (K)
-/Labels/{CLP, CER, COT, CTH}             float32 (H, W)
+/Samples/agri             float32 (N, C_agri, 32, 32)   AGRI BT patches
+/Samples/geo              float32 (N, 4, 32, 32)         lat, lon, VZA, SZA
+/Samples/labels           float32 (N, 2, 32, 32)         [CLP, CTH]
+/Samples/row / col         int32  (N,)                   patch origin in scene
+/Samples/valid_clp_px      int32  (N,)                   valid CLP pixels in patch
+/Samples/valid_cloudy_px   int32  (N,)                   valid cloudy pixels in patch
+/Samples/valid_{clear,water,ice}_px  int32  (N,)         per-class pixel counts
+/Samples/max_time_diff_min float32 (N,)                  max AGRI–MODIS Δt in patch
+/Samples/p95_match_dist_km float32 (N,)                  P95 match distance
+/Samples/mean_{overlap_frac,sample_weight,cloud_frac,phase_consist}  float32 (N,)
 ```
-`CLP` is an integer class (temporary 3-class setup: 0=clear, 1=water, 2=ice).
-`CER` in µm, `COT` dimensionless, `CTH` in metres.
+
+File-level attributes: `format`, `agri_datetime`, `agri_channels`, `patch_size`, `mode`, `clp_class_names`, `time_low_q_min`, `reg_time_max_min`, `num_samples`.
+
+Legacy format (full-disk `AGRI/BT` + `Labels/*`, mode=`full_disk`) is also supported for reading.
+
+---
+
+## Model input / output
+
+|         | Channels | Description |
+|---------|----------|-------------|
+| Input   | 6        | AGRI BT ch9–ch14 (indices 8–13) |
+| Input   | 4        | Geo: lat, lon, VZA, SZA |
+| Output  | 3        | CLP logits (Clear / Water / Ice) |
+| Output  | 1        | CTH (cloud top height, m, normalised) |
 
 ---
 
 ## Label channels in model output
 
-| Channel | Variable | Unit      | Notes                          |
-|---------|----------|-----------|--------------------------------|
-| 0       | CLP      | class 0-4 | CrossEntropy target            |
-| 1       | CER      | µm        | SmoothL1, z-score normalised   |
-| 2       | COT      | –         | SmoothL1, z-score normalised   |
-| 3       | CTH      | m         | SmoothL1, z-score normalised   |
+| Channel | Variable | Unit      | Loss                          |
+|---------|----------|-----------|-------------------------------|
+| 0       | CLP      | class     | CrossEntropy (3-class)        |
+| 1       | CTH      | m         | SmoothL1, z-score normalised  |
+
+CLP class mapping: 0=Clear, 1=Water, 2=Ice. CER and COT have been removed from the pipeline.
 
 ---
 
 ## Key hyper-parameters (all in config.py)
 
-| Parameter            | Default | Description                         |
-|----------------------|---------|-------------------------------------|
-| AGRI_BT_CHANNEL_INDICES | [8..14] | 7 thermal channels (0-based)     |
-| PATCH_SIZE           | (32,32) | Training patch size                 |
-| BATCH_SIZE           | 64      | Training batch size                 |
-| NUM_EPOCHS           | 50      | Training epochs                     |
-| LEARNING_RATE        | 1e-4    | Adam initial LR                     |
-| MODEL_BASE_CHANNELS  | 32      | UNet base width                     |
-| TRANSFORMER_DEPTH    | 4       | Bottleneck transformer layers       |
-| MAX_VZA_DEG          | 65      | Satellite zenith angle filter       |
-| MAX_SZA_DEG          | 65      | Solar zenith angle filter (day)     |
-| MAX_TIME_DIFF_MIN    | 15      | AGRI–MODIS temporal match window    |
-| MAX_MATCH_DIST_KM    | 3.0     | AGRI–MODIS spatial match radius     |
+| Parameter            | Default   | Description                         |
+|----------------------|-----------|-------------------------------------|
+| AGRI_BT_CHANNEL_INDICES | [8..13] | 6 IR channels (0-based indices)     |
+| PATCH_SIZE           | (32, 32)  | Training patch size                 |
+| BATCH_SIZE           | 32        | Training batch size                 |
+| NUM_EPOCHS           | 30        | Training epochs                     |
+| LEARNING_RATE        | 1e-4      | AdamW initial LR                    |
+| UNET_BASE_CHANNELS   | 16        | UNet base width                     |
+| LOSS_W_CLP           | 1.0       | CLP classification loss weight      |
+| LOSS_W_CTH           | 1.0       | CTH regression loss weight          |
+| GRAD_CLIP            | 1.0       | Gradient clipping max norm          |
+| LR_PATIENCE          | 6         | ReduceLROnPlateau patience (epochs) |
+| EARLY_STOP_PATIENCE  | 10        | Early stopping patience (epochs)    |
+| RANDOM_SEED          | 42        | Reproducibility seed                |
+
+---
+
+## Fusion parameters (fusion_config.py, env-overridable)
+
+| Parameter               | Default | Description                         |
+|-------------------------|---------|-------------------------------------|
+| TIME_LOW_Q_MIN          | 7.5     | Max AGRI–MODIS Δt for CLP (min)     |
+| REG_TIME_MAX_MIN        | 7.5     | Max AGRI–MODIS Δt for CTH (min)     |
+| AGRI_SEARCH_RADIUS_KM   | 2.5     | MODIS→AGRI KD-tree match radius     |
+| MAX_VZA_DEG / MAX_SZA_DEG | 65    | Satellite / solar zenith angle max  |
+| MAX_CTH_M               | 18000   | Maximum valid CTH (m)               |
+| MAX_MATCH_DIST_KM       | 3.0     | Max MODIS→AGRI spatial distance     |
+
+---
+
+## Date split (2019 full year)
+
+| Split | Dates |
+|-------|-------|
+| Train | 1st & 25th of each month (24 days) |
+| Val   | 15th of odd months (6 days) |
+| Test  | 15th of even months (6 days) |
+
+---
+
+## Key env vars
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `UNET_WORKDIR` | `/data/Data_yuq/unet_workdir` | Root output directory |
+| `UNET_CHECKPOINT_MONITOR` | `val_macro_acc` | Metric for best checkpoint |
+| `UNET_TRAIN_DATES` | config list | Override train dates |
+| `UNET_VAL_DATES` | config list | Override val dates |
+| `UNET_TEST_DATES` | config list | Override test dates |
+| `UNET_LOSS_W_CLP` | `1.0` | CLP loss weight |
+| `UNET_LOSS_W_CTH` | `1.0` | CTH loss weight |
+| `FUSION_AGRI_SEARCH_RADIUS_KM` | `2.5` | MODIS→AGRI match radius |
+| `FUSION_REG_TIME_MAX_MIN` | `7.5` | Max time diff for regression |
+| `ENABLE_QC_DIAGNOSTICS` | `false` | Per-scene QC gate CSV/JSONL output |
+| `CUDA_VISIBLE_DEVICES` | `1` | GPU selection (if GPU 0 busy) |
+
+---
+
+## Running tests
+
+```bash
+conda run -n cloudunet python -m pytest -p no:cacheprovider tests
+```
+
+---
+
+## Diagnostic tools
+
+```bash
+# Check date split balance
+conda run -n cloudunet python tools/balance_split.py --report
+
+# Suggest stratified date split
+conda run -n cloudunet python tools/balance_split.py --suggest --seed 42
+
+# Visualize fusion geo matching
+conda run -n cloudunet python tools/visualize_fusion_geo.py
+
+# QC diagnostics (single day, single process)
+ENABLE_QC_DIAGNOSTICS=true conda run -n cloudunet python data_fusion.py \
+  --split train --day 20190105 --workers 1 --enable-qc-diagnostics
+```

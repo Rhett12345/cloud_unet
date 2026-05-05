@@ -6,8 +6,8 @@ AGRI 和 MYD06 文件读取 + HDF5 写出，与聚合逻辑完全解耦。
 主要函数
 --------
   read_agri_scene(path)   → dict(lat, lon, VZA, SZA, BT)
-  read_myd06(path)        → dict(lat_5km, lon_5km, lat_1km, lon_1km, CLP_1km, CER_1km, COT_1km,
-                                  CTH_5km, scan_time_1km, _dt_min, ...)
+  read_myd06(path)        → dict(lat_5km, lon_5km, lat_1km, lon_1km, CLP_1km,
+                                  CTH_1km, scan_time_1km, ...)
   write_fused_hdf5(...)   → 写出 samples_v2 格式 HDF5
 
 注：本模块对 pyhdf / h5py 的依赖都在这里，fusion_core.py 只做纯数值计算。
@@ -402,20 +402,16 @@ def _apply_qa_filter(
 ) -> dict:
     """
     前期弱质量过滤（保留 2D 形状）。
-    当前配置下 4 个主监督量都按 1km 处理：
-    - Cloud_Mask_1km 统一过滤 CLP/CER/COT/CTH
-    - uncertainty 过滤 CER/COT
-    - Optical phase 仅用于 CER/COT 质量约束
-    - cloud-top 辅助变量仅用于 CTH 质量约束
+    CLP + CTH only（CER/COT 已移除）：
+    - Cloud_Mask_1km 统一过滤 CLP/CTH
+    - cloud-top 辅助变量仅用于 CTH 质量约束（可选）
     """
     clp = clp.astype(np.float32, copy=True)
-    cer = cer.astype(np.float32, copy=True)
-    cot = cot.astype(np.float32, copy=True)
     cth = cth.astype(np.float32, copy=True)
     clp[clp < 0] = np.nan
 
     if not cfg.MODIS_FILTER_WEAK_QUALITY:
-        return dict(CLP=clp, CER=cer, COT=cot, CTH=cth)
+        return dict(CLP=clp, CTH=cth)
 
     if cm_1km is not None and cm_1km.shape == clp.shape:
         clp_allowed = np.asarray(
@@ -427,27 +423,7 @@ def _apply_qa_filter(
         clp_ok = np.isin(cm_1km, clp_allowed)
         reg_ok = np.isin(cm_1km, reg_allowed)
         clp[~clp_ok] = np.nan
-        cer[~reg_ok] = np.nan
-        cot[~reg_ok] = np.nan
         cth[~reg_ok] = np.nan
-
-    if cer_unc is not None and cer_unc.shape == cer.shape:
-        cer[(~np.isfinite(cer_unc)) | (cer_unc > cfg.MODIS_MAX_CER_UNCERTAINTY_PCT)] = np.nan
-    if cot_unc is not None and cot_unc.shape == cot.shape:
-        cot[(~np.isfinite(cot_unc)) | (cot_unc > cfg.MODIS_MAX_COT_UNCERTAINTY_PCT)] = np.nan
-
-    if bool(getattr(cfg, "MODIS_REQUIRE_OPTICAL_PHASE_FOR_COP", False)) and clp_opt_raw is not None and clp_opt_raw.shape == clp.shape:
-        allowed = np.asarray(getattr(cfg, "MODIS_ALLOWED_OPTICAL_PHASES_FOR_COP", ()), dtype=np.int32)
-        ok_opt = _isin_finite_int(clp_opt_raw, allowed)
-        cer[~ok_opt] = np.nan
-        cot[~ok_opt] = np.nan
-
-        if bool(getattr(cfg, "MODIS_REQUIRE_PHASE_AGREEMENT", False)):
-            opt_map = np.vectorize(lambda x: cfg.MODIS_OPTICAL_PHASE_MAP.get(int(x), -1))(clp_opt_raw).astype(np.float32)
-            comparable = np.isfinite(clp) & np.isfinite(opt_map) & (clp >= 0) & (opt_map >= 0)
-            agree = comparable & (clp == opt_map)
-            cer[comparable & ~agree] = np.nan
-            cot[comparable & ~agree] = np.nan
 
     if bool(getattr(cfg, "MODIS_REQUIRE_CTH_AUX", False)):
         cth_ok = np.isfinite(cth)
@@ -460,7 +436,7 @@ def _apply_qa_filter(
             cth_ok &= _isin_finite_int(ctm_1km, allowed_methods)
         cth[~cth_ok] = np.nan
 
-    return dict(CLP=clp, CER=cer, COT=cot, CTH=cth)
+    return dict(CLP=clp, CTH=cth)
 
 
 def _read_myd03_scan_time(sd: SD, target_shape: Tuple[int, int], ref_dt: datetime) -> Tuple[Optional[np.ndarray], str]:
@@ -559,21 +535,13 @@ def read_myd06(modis_file: Path, agri_dt: Optional[datetime] = None,
 
         clp_raw = sd.select(cfg.MODIS_VARS["CLP"])[:].astype(np.int32)
         clp_1km = np.vectorize(lambda x: cfg.MODIS_PHASE_MAP.get(int(x), -1))(clp_raw).astype(np.float32)
-        cer_1km = _sds_scaled(sd, cfg.MODIS_VARS["CER"], cfg.MODIS_SCALE["CER"])
-        cot_1km = _sds_scaled(sd, cfg.MODIS_VARS["COT"], cfg.MODIS_SCALE["COT"])
         cth_1km = _sds_scaled(sd, cfg.MODIS_VARS["CTH"], cfg.MODIS_SCALE["CTH"])
 
         cm_1km = _decode_cloud_mask(_sds_optional(sd, "Cloud_Mask_1km"))
-        # Uncertainty SDS: _16 产品格式为 <Base>_Uncertainty_16，非 _16 产品为 <Base>_Uncertainty
-        _cer_sds = cfg.MODIS_VARS["CER"]
-        _cot_sds = cfg.MODIS_VARS["COT"]
-        _cer_unc_name = _cer_sds.replace("_16", "_Uncertainty_16") if "_16" in _cer_sds else (_cer_sds + "_Uncertainty")
-        _cot_unc_name = _cot_sds.replace("_16", "_Uncertainty_16") if "_16" in _cot_sds else (_cot_sds + "_Uncertainty")
-        cer_unc = _sds_optional(sd, _cer_unc_name, use_sds_sf=True)
-        cot_unc = _sds_optional(sd, _cot_unc_name, use_sds_sf=True)
 
+        # CER/COT removed — no uncertainty SDS needed
+        # QC aux vars (CTP/CTT/CTM) kept for optional CTH filtering
         qc_vars = getattr(cfg, "MODIS_QC_VARS", {}) or {}
-        clp_opt_raw = _sds_optional(sd, qc_vars.get("CLP_OPT", "")) if qc_vars.get("CLP_OPT") else None
         ctp_1km = _sds_optional(sd, qc_vars.get("CTP", ""), use_sds_sf=True) if qc_vars.get("CTP") else None
         ctt_1km = _sds_optional(sd, qc_vars.get("CTT", ""), use_sds_sf=True) if qc_vars.get("CTT") else None
         ctm_1km = _sds_optional(sd, qc_vars.get("CTM", "")) if qc_vars.get("CTM") else None
@@ -629,15 +597,17 @@ def read_myd06(modis_file: Path, agri_dt: Optional[datetime] = None,
             log.warning("scan time required; skip %s", modis_file.name)
             return None
 
+        # CER/COT removed — pass NaN arrays to keep function signature compatible
+        _zeros = np.full_like(clp_1km, np.nan, dtype=np.float32)
         filt = _apply_qa_filter(
             clp_1km,
-            cer_1km,
-            cot_1km,
+            _zeros,   # cer (placeholder)
+            _zeros,   # cot (placeholder)
             cth_1km,
             cm_1km,
-            cer_unc,
-            cot_unc,
-            clp_opt_raw=clp_opt_raw,
+            None,     # cer_unc
+            None,     # cot_unc
+            clp_opt_raw=None,
             ctp_1km=ctp_1km,
             ctt_1km=ctt_1km,
             ctm_1km=ctm_1km,
@@ -645,11 +615,9 @@ def read_myd06(modis_file: Path, agri_dt: Optional[datetime] = None,
 
         if fc.FUSION_LOG_PIXEL_STATS:
             log.info(
-                "MYD06 qa | %s | clp=%d cer=%d cot=%d cth=%d | scantime=%s",
+                "MYD06 qa | %s | clp=%d cth=%d | scantime=%s",
                 modis_file.name,
                 int(np.isfinite(filt["CLP"]).sum()),
-                int(np.isfinite(filt["CER"]).sum()),
-                int(np.isfinite(filt["COT"]).sum()),
                 int(np.isfinite(filt["CTH"]).sum()),
                 scan_time_source if not fallback else "file-level-fallback",
             )
@@ -660,8 +628,6 @@ def read_myd06(modis_file: Path, agri_dt: Optional[datetime] = None,
             lat_1km=lat_1km,
             lon_1km=lon_1km,
             CLP_1km=filt["CLP"],
-            CER_1km=filt["CER"],
-            COT_1km=filt["COT"],
             CTH_1km=filt["CTH"],
             scan_time_1km=scan_t,
             _scan_time_is_fallback=fallback,
@@ -787,17 +753,16 @@ def apply_quality_filter(agri: dict, labels: dict, diagnostics: Optional[dict] =
 
     cloudy = np.isfinite(labels["CLP"]) & (labels["CLP"] > 0)
 
-    # ── 回归变量过滤 ──
+    # ── CTH 回归变量过滤 ──
     max_cth = getattr(cfg, "MAX_CTH_M", 18000)
-    for k, lo, hi in [("CER", 0, 100), ("COT", 0, 200), ("CTH", 0, max_cth)]:
-        raw = labels[k].copy()
-        ok = (
-            cloudy & np.isfinite(raw) & (raw >= lo) & (raw <= hi) &
-            reg_time_ok
-        )
-        if cfg.REG_USE_GEO_FILTER:
-            ok &= geo_ok_reg
-        labels[k] = np.where(ok, raw, np.nan)
+    raw = labels["CTH"].copy()
+    ok = (
+        cloudy & np.isfinite(raw) & (raw >= 0) & (raw <= max_cth) &
+        reg_time_ok
+    )
+    if cfg.REG_USE_GEO_FILTER:
+        ok &= geo_ok_reg
+    labels["CTH"] = np.where(ok, raw, np.nan)
 
     # ── 质量字段：仅在 CLP 有效处保留 ──
     valid = np.isfinite(labels["CLP"])
@@ -812,10 +777,9 @@ def apply_quality_filter(agri: dict, labels: dict, diagnostics: Optional[dict] =
     if "SAMPLE_WEIGHT" in labels:
         labels["SAMPLE_WEIGHT"] = np.where(valid, labels["SAMPLE_WEIGHT"], 0.0)
 
-    # 参照 GeoISCLD-Net：晴空像元 CER/COT/CTH 设为 0（而非 NaN）
-    # 让模型学习 "晴空 = 无云光学/几何属性"
-    for k in ["CER", "COT", "CTH"]:
-        labels[k][~cloudy] = 0.0
+    # 晴空像元 CTH 保持 NaN：物理上晴空没有云顶高度，
+    # 0 是人为填充值，通过共享编码器反向传播会污染 CLP 分支特征。
+    # 训练 loss 用 torch.isfinite(target) 做 mask，NaN 自然不入梯度。
 
     if diagnostics is not None:
         _build_qc_diagnostics_row(
@@ -829,11 +793,9 @@ def apply_quality_filter(agri: dict, labels: dict, diagnostics: Optional[dict] =
         dt_values = labels.get("MATCH_DT_MIN", np.array([np.nan]))
         dt_valid = dt_values[np.isfinite(dt_values)]
         log.info(
-            "post-qc | clp=%d cer=%d cot=%d cth=%d | "
+            "post-qc | clp=%d cth=%d | "
             "clp_pct=%.1f%% wt_mean=%.3f dt_mean=%.2fmin",
             int(valid.sum()),
-            int(np.isfinite(labels["CER"]).sum()),
-            int(np.isfinite(labels["COT"]).sum()),
             int(np.isfinite(labels["CTH"]).sum()),
             100.0 * valid.mean(),
             float(np.nanmean(wt_valid)) if wt_valid.size else float("nan"),
@@ -870,7 +832,7 @@ def _append(ds: h5py.Dataset, val: np.ndarray):
 
 def _iter_patch_positions(labels: dict, patch_size: tuple, mode: str):
     ph, pw = patch_size
-    clp, cer, cot, cth = labels["CLP"], labels["CER"], labels["COT"], labels["CTH"]
+    clp, cth = labels["CLP"], labels["CTH"]
     H, W = clp.shape
     sh, sw = (max(1, ph//2), max(1, pw//2)) if mode == "train" else (ph, pw)
 
@@ -883,9 +845,11 @@ def _iter_patch_positions(labels: dict, patch_size: tuple, mode: str):
 
     for i in h_pos:
         for j in w_pos:
+            _nan = np.full_like(clp[i:i+ph, j:j+pw], np.nan, dtype=np.float32)
             keep, counts, _ = patch_passes_supervision(
-                clp[i:i+ph, j:j+pw], cer[i:i+ph, j:j+pw],
-                cot[i:i+ph, j:j+pw], cth[i:i+ph, j:j+pw],
+                clp[i:i+ph, j:j+pw], _nan,   # CER (placeholder)
+                _nan,                         # COT (placeholder)
+                cth[i:i+ph, j:j+pw],
                 mode, patch_size
             )
             if keep:
@@ -938,7 +902,7 @@ def write_fused_samples(
         s = f.create_group("Samples")
         ds_agri   = _create_ds(s, "agri",   (C, ph, pw))
         ds_geo    = _create_ds(s, "geo",    (4, ph, pw))
-        ds_lbl    = _create_ds(s, "labels", (4, ph, pw))
+        ds_lbl    = _create_ds(s, "labels", (2, ph, pw))  # CLP + CTH
         ds_row    = _create_ds(s, "row",    (), np.int32)
         ds_col    = _create_ds(s, "col",    (), np.int32)
         ds_clppx  = _create_ds(s, "valid_clp_px",   (), np.int32)
@@ -964,8 +928,6 @@ def write_fused_samples(
             ], axis=0).astype(np.float32)
             lbl_p  = np.stack([
                 labels["CLP"][i:i+ph, j:j+pw],
-                labels["CER"][i:i+ph, j:j+pw],
-                labels["COT"][i:i+ph, j:j+pw],
                 labels["CTH"][i:i+ph, j:j+pw],
             ], axis=0).astype(np.float32)
 
@@ -1049,7 +1011,7 @@ def write_full_disk_hdf5(out_path: Path, agri: dict, labels: dict, agri_dt: date
                               compression="gzip", compression_opts=4)
 
         lbl = f.create_group("Labels")
-        for k in ["CLP", "CER", "COT", "CTH"]:
+        for k in ["CLP", "CTH"]:
             lbl.create_dataset(k, data=labels[k], compression="gzip", compression_opts=4)
 
         qa = f.create_group("QA")

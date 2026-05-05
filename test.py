@@ -6,14 +6,12 @@ Evaluation of CloudPropertyNet on the held-out test set.
 Metrics reported
 ----------------
   CLP : Overall Accuracy (OA), per-class accuracy, confusion matrix
-  CER : RMSE, MAE, Bias, R  (µm, cloudy pixels only)
-  COT : same
-  CTH : same (m)
+  CTH : RMSE, MAE, Bias, R  (m, cloudy pixels only)
 
 Outputs saved to cfg.EVAL_OUTPUT_DIR:
   - metrics_summary.csv
   - confusion_matrix.png
-  - scatter_{CER,COT,CTH}.png
+  - scatter_CTH.png
 
 Usage (called by main.py or standalone):
     python test.py [--checkpoint <path>]
@@ -119,14 +117,12 @@ def collect_test_predictions(
     # Accumulators
     all_clp_true, all_clp_pred = [], []
     all_clp_for_reg = []
-    all_cer_true, all_cer_pred = [], []
-    all_cot_true, all_cot_pred = [], []
     all_cth_true, all_cth_pred = [], []
     valid_clp_pixels = 0
     total_pixels = 0
 
-    out_std  = torch.from_numpy(stats.out_std[1:]).to(device).reshape(1, 3, 1, 1)
-    out_mean = torch.from_numpy(stats.out_mean[1:]).to(device).reshape(1, 3, 1, 1)
+    out_std  = torch.from_numpy(stats.out_std[1:]).to(device).reshape(1, 1, 1, 1)
+    out_mean = torch.from_numpy(stats.out_mean[1:]).to(device).reshape(1, 1, 1, 1)
 
     with torch.no_grad():
         for batch_idx, (agri, geo, labels) in enumerate(test_dl):
@@ -161,21 +157,13 @@ def collect_test_predictions(
             all_clp_true.append(clp_true_cls)
             all_clp_pred.append(clp_pred_cls)
             all_clp_for_reg.append(clp_true_raw.cpu().numpy().ravel())
-            all_cer_true.append(lbl_dn[:, 0].cpu().numpy().ravel())
-            all_cer_pred.append(comp_dn[:, 0].cpu().numpy().ravel())
-            all_cot_true.append(lbl_dn[:, 1].cpu().numpy().ravel())
-            all_cot_pred.append(comp_dn[:, 1].cpu().numpy().ravel())
-            all_cth_true.append(lbl_dn[:, 2].cpu().numpy().ravel())
-            all_cth_pred.append(comp_dn[:, 2].cpu().numpy().ravel())
+            all_cth_true.append(lbl_dn[:, 0].cpu().numpy().ravel())
+            all_cth_pred.append(comp_dn[:, 0].cpu().numpy().ravel())
 
     return {
         "clp_true": np.concatenate(all_clp_true) if all_clp_true else np.array([], dtype=np.int64),
         "clp_pred": np.concatenate(all_clp_pred) if all_clp_pred else np.array([], dtype=np.int64),
         "clp_for_reg": np.concatenate(all_clp_for_reg) if all_clp_for_reg else np.array([], dtype=np.float32),
-        "cer_true": np.concatenate(all_cer_true),
-        "cer_pred": np.concatenate(all_cer_pred),
-        "cot_true": np.concatenate(all_cot_true),
-        "cot_pred": np.concatenate(all_cot_pred),
         "cth_true": np.concatenate(all_cth_true),
         "cth_pred": np.concatenate(all_cth_pred),
         "valid_clp_pixels": valid_clp_pixels,
@@ -197,10 +185,6 @@ def evaluate(stats: NormStats, checkpoint: Optional[Path] = None):
     clp_true = arrays["clp_true"]
     clp_pred = arrays["clp_pred"]
     clp_for_reg = arrays["clp_for_reg"]
-    cer_true = arrays["cer_true"]
-    cer_pred = arrays["cer_pred"]
-    cot_true = arrays["cot_true"]
-    cot_pred = arrays["cot_pred"]
     cth_true = arrays["cth_true"]
     cth_pred = arrays["cth_pred"]
     valid_clp_pixels = arrays["valid_clp_pixels"]
@@ -208,8 +192,6 @@ def evaluate(stats: NormStats, checkpoint: Optional[Path] = None):
 
     # Valid masks (cloudy + physically reasonable)
     cloudy = clp_for_reg > 0
-    v_cer  = cloudy & (cer_true >= 0) & (cer_true <= 100) & np.isfinite(cer_true)
-    v_cot  = cloudy & (cot_true >= 0) & (cot_true <= 200) & np.isfinite(cot_true)
     max_cth = getattr(cfg, "MAX_CTH_M", 18000)
     v_cth  = cloudy & (cth_true >= 0) & (cth_true <= max_cth) & np.isfinite(cth_true)
 
@@ -227,9 +209,7 @@ def evaluate(stats: NormStats, checkpoint: Optional[Path] = None):
     per_class_acc[valid_classes] = cm.diagonal()[valid_classes] / class_support[valid_classes] * 100
     macro_acc = float(per_class_acc[valid_classes].mean()) if valid_classes.any() else np.nan
 
-    # ── Regression metrics ────────────────────────────────────────────────
-    cer_m = _stats(cer_true, cer_pred, v_cer)
-    cot_m = _stats(cot_true, cot_pred, v_cot)
+    # ── CTH regression metrics ────────────────────────────────────────────
     cth_m = _stats(cth_true, cth_pred, v_cth)
 
     # ── Print summary ─────────────────────────────────────────────────────
@@ -242,11 +222,10 @@ def evaluate(stats: NormStats, checkpoint: Optional[Path] = None):
     log.info("Cloud Phase  – macro acc/recall = %.2f%%", macro_acc)
     for i, name in enumerate(PHASE_NAMES):
         log.info("  %-12s acc/recall = %.2f%%", name, per_class_acc[i])
-    for var, m, u in [("CER", cer_m, "µm"), ("COT", cot_m, ""), ("CTH", cth_m, "m")]:
-        log.info(
-            "%-4s (n=%7d)  RMSE=%.3f %s  MAE=%.3f  Bias=%.3f  R=%.4f",
-            var, m["n"], m["rmse"], u, m["mae"], m["bias"], m["r"]
-        )
+    log.info(
+        "CTH (n=%7d)  RMSE=%.3f m  MAE=%.3f  Bias=%.3f  R=%.4f",
+        cth_m["n"], cth_m["rmse"], cth_m["mae"], cth_m["bias"], cth_m["r"]
+    )
     log.info("─" * 60)
 
     # ── Save outputs ──────────────────────────────────────────────────────
@@ -263,21 +242,15 @@ def evaluate(stats: NormStats, checkpoint: Optional[Path] = None):
     for i, name in enumerate(PHASE_NAMES):
         rows.append({"variable": f"CLP_{name}_acc", "value": per_class_acc[i], "unit": "%"})
         rows.append({"variable": f"CLP_{name}_recall", "value": per_class_acc[i], "unit": "%"})
-    for var, m, u in [("CER", cer_m, "um"), ("COT", cot_m, ""), ("CTH", cth_m, "m")]:
-        for k, v in m.items():
-            rows.append({"variable": f"{var}_{k}", "value": v, "unit": u})
+    for k, v in cth_m.items():
+        rows.append({"variable": f"CTH_{k}", "value": v, "unit": "m"})
     pd.DataFrame(rows).to_csv(cfg.EVAL_OUTPUT_DIR / "metrics_summary.csv", index=False)
 
     _plot_confusion_matrix(cm, cfg.EVAL_OUTPUT_DIR / "confusion_matrix.png")
 
-    for true, pred, valid, label, unit in [
-        (cer_true, cer_pred, v_cer, "CER", "µm"),
-        (cot_true, cot_pred, v_cot, "COT", ""),
-        (cth_true, cth_pred, v_cth, "CTH", "m"),
-    ]:
-        if valid.sum() > 100:
-            _plot_scatter(true[valid], pred[valid], label, unit,
-                          cfg.EVAL_OUTPUT_DIR / f"scatter_{label}.png")
+    if v_cth.sum() > 100:
+        _plot_scatter(cth_true[v_cth], cth_pred[v_cth], "CTH", "m",
+                      cfg.EVAL_OUTPUT_DIR / "scatter_CTH.png")
 
     log.info("Evaluation complete – results in %s", cfg.EVAL_OUTPUT_DIR)
 

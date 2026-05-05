@@ -109,8 +109,10 @@ def _stats_worker(h5_path: str) -> Optional[dict]:
 
     try:
         with h5py.File(h5_path, "r") as f:
+            n_out_channels = 2  # CLP + CTH
+
             if "Samples" in f and "agri" in f["Samples"] and "labels" in f["Samples"]:
-                # 新格式: Samples/agri -> (N, C, H, W), Samples/labels -> (N, 4, H, W)
+                # 新格式: Samples/agri -> (N, C, H, W), Samples/labels -> (N, 2, H, W)
                 BT = f["Samples/agri"][()].astype(np.float64)
                 lbl = f["Samples/labels"][()].astype(np.float64)
 
@@ -119,7 +121,7 @@ def _stats_worker(h5_path: str) -> Optional[dict]:
                     log.warning("Skip %s: BT channels=%d, expected=%d", h5_path, n_agri, cfg.AGRI_CHANNELS)
                     return None
                 flat_bt = BT.transpose(0, 2, 3, 1).reshape(-1, n_agri)
-                flat_out = lbl.transpose(0, 2, 3, 1).reshape(-1, 4)
+                flat_out = lbl.transpose(0, 2, 3, 1).reshape(-1, n_out_channels)
 
             else:
                 # 旧格式: AGRI/BT + Labels/*
@@ -135,13 +137,11 @@ def _stats_worker(h5_path: str) -> Optional[dict]:
                 )
 
                 CLP = f["Labels/CLP"][()].astype(np.float64)
-                CER = f["Labels/CER"][()].astype(np.float64)
-                COT = f["Labels/COT"][()].astype(np.float64)
                 CTH = f["Labels/CTH"][()].astype(np.float64)
 
-                out = np.stack([CLP, CER, COT, CTH], axis=-1)  # (H, W, 4)
+                out = np.stack([CLP, CTH], axis=-1)  # (H, W, 2)
                 flat_bt = BT.reshape(-1, n_agri)
-                flat_out = out.reshape(-1, 4)
+                flat_out = out.reshape(-1, n_out_channels)
 
     except Exception as exc:
         log.warning("Stats worker failed for %s: %s", h5_path, exc)
@@ -159,26 +159,19 @@ def _stats_worker(h5_path: str) -> Optional[dict]:
     sum_bt = bt_valid.sum(axis=0)
     sumsq_bt = (bt_valid ** 2).sum(axis=0)
 
-    sum_out = np.zeros(4, dtype=np.float64)
-    sumsq_out = np.zeros(4, dtype=np.float64)
-    for ch in range(4):
+    sum_out = np.zeros(2, dtype=np.float64)
+    sumsq_out = np.zeros(2, dtype=np.float64)
+    for ch in range(2):
         vals = flat_out[valid_out[:, ch], ch]
         sum_out[ch] = vals.sum()
         sumsq_out[ch] = (vals ** 2).sum()
 
-    reg_samples = []
-    max_reg_n = 0
-    for ch in range(1, 4):
-        vals = flat_out[valid_out[:, ch], ch]
-        if vals.size > MAX_SAMPLE:
-            idx = np.random.choice(vals.size, MAX_SAMPLE, replace=False)
-            vals = vals[idx]
-        reg_samples.append(vals)
-        max_reg_n = max(max_reg_n, vals.size)
-
-    reg = np.full((max_reg_n, 3), np.nan, dtype=np.float64)
-    for ch, vals in enumerate(reg_samples):
-        reg[:vals.size, ch] = vals
+    # CTH regression sample (channel 1 only)
+    vals = flat_out[valid_out[:, 1], 1]
+    if vals.size > MAX_SAMPLE:
+        idx = np.random.choice(vals.size, MAX_SAMPLE, replace=False)
+        vals = vals[idx]
+    reg = vals.reshape(-1, 1)  # (n, 1)
 
     return {
         "n": n_bt,
@@ -215,7 +208,7 @@ def compute_and_save_stats(
         raise FileNotFoundError(f"No .h5 files found under {paired_dir}")
 
     n_agri = cfg.AGRI_CHANNELS
-    n_out  = 4
+    n_out = 2  # CLP + CTH
 
     total_n_bt = 0
     total_n_out = np.zeros(n_out, dtype=np.int64)
@@ -280,7 +273,7 @@ def compute_and_save_stats(
     agri_std = np.sqrt(np.maximum(agri_var, 1e-12)).astype(np.float32)
     out_std  = np.sqrt(np.maximum(out_var,  1e-12)).astype(np.float32)
 
-    all_reg = np.concatenate(reservoir, axis=0)   # (N_total, 3), NaN-padded by channel
+    all_reg = np.concatenate(reservoir, axis=0)   # (N_total, 1): CTH only
     q5  = np.concatenate([[0.0], np.nanpercentile(all_reg,  5, axis=0)])
     q95 = np.concatenate([[float(cfg.CLP_CLASSES - 1)], np.nanpercentile(all_reg, 95, axis=0)])
 
@@ -371,19 +364,21 @@ def _build_patch_index(
                                 index.append((h5f, s, -1))
                     else:
                         for s in range(n_samples):
-                            patch_clp, patch_cer, patch_cot, patch_cth = samples["labels"][s]
+                            patch_clp, patch_cth = samples["labels"][s]
                             keep, _counts, _ = patch_passes_supervision(
-                                patch_clp, patch_cer, patch_cot, patch_cth, mode, patch_size
+                                patch_clp,
+                                np.full_like(patch_clp, np.nan),
+                                np.full_like(patch_clp, np.nan),
+                                patch_cth, mode, patch_size
                             )
                             if keep and sample_passes_quality(_sample_quality_fields(samples, s)):
                                 index.append((h5f, s, -1))
                     continue
 
                 CLP = f["Labels/CLP"][()]
-                CER = f["Labels/CER"][()]
-                COT = f["Labels/COT"][()]
                 CTH = f["Labels/CTH"][()]
                 H, W = CLP.shape
+                _nan2d = np.full_like(CLP, np.nan, dtype=np.float32)
 
                 h_positions = list(range(0, H - ph + 1, sh))
                 if h_positions and h_positions[-1] != H - ph:
@@ -396,12 +391,13 @@ def _build_patch_index(
                 for i in h_positions:
                     for j in w_positions:
                         patch_clp = CLP[i:i + ph, j:j + pw]
-                        patch_cer = CER[i:i + ph, j:j + pw]
-                        patch_cot = COT[i:i + ph, j:j + pw]
                         patch_cth = CTH[i:i + ph, j:j + pw]
 
                         keep, _counts, _ = patch_passes_supervision(
-                            patch_clp, patch_cer, patch_cot, patch_cth, mode, patch_size
+                            patch_clp,
+                            _nan2d[i:i+ph, j:j+pw],
+                            _nan2d[i:i+ph, j:j+pw],
+                            patch_cth, mode, patch_size
                         )
                         if keep:
                             index.append((h5f, i, j))
@@ -484,7 +480,7 @@ class AGRIMyd06Dataset(Dataset):
 
                         BT = agri_patch.transpose(1, 2, 0)
                         geo = geo_patch   # (4, H, W)
-                        CLP, CER, COT, CTH = label_patch
+                        CLP, CTH = label_patch
                     else:
                         bt_keys = sorted(f["AGRI/BT"].keys())
                         bt_patches = [
@@ -500,8 +496,6 @@ class AGRIMyd06Dataset(Dataset):
                         geo = np.stack([lat, lon, vza, sza], axis=0)  # (4, H, W)
 
                         CLP = f["Labels/CLP"][i:i + ph, j:j + pw].astype(np.float32)
-                        CER = f["Labels/CER"][i:i + ph, j:j + pw].astype(np.float32)
-                        COT = f["Labels/COT"][i:i + ph, j:j + pw].astype(np.float32)
                         CTH = f["Labels/CTH"][i:i + ph, j:j + pw].astype(np.float32)
                 break  # read succeeded
 
@@ -517,7 +511,7 @@ class AGRIMyd06Dataset(Dataset):
                     C = len(cfg.AGRI_BT_CHANNEL_INDICES)
                     agri_t = torch.zeros(C, ph, pw, dtype=torch.float32)
                     geo_t = torch.zeros(4, ph, pw, dtype=torch.float32)
-                    lbl_t = torch.full((4, ph, pw), float("nan"), dtype=torch.float32)
+                    lbl_t = torch.full((2, ph, pw), float("nan"), dtype=torch.float32)
                     return agri_t, geo_t, lbl_t
                 h5f, i, j = self._index[np.random.randint(0, len(self._index))]
 
@@ -531,14 +525,10 @@ class AGRIMyd06Dataset(Dataset):
 
         # ── Label QC (per-channel NaN masking) ──────────────────────────
         bad_clp = (CLP < 0) | (CLP >= cfg.CLP_CLASSES)
-        bad_cer = (CER < 0) | (CER > 100)
-        bad_cot = (COT < 0) | (COT > 200)
         max_cth = getattr(cfg, "MAX_CTH_M", 18000)
         bad_cth = (CTH < 0) | (CTH > max_cth)
 
         CLP[bad_clp] = np.nan
-        CER[bad_cer] = np.nan
-        COT[bad_cot] = np.nan
         CTH[bad_cth] = np.nan
 
         # ── Normalise BT (z-score) ────────────────────────────────────────
@@ -556,7 +546,7 @@ class AGRIMyd06Dataset(Dataset):
         geo_norm = geo_norm.transpose(1, 2, 0)        # (H, W, 4)
 
         # ── Normalise regression labels; keep CLP raw; keep NaN in labels ─
-        lbl = np.stack([CLP, CER, COT, CTH], axis=-1)   # (ph, pw, 4)
+        lbl = np.stack([CLP, CTH], axis=-1)   # (ph, pw, 2)
         lbl[..., 1:] = (lbl[..., 1:] - self.stats.out_mean[1:]) / (self.stats.out_std[1:] + 1e-8)
 
         # ── Train augmentations ───────────────────────────────────────────
@@ -564,21 +554,18 @@ class AGRIMyd06Dataset(Dataset):
             # Gaussian noise on BTs
             agri_norm = agri_norm + np.random.randn(*agri_norm.shape).astype(np.float32) * 0.02
 
-            # Random horizontal / vertical flip
+            # Random horizontal / vertical flip (agri + labels only; geo coords stay fixed)
             if np.random.rand() < 0.5:
                 agri_norm = np.flip(agri_norm, axis=1).copy()
-                geo_norm  = np.flip(geo_norm,  axis=1).copy()
                 lbl       = np.flip(lbl,       axis=1).copy()
             if np.random.rand() < 0.5:
                 agri_norm = np.flip(agri_norm, axis=0).copy()
-                geo_norm  = np.flip(geo_norm,  axis=0).copy()
                 lbl       = np.flip(lbl,       axis=0).copy()
 
-            # Random 90° rotation
+            # Random 90° rotation (agri + labels only; geo coords stay fixed)
             k = np.random.randint(0, 4)
             if k:
                 agri_norm = np.rot90(agri_norm, k=k, axes=(0, 1)).copy()
-                geo_norm  = np.rot90(geo_norm,  k=k, axes=(0, 1)).copy()
                 lbl       = np.rot90(lbl,       k=k, axes=(0, 1)).copy()
 
             # Random scale (90% – 110%) + pad/crop back to 32×32
@@ -586,12 +573,10 @@ class AGRIMyd06Dataset(Dataset):
                 scale = np.random.uniform(0.9, 1.1)
                 new_h = max(16, int(ph * scale))
                 new_w = max(16, int(pw * scale))
-                # Resize via simple crop/pad (no interpolation for labels)
+                # Crop centre region then pad back
                 h0 = max(0, (ph - new_h) // 2)
                 w0 = max(0, (pw - new_w) // 2)
-                # Crop centre region then pad back
                 agri_crop = agri_norm[h0:h0+new_h, w0:w0+new_w, :]
-                geo_crop  = geo_norm[h0:h0+new_h, w0:w0+new_w, :]
                 lbl_crop  = lbl[h0:h0+new_h, w0:w0+new_w, :]
                 # Pad back to original size
                 pad_h = ph - agri_crop.shape[0]
@@ -599,12 +584,9 @@ class AGRIMyd06Dataset(Dataset):
                 if pad_h > 0 or pad_w > 0:
                     agri_crop = np.pad(agri_crop, ((0, max(0, pad_h)), (0, max(0, pad_w)), (0, 0)),
                                        mode="reflect")
-                    geo_crop  = np.pad(geo_crop,  ((0, max(0, pad_h)), (0, max(0, pad_w)), (0, 0)),
-                                       mode="reflect")
                     lbl_crop  = np.pad(lbl_crop,  ((0, max(0, pad_h)), (0, max(0, pad_w)), (0, 0)),
                                        mode="constant", constant_values=np.nan)
                 agri_norm = agri_crop[:ph, :pw, :]
-                geo_norm  = geo_crop[:ph, :pw, :]
                 lbl       = lbl_crop[:ph, :pw, :]
 
             # Random BT brightness jitter (global shift per channel, simulates calibration bias)
