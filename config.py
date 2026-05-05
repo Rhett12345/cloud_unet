@@ -87,16 +87,19 @@ RETRIEVAL_DIR = ROOT / "retrieval"
 AGRI_BT_CHANNEL_INDICES = [
     1, 4,
     8, 9, 10, 11, 12, 13
-]   # ch2(0.65µm) + ch5(1.61µm) + ch8-14(IR) = 8 channels
+]   # ch2(0.65µm) + ch5(1.61µm) + ch9-14(IR) = 8 channels
 
 # AGRI pixel size in degrees (approx) for spatial matching
 AGRI_PIXEL_DEG = 0.04
 
 # MYD06 primary supervision variables (all 1km SDS names)
+# CER/COT use _16 (1.6 µm): lower coverage (~24.6%) but better BT-CER correlation
+# and higher model prediction accuracy (CLP OA 48.6% vs 45.0% with combined).
+# Uncertainty SDS: Cloud_Effective_Radius_Uncertainty_16 / Cloud_Optical_Thickness_Uncertainty_16
 MODIS_VARS = {
     "CLP": "Cloud_Phase_Infrared_1km",     # IR phase: clear / water / ice / mixed / undetermined
-    "CER": "Cloud_Effective_Radius_16",    # µm ×100 stored as int
-    "COT": "Cloud_Optical_Thickness_16",   # ×100 stored as int
+    "CER": "Cloud_Effective_Radius_16",    # µm ×100 stored as int (1.6 µm retrieval)
+    "COT": "Cloud_Optical_Thickness_16",   # ×100 stored as int (1.6 µm retrieval)
     "CTH": "cloud_top_height_1km",         # m
 }
 
@@ -108,11 +111,11 @@ MODIS_QC_VARS = {
     "CTM": "cloud_top_method_1km",
 }
 
-# Scale factors applied AFTER reading raw integer values
+# Scale factors applied AFTER reading raw integer values (same for all CER/COT variants)
 MODIS_SCALE = {
     "CLP": 1.0,
-    "CER": 0.01,     # integer → µm
-    "COT": 0.01,
+    "CER": 0.01,     # integer → µm  (scale_factor=0.01, valid_range [0, 10000])
+    "COT": 0.01,     # integer → unitless
     "CTH": 1.0,      # already in metres
 }
 
@@ -178,7 +181,9 @@ TEMP_H5_SUFFIX = ".tmp.h5"
 KEEP_TEMP_H5_ON_ERROR = True
 
 # 弱质量 MYD06 样本在最早阶段直接过滤，不进入匹配、统计和 patch 采样。
-MODIS_FILTER_WEAK_QUALITY = True
+# 参照 GeoISCLD-Net：关闭 Cloud_Mask 比特解码、光学相态、CTH 辅助等复杂过滤，
+# 只保留值域 + 时间窗口 + VZA/SZA 几何限制。
+MODIS_FILTER_WEAK_QUALITY = False
 
 # Cloud_Mask cloudiness: 0=Confident Cloudy, 1=Probably Cloudy,
 #                        2=Probably Clear,  3=Confident Clear
@@ -199,14 +204,14 @@ MODIS_MAX_CER_UNCERTAINTY_PCT = 100.0
 # Optical-property retrieval QC：仅保留 Cloud_Phase_Optical_Properties 指示为云的像元
 # 1=water cloud, 2=ice cloud, 3/4=undetermined
 MODIS_ALLOWED_OPTICAL_PHASES_FOR_COP = (1, 2, 3, 4)
-MODIS_REQUIRE_OPTICAL_PHASE_FOR_COP = True
+MODIS_REQUIRE_OPTICAL_PHASE_FOR_COP = False
 
 # 可选：要求 IR phase 与 optical phase 在可比时一致；默认关闭，避免样本过度收缩。
 MODIS_REQUIRE_PHASE_AGREEMENT = False
 
 # Cloud-top auxiliary QC（1km）：method 1/2/3/4 为 CO2-slicing，6 为 IR window。
 MODIS_ALLOWED_CLOUD_TOP_METHODS = (1, 2, 3, 4, 6)
-MODIS_REQUIRE_CTH_AUX = True
+MODIS_REQUIRE_CTH_AUX = False
 # ─────────────────────────────────────────────────────────────────────────────
 # 7.  Patch / dataset parameters
 # ─────────────────────────────────────────────────────────────────────────────

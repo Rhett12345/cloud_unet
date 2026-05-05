@@ -16,7 +16,8 @@ TIME_LOW_Q_MIN    = float(os.environ.get("FUSION_TIME_LOW_Q_MIN",    "7.5"))
 # CLP 分类标签：dt <= TIME_LOW_Q_MIN
 # 回归标签 REG_TIME_MAX_MIN：更严格的时间上限（默认 5.0 min）
 
-REG_TIME_MAX_MIN  = float(os.environ.get("FUSION_REG_TIME_MAX_MIN",  "5.0"))
+REG_TIME_MAX_MIN  = float(os.environ.get("FUSION_REG_TIME_MAX_MIN",  "7.5"))
+# 与 TIME_LOW_Q_MIN 统一为 7.5 min，参照 GeoISCLD-Net 简化 QC 链
 
 SCAN_TIME_FALLBACK_WEIGHT = float(os.environ.get("FUSION_SCAN_TIME_FALLBACK_WEIGHT", "0.7"))
 # 当无法获取像元级 scan_time 时，样本权重乘以此系数
@@ -35,6 +36,13 @@ REQUIRE_SCAN_TIME = os.environ.get("FUSION_REQUIRE_SCAN_TIME", "1") == "1"
 # ─────────────────────────────────────────────────────────────────────────────
 AGRI_SEARCH_RADIUS_KM = float(os.environ.get("FUSION_AGRI_SEARCH_RADIUS_KM", "2.5"))
 # KD-tree 搜索半径 (km)
+
+AGRI_DISK_MARGIN_DEG = float(os.environ.get("FUSION_AGRI_DISK_MARGIN_DEG", "5.0"))
+# AGRI 全圆盘边缘向内收缩度数：仅保留距离圆盘边界 ≥ 此值的内部像元，
+# 避免 MODIS 条带与 AGRI 圆盘边缘不完整重叠导致的低质量匹配和计算浪费。
+
+AGRI_SUB_LON = float(os.environ.get("FUSION_AGRI_SUB_LON", "104.7"))
+# FY-4A 星下点经度（用于计算像元到圆盘中心的角距离）。
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 视差修正参数（占位，留用于未来实现）

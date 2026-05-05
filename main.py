@@ -93,7 +93,6 @@ def stage_fuse(args):
             myd03_day_dir=myd03_day,
             mode=split,
             overwrite=getattr(args, "overwrite", False),
-            max_qc=getattr(args, "max_qc", 3),
             n_workers=n_workers,
             enable_qc_diagnostics=qc_diag_enabled,
             qc_diagnostics_dir=qc_diag_dir,

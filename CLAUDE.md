@@ -103,3 +103,4 @@ conda run -n cloudunet python tools/balance_split.py --suggest --seed 42
 - Run `pytest -p no:cacheprovider tests` after changes to verify nothing broke
 
  每次回复前先说"打报告"。
+  /home/yuq/cloudmask/GeoISCLD-Net/路径是原始代码路径可供参考，但是我们用的数据不一样，所以只能够参考

@@ -496,19 +496,66 @@ def read_myd03(myd03_file: Path, ref_dt: Optional[datetime] = None) -> Optional[
         return None
 
 
-def read_myd06(modis_file: Path, agri_dt: Optional[datetime] = None, myd03_file: Optional[Path] = None) -> Optional[dict]:
+def read_modis_geo_quick(modis_file: Path, myd03_file: Optional[Path] = None) -> Optional[dict]:
+    """
+    轻量地理预检：只读取 MODIS 经纬度，不做任何科学数据 IO。
+
+    优先使用 MYD03 1km 经纬度（若可用），否则回退到 MYD06 5km Latitude/Longitude。
+    返回的 dict 可直接传给 read_myd06 的 geo_cache 参数以避免重复读取。
+    """
+    # 优先 MYD03 1km（同时缓存 scan_time 避免后续重复读取）
+    if myd03_file is not None:
+        geo = read_myd03(myd03_file)
+        if geo is not None:
+            return {
+                "lat_1km": geo["lat_1km"],
+                "lon_1km": geo["lon_1km"],
+                "scan_time_1km": geo.get("scan_time_1km"),
+                "scan_time_source": geo.get("scan_time_source", "none"),
+                "_geo_source": "MYD03_1KM",
+            }
+
+    # 回退到 MYD06 5km
+    try:
+        sd = SD(str(modis_file), SDC.READ)
+        lat_5km = sd.select("Latitude")[:].astype(np.float32)
+        lon_5km = sd.select("Longitude")[:].astype(np.float32)
+        sd.end()
+        return {
+            "lat_5km": lat_5km,
+            "lon_5km": lon_5km,
+            "_geo_source": "MYD06_5KM",
+        }
+    except Exception:
+        return None
+
+
+def read_myd06(modis_file: Path, agri_dt: Optional[datetime] = None,
+               myd03_file: Optional[Path] = None,
+               geo_cache: Optional[dict] = None) -> Optional[dict]:
     """
     读取 MYD06 文件，返回保留 2D 空间形状的变量字典。
 
-    当前配置下 4 个主监督量都按 1km SDS 处理；若传入 MYD03 则使用其 1km 经纬度，
-    否则若产品只提供 5km 经纬度，
-    则在聚合阶段按现有逻辑上采样到 1km 标签形状。
+    若提供 geo_cache（来自 read_modis_geo_quick），则跳过经纬度读取。
     """
     try:
         sd = SD(str(modis_file), SDC.READ)
 
-        lat_5km = sd.select("Latitude")[:]
-        lon_5km = sd.select("Longitude")[:]
+        # ── 经纬度：优先用 geo_cache，否则从文件读取 ──
+        lat_1km = None
+        lon_1km = None
+        scan_t = None
+        scan_time_source = "none"
+        fallback = True
+        geo_source = "MYD06_5KM_REPEAT"
+
+        if geo_cache is not None and geo_cache.get("lat_5km") is not None:
+            lat_5km = geo_cache["lat_5km"]
+            lon_5km = geo_cache["lon_5km"]
+            geo_source = geo_cache.get("_geo_source", "MYD06_5KM")
+        else:
+            lat_5km = sd.select("Latitude")[:]
+            lon_5km = sd.select("Longitude")[:]
 
         clp_raw = sd.select(cfg.MODIS_VARS["CLP"])[:].astype(np.int32)
         clp_1km = np.vectorize(lambda x: cfg.MODIS_PHASE_MAP.get(int(x), -1))(clp_raw).astype(np.float32)
@@ -517,8 +564,13 @@ def read_myd06(modis_file: Path, agri_dt: Optional[datetime] = None, myd03_file:
         cth_1km = _sds_scaled(sd, cfg.MODIS_VARS["CTH"], cfg.MODIS_SCALE["CTH"])
 
         cm_1km = _decode_cloud_mask(_sds_optional(sd, "Cloud_Mask_1km"))
-        cer_unc = _sds_optional(sd, "Cloud_Effective_Radius_Uncertainty", use_sds_sf=True)
-        cot_unc = _sds_optional(sd, "Cloud_Optical_Thickness_Uncertainty", use_sds_sf=True)
+        # Uncertainty SDS: _16 产品格式为 <Base>_Uncertainty_16，非 _16 产品为 <Base>_Uncertainty
+        _cer_sds = cfg.MODIS_VARS["CER"]
+        _cot_sds = cfg.MODIS_VARS["COT"]
+        _cer_unc_name = _cer_sds.replace("_16", "_Uncertainty_16") if "_16" in _cer_sds else (_cer_sds + "_Uncertainty")
+        _cot_unc_name = _cot_sds.replace("_16", "_Uncertainty_16") if "_16" in _cot_sds else (_cot_sds + "_Uncertainty")
+        cer_unc = _sds_optional(sd, _cer_unc_name, use_sds_sf=True)
+        cot_unc = _sds_optional(sd, _cot_unc_name, use_sds_sf=True)
 
         qc_vars = getattr(cfg, "MODIS_QC_VARS", {}) or {}
         clp_opt_raw = _sds_optional(sd, qc_vars.get("CLP_OPT", "")) if qc_vars.get("CLP_OPT") else None
@@ -531,16 +583,22 @@ def read_myd06(modis_file: Path, agri_dt: Optional[datetime] = None, myd03_file:
         myd06_scan_t = None
         if ref_dt is not None:
             myd06_scan_t = _read_scan_time_as_offset_min(sd, ref_dt, clp_1km.shape)
-        scan_t = None
-        scan_time_source = "none"
-        fallback = True
 
         sd.end()
 
-        lat_1km = None
-        lon_1km = None
-        geo_source = "MYD06_5KM_REPEAT"
-        if myd03_file is not None:
+        # ── MYD03 1km 经纬度：优先用 geo_cache ──
+        if geo_cache is not None and geo_cache.get("lat_1km") is not None:
+            lat_1km = geo_cache["lat_1km"]
+            lon_1km = geo_cache["lon_1km"]
+            if lat_1km.shape == clp_1km.shape and lon_1km.shape == clp_1km.shape:
+                geo_source = geo_cache.get("_geo_source", "MYD03_1KM")
+                scan_t = geo_cache.get("scan_time_1km")
+                scan_time_source = geo_cache.get("scan_time_source", "none")
+                fallback = (scan_t is None)
+            else:
+                lat_1km = None
+                lon_1km = None
+        elif myd03_file is not None:
             geo_1km = read_myd03(myd03_file, ref_dt=ref_dt)
             if geo_1km is not None:
                 lat_1km = geo_1km.get("lat_1km")
@@ -754,8 +812,10 @@ def apply_quality_filter(agri: dict, labels: dict, diagnostics: Optional[dict] =
     if "SAMPLE_WEIGHT" in labels:
         labels["SAMPLE_WEIGHT"] = np.where(valid, labels["SAMPLE_WEIGHT"], 0.0)
 
+    # 参照 GeoISCLD-Net：晴空像元 CER/COT/CTH 设为 0（而非 NaN）
+    # 让模型学习 "晴空 = 无云光学/几何属性"
     for k in ["CER", "COT", "CTH"]:
-        labels[k][~cloudy] = np.nan
+        labels[k][~cloudy] = 0.0
 
     if diagnostics is not None:
         _build_qc_diagnostics_row(

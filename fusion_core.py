@@ -65,6 +65,9 @@ def check_modis_in_agri_disk(
     检测 MODIS 条带是否完整落入 AGRI 全圆盘有效范围内。
     采样 MODIS 边缘像元，若任一边缘点到最近有效 AGRI 像元的距离超过阈值，
     判定为未完整落入，返回 False。
+
+    若调用前已将 AGRI 边缘像元设为 NaN（如通过 compute_tight_disk_mask），
+    则本函数自动以收紧后的范围做检查。
     """
     agri_valid = np.isfinite(agri_lat) & np.isfinite(agri_lon)
     if not agri_valid.any():
@@ -105,6 +108,45 @@ def check_modis_in_agri_disk(
     dist_km = 2.0 * 6371.0 * np.arcsin(np.clip(dist * 0.5, 0.0, 1.0))
 
     return bool(np.all(dist_km <= max_dist_km))
+
+
+def compute_tight_disk_mask(
+    lat: np.ndarray,
+    lon: np.ndarray,
+    margin_deg: float = 5.0,
+    sub_lon: float = 105.0,
+) -> np.ndarray:
+    """
+    计算 AGRI 全圆盘缩紧后的有效像元 mask。
+
+    以星下点 (0°N, sub_lon°E) 为圆心，计算每个像元的角距离，
+    剔除距圆盘边界 margin_deg 度以内的边缘像元。
+
+    Parameters
+    ----------
+    lat, lon : 2D arrays
+    margin_deg : 从圆盘边界向内收缩的度数。
+    sub_lon : 静止卫星星下点经度。
+    """
+    valid = np.isfinite(lat) & np.isfinite(lon)
+    if not valid.any():
+        return valid
+
+    sub_lat = 0.0
+    lat_r = np.deg2rad(lat)
+    lon_r = np.deg2rad(lon)
+    c_lat_r = np.deg2rad(sub_lat)
+    c_lon_r = np.deg2rad(sub_lon)
+
+    dlat = lat_r - c_lat_r
+    dlon = lon_r - c_lon_r
+    a = np.sin(dlat * 0.5) ** 2 + np.cos(c_lat_r) * np.cos(lat_r) * np.sin(dlon * 0.5) ** 2
+    dist_deg = np.rad2deg(2.0 * np.arcsin(np.sqrt(np.clip(a, 0.0, 1.0))))
+
+    max_dist = float(dist_deg[valid].max())
+    threshold = max(0.0, max_dist - margin_deg)
+
+    return valid & (dist_deg <= threshold)
 
 
 # ---------------------------------------------------------------------------
