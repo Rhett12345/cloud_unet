@@ -4631,3 +4631,358 @@ nohup: ignoring input
 2026-05-06 07:08:42 [INFO] train -   train 3479/4970 | loss=0.2926 clp=0.2535 cth=0.0391 | OA=87.3% | CTH_RMSE=1204
 2026-05-06 07:09:46 [INFO] train -   train 3976/4970 | loss=0.2925 clp=0.2534 cth=0.0391 | OA=87.3% | CTH_RMSE=1204
 2026-05-06 07:10:49 [INFO] train -   train 4473/4970 | loss=0.2924 clp=0.2533 cth=0.0391 | OA=87.3% | CTH_RMSE=1204
+2026-05-06 07:11:52 [INFO] train -   train 4970/4970 | loss=0.2925 clp=0.2533 cth=0.0391 | OA=87.3% | CTH_RMSE=1204
+2026-05-06 07:12:11 [INFO] train -   val 215/2156 | loss=0.2902 clp=0.2516 cth=0.0386 | OA=86.9% | CTH_RMSE=1168
+2026-05-06 07:12:30 [INFO] train -   val 430/2156 | loss=0.3066 clp=0.2677 cth=0.0389 | OA=86.0% | CTH_RMSE=1172
+2026-05-06 07:12:48 [INFO] train -   val 645/2156 | loss=0.3045 clp=0.2658 cth=0.0387 | OA=86.0% | CTH_RMSE=1168
+2026-05-06 07:13:06 [INFO] train -   val 860/2156 | loss=0.3051 clp=0.2661 cth=0.0390 | OA=86.0% | CTH_RMSE=1172
+2026-05-06 07:13:25 [INFO] train -   val 1075/2156 | loss=0.3003 clp=0.2618 cth=0.0385 | OA=86.2% | CTH_RMSE=1166
+2026-05-06 07:13:43 [INFO] train -   val 1290/2156 | loss=0.2963 clp=0.2583 cth=0.0380 | OA=86.4% | CTH_RMSE=1157
+2026-05-06 07:14:01 [INFO] train -   val 1505/2156 | loss=0.2963 clp=0.2583 cth=0.0381 | OA=86.4% | CTH_RMSE=1156
+2026-05-06 07:14:20 [INFO] train -   val 1720/2156 | loss=0.3014 clp=0.2631 cth=0.0383 | OA=86.1% | CTH_RMSE=1160
+2026-05-06 07:14:38 [INFO] train -   val 1935/2156 | loss=0.3047 clp=0.2655 cth=0.0391 | OA=86.0% | CTH_RMSE=1173
+2026-05-06 07:14:57 [INFO] train -   val 2150/2156 | loss=0.3035 clp=0.2639 cth=0.0396 | OA=86.0% | CTH_RMSE=1178
+2026-05-06 07:14:57 [INFO] train -   val 2156/2156 | loss=0.3035 clp=0.2639 cth=0.0396 | OA=86.0% | CTH_RMSE=1178
+2026-05-06 07:14:57 [INFO] train - Epoch  20/30 | TrainLoss=0.2925 (CLP=0.2533 CTH=0.0391) | ValLoss=0.3035 | OA=86.02% | CTH_RMSE=1178.3 | LR=1.00e-04 | c0=95.6 c1=75.5 c2=92.1 | 822.1s
+2026-05-06 07:16:02 [INFO] train -   train 497/4970 | loss=0.2926 clp=0.2535 cth=0.0391 | OA=87.3% | CTH_RMSE=1203
+2026-05-06 07:17:06 [INFO] train -   train 994/4970 | loss=0.2926 clp=0.2534 cth=0.0392 | OA=87.3% | CTH_RMSE=1205
+2026-05-06 07:18:10 [INFO] train -   train 1491/4970 | loss=0.2920 clp=0.2529 cth=0.0391 | OA=87.3% | CTH_RMSE=1203
+2026-05-06 07:19:13 [INFO] train -   train 1988/4970 | loss=0.2919 clp=0.2528 cth=0.0391 | OA=87.3% | CTH_RMSE=1204
+2026-05-06 07:20:16 [INFO] train -   train 2485/4970 | loss=0.2918 clp=0.2528 cth=0.0390 | OA=87.4% | CTH_RMSE=1202
+2026-05-06 07:21:19 [INFO] train -   train 2982/4970 | loss=0.2916 clp=0.2527 cth=0.0390 | OA=87.4% | CTH_RMSE=1202
+2026-05-06 07:22:23 [INFO] train -   train 3479/4970 | loss=0.2914 clp=0.2524 cth=0.0389 | OA=87.4% | CTH_RMSE=1201
+2026-05-06 07:23:27 [INFO] train -   train 3976/4970 | loss=0.2913 clp=0.2524 cth=0.0389 | OA=87.4% | CTH_RMSE=1201
+2026-05-06 07:24:30 [INFO] train -   train 4473/4970 | loss=0.2915 clp=0.2525 cth=0.0390 | OA=87.4% | CTH_RMSE=1202
+2026-05-06 07:25:33 [INFO] train -   train 4970/4970 | loss=0.2914 clp=0.2524 cth=0.0390 | OA=87.4% | CTH_RMSE=1202
+2026-05-06 07:25:52 [INFO] train -   val 215/2156 | loss=0.2962 clp=0.2587 cth=0.0375 | OA=87.1% | CTH_RMSE=1148
+2026-05-06 07:26:11 [INFO] train -   val 430/2156 | loss=0.3146 clp=0.2767 cth=0.0379 | OA=86.1% | CTH_RMSE=1154
+2026-05-06 07:26:29 [INFO] train -   val 645/2156 | loss=0.3117 clp=0.2738 cth=0.0380 | OA=86.2% | CTH_RMSE=1154
+2026-05-06 07:26:47 [INFO] train -   val 860/2156 | loss=0.3123 clp=0.2741 cth=0.0382 | OA=86.1% | CTH_RMSE=1158
+2026-05-06 07:27:05 [INFO] train -   val 1075/2156 | loss=0.3063 clp=0.2686 cth=0.0377 | OA=86.4% | CTH_RMSE=1152
+2026-05-06 07:27:24 [INFO] train -   val 1290/2156 | loss=0.3017 clp=0.2645 cth=0.0373 | OA=86.6% | CTH_RMSE=1144
+2026-05-06 07:27:42 [INFO] train -   val 1505/2156 | loss=0.3018 clp=0.2644 cth=0.0374 | OA=86.6% | CTH_RMSE=1144
+2026-05-06 07:28:00 [INFO] train -   val 1720/2156 | loss=0.3071 clp=0.2694 cth=0.0377 | OA=86.3% | CTH_RMSE=1150
+2026-05-06 07:28:19 [INFO] train -   val 1935/2156 | loss=0.3105 clp=0.2719 cth=0.0386 | OA=86.2% | CTH_RMSE=1164
+2026-05-06 07:28:37 [INFO] train -   val 2150/2156 | loss=0.3090 clp=0.2699 cth=0.0391 | OA=86.3% | CTH_RMSE=1170
+2026-05-06 07:28:38 [INFO] train -   val 2156/2156 | loss=0.3090 clp=0.2699 cth=0.0391 | OA=86.3% | CTH_RMSE=1170
+2026-05-06 07:28:38 [INFO] train - Epoch  21/30 | TrainLoss=0.2914 (CLP=0.2524 CTH=0.0390) | ValLoss=0.3090 | OA=86.29% | CTH_RMSE=1169.9 | LR=1.00e-04 | c0=95.2 c1=76.4 c2=91.6 | 820.5s
+2026-05-06 07:29:42 [INFO] train -   train 497/4970 | loss=0.2911 clp=0.2524 cth=0.0387 | OA=87.4% | CTH_RMSE=1197
+2026-05-06 07:30:46 [INFO] train -   train 994/4970 | loss=0.2907 clp=0.2520 cth=0.0387 | OA=87.4% | CTH_RMSE=1198
+2026-05-06 07:31:50 [INFO] train -   train 1491/4970 | loss=0.2911 clp=0.2523 cth=0.0389 | OA=87.4% | CTH_RMSE=1200
+2026-05-06 07:32:53 [INFO] train -   train 1988/4970 | loss=0.2911 clp=0.2523 cth=0.0388 | OA=87.4% | CTH_RMSE=1200
+2026-05-06 07:33:57 [INFO] train -   train 2485/4970 | loss=0.2907 clp=0.2519 cth=0.0388 | OA=87.4% | CTH_RMSE=1199
+2026-05-06 07:35:00 [INFO] train -   train 2982/4970 | loss=0.2906 clp=0.2518 cth=0.0388 | OA=87.4% | CTH_RMSE=1200
+2026-05-06 07:36:03 [INFO] train -   train 3479/4970 | loss=0.2905 clp=0.2516 cth=0.0388 | OA=87.4% | CTH_RMSE=1200
+2026-05-06 07:37:07 [INFO] train -   train 3976/4970 | loss=0.2904 clp=0.2516 cth=0.0388 | OA=87.4% | CTH_RMSE=1199
+2026-05-06 07:38:11 [INFO] train -   train 4473/4970 | loss=0.2903 clp=0.2515 cth=0.0388 | OA=87.4% | CTH_RMSE=1199
+2026-05-06 07:39:14 [INFO] train -   train 4970/4970 | loss=0.2903 clp=0.2515 cth=0.0388 | OA=87.4% | CTH_RMSE=1199
+2026-05-06 07:39:33 [INFO] train -   val 215/2156 | loss=0.2901 clp=0.2524 cth=0.0377 | OA=87.1% | CTH_RMSE=1153
+2026-05-06 07:39:51 [INFO] train -   val 430/2156 | loss=0.3070 clp=0.2689 cth=0.0381 | OA=86.2% | CTH_RMSE=1159
+2026-05-06 07:40:09 [INFO] train -   val 645/2156 | loss=0.3046 clp=0.2665 cth=0.0381 | OA=86.2% | CTH_RMSE=1159
+2026-05-06 07:40:28 [INFO] train -   val 860/2156 | loss=0.3057 clp=0.2672 cth=0.0384 | OA=86.1% | CTH_RMSE=1163
+2026-05-06 07:40:46 [INFO] train -   val 1075/2156 | loss=0.3003 clp=0.2624 cth=0.0379 | OA=86.4% | CTH_RMSE=1156
+2026-05-06 07:41:05 [INFO] train -   val 1290/2156 | loss=0.2960 clp=0.2584 cth=0.0375 | OA=86.6% | CTH_RMSE=1149
+2026-05-06 07:41:23 [INFO] train -   val 1505/2156 | loss=0.2963 clp=0.2587 cth=0.0377 | OA=86.6% | CTH_RMSE=1149
+2026-05-06 07:41:41 [INFO] train -   val 1720/2156 | loss=0.3013 clp=0.2633 cth=0.0380 | OA=86.3% | CTH_RMSE=1154
+2026-05-06 07:41:59 [INFO] train -   val 1935/2156 | loss=0.3047 clp=0.2658 cth=0.0388 | OA=86.2% | CTH_RMSE=1168
+2026-05-06 07:42:18 [INFO] train -   val 2150/2156 | loss=0.3034 clp=0.2642 cth=0.0392 | OA=86.2% | CTH_RMSE=1173
+2026-05-06 07:42:18 [INFO] train -   val 2156/2156 | loss=0.3034 clp=0.2642 cth=0.0392 | OA=86.2% | CTH_RMSE=1173
+2026-05-06 07:42:18 [INFO] train - Epoch  22/30 | TrainLoss=0.2903 (CLP=0.2515 CTH=0.0388) | ValLoss=0.3034 | OA=86.24% | CTH_RMSE=1172.8 | LR=1.00e-04 | c0=95.7 c1=76.2 c2=91.6 | 820.1s
+2026-05-06 07:43:23 [INFO] train -   train 497/4970 | loss=0.2894 clp=0.2509 cth=0.0385 | OA=87.4% | CTH_RMSE=1194
+2026-05-06 07:44:26 [INFO] train -   train 994/4970 | loss=0.2892 clp=0.2507 cth=0.0385 | OA=87.4% | CTH_RMSE=1195
+2026-05-06 07:45:30 [INFO] train -   train 1491/4970 | loss=0.2894 clp=0.2508 cth=0.0386 | OA=87.5% | CTH_RMSE=1195
+2026-05-06 07:46:34 [INFO] train -   train 1988/4970 | loss=0.2889 clp=0.2504 cth=0.0385 | OA=87.5% | CTH_RMSE=1195
+2026-05-06 07:47:39 [INFO] train -   train 2485/4970 | loss=0.2891 clp=0.2505 cth=0.0385 | OA=87.5% | CTH_RMSE=1195
+2026-05-06 07:48:45 [INFO] train -   train 2982/4970 | loss=0.2889 clp=0.2504 cth=0.0385 | OA=87.5% | CTH_RMSE=1195
+2026-05-06 07:49:50 [INFO] train -   train 3479/4970 | loss=0.2890 clp=0.2505 cth=0.0385 | OA=87.5% | CTH_RMSE=1195
+2026-05-06 07:50:57 [INFO] train -   train 3976/4970 | loss=0.2889 clp=0.2504 cth=0.0385 | OA=87.5% | CTH_RMSE=1195
+2026-05-06 07:52:03 [INFO] train -   train 4473/4970 | loss=0.2889 clp=0.2504 cth=0.0385 | OA=87.5% | CTH_RMSE=1195
+2026-05-06 07:53:10 [INFO] train -   train 4970/4970 | loss=0.2892 clp=0.2506 cth=0.0386 | OA=87.4% | CTH_RMSE=1195
+2026-05-06 07:53:30 [INFO] train -   val 215/2156 | loss=0.2828 clp=0.2456 cth=0.0372 | OA=87.4% | CTH_RMSE=1144
+2026-05-06 07:53:49 [INFO] train -   val 430/2156 | loss=0.2972 clp=0.2597 cth=0.0375 | OA=86.6% | CTH_RMSE=1148
+2026-05-06 07:54:08 [INFO] train -   val 645/2156 | loss=0.2952 clp=0.2577 cth=0.0375 | OA=86.6% | CTH_RMSE=1148
+2026-05-06 07:54:27 [INFO] train -   val 860/2156 | loss=0.2957 clp=0.2578 cth=0.0379 | OA=86.6% | CTH_RMSE=1154
+2026-05-06 07:54:46 [INFO] train -   val 1075/2156 | loss=0.2913 clp=0.2539 cth=0.0374 | OA=86.7% | CTH_RMSE=1147
+2026-05-06 07:55:05 [INFO] train -   val 1290/2156 | loss=0.2876 clp=0.2506 cth=0.0369 | OA=86.9% | CTH_RMSE=1139
+2026-05-06 07:55:24 [INFO] train -   val 1505/2156 | loss=0.2880 clp=0.2510 cth=0.0371 | OA=86.9% | CTH_RMSE=1139
+2026-05-06 07:55:43 [INFO] train -   val 1720/2156 | loss=0.2931 clp=0.2557 cth=0.0374 | OA=86.7% | CTH_RMSE=1145
+2026-05-06 07:56:03 [INFO] train -   val 1935/2156 | loss=0.2964 clp=0.2582 cth=0.0382 | OA=86.5% | CTH_RMSE=1158
+2026-05-06 07:56:22 [INFO] train -   val 2150/2156 | loss=0.2956 clp=0.2569 cth=0.0387 | OA=86.6% | CTH_RMSE=1164
+2026-05-06 07:56:22 [INFO] train -   val 2156/2156 | loss=0.2955 clp=0.2569 cth=0.0387 | OA=86.6% | CTH_RMSE=1164
+2026-05-06 07:56:22 [INFO] train - Epoch  23/30 | TrainLoss=0.2892 (CLP=0.2506 CTH=0.0386) | ValLoss=0.2955 | OA=86.60% | CTH_RMSE=1163.9 | LR=1.00e-04 | c0=95.0 c1=77.1 c2=91.9 | 844.1s
+2026-05-06 07:56:23 [INFO] train -   ✓ New best val_macro_acc: 88.010238 (OA=86.60% Macro=88.01%) → saved HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 07:57:30 [INFO] train -   train 497/4970 | loss=0.2883 clp=0.2502 cth=0.0381 | OA=87.5% | CTH_RMSE=1188
+2026-05-06 07:58:33 [INFO] train -   train 994/4970 | loss=0.2896 clp=0.2511 cth=0.0385 | OA=87.4% | CTH_RMSE=1194
+2026-05-06 07:59:37 [INFO] train -   train 1491/4970 | loss=0.2892 clp=0.2506 cth=0.0386 | OA=87.5% | CTH_RMSE=1195
+2026-05-06 08:00:40 [INFO] train -   train 1988/4970 | loss=0.2887 clp=0.2502 cth=0.0385 | OA=87.5% | CTH_RMSE=1195
+2026-05-06 08:01:44 [INFO] train -   train 2485/4970 | loss=0.2885 clp=0.2500 cth=0.0385 | OA=87.5% | CTH_RMSE=1194
+2026-05-06 08:02:47 [INFO] train -   train 2982/4970 | loss=0.2882 clp=0.2498 cth=0.0384 | OA=87.5% | CTH_RMSE=1194
+2026-05-06 08:03:50 [INFO] train -   train 3479/4970 | loss=0.2881 clp=0.2497 cth=0.0384 | OA=87.5% | CTH_RMSE=1193
+2026-05-06 08:04:54 [INFO] train -   train 3976/4970 | loss=0.2880 clp=0.2496 cth=0.0384 | OA=87.5% | CTH_RMSE=1193
+2026-05-06 08:05:57 [INFO] train -   train 4473/4970 | loss=0.2880 clp=0.2496 cth=0.0384 | OA=87.5% | CTH_RMSE=1194
+2026-05-06 08:07:00 [INFO] train -   train 4970/4970 | loss=0.2882 clp=0.2498 cth=0.0384 | OA=87.5% | CTH_RMSE=1194
+2026-05-06 08:07:19 [INFO] train -   val 215/2156 | loss=0.2819 clp=0.2445 cth=0.0374 | OA=87.4% | CTH_RMSE=1149
+2026-05-06 08:07:37 [INFO] train -   val 430/2156 | loss=0.2982 clp=0.2604 cth=0.0378 | OA=86.5% | CTH_RMSE=1154
+2026-05-06 08:07:56 [INFO] train -   val 645/2156 | loss=0.2960 clp=0.2583 cth=0.0377 | OA=86.5% | CTH_RMSE=1152
+2026-05-06 08:08:14 [INFO] train -   val 860/2156 | loss=0.2968 clp=0.2588 cth=0.0380 | OA=86.5% | CTH_RMSE=1157
+2026-05-06 08:08:32 [INFO] train -   val 1075/2156 | loss=0.2920 clp=0.2545 cth=0.0375 | OA=86.7% | CTH_RMSE=1150
+2026-05-06 08:08:51 [INFO] train -   val 1290/2156 | loss=0.2880 clp=0.2510 cth=0.0370 | OA=86.9% | CTH_RMSE=1141
+2026-05-06 08:09:09 [INFO] train -   val 1505/2156 | loss=0.2882 clp=0.2511 cth=0.0371 | OA=86.9% | CTH_RMSE=1140
+2026-05-06 08:09:27 [INFO] train -   val 1720/2156 | loss=0.2930 clp=0.2556 cth=0.0374 | OA=86.7% | CTH_RMSE=1145
+2026-05-06 08:09:46 [INFO] train -   val 1935/2156 | loss=0.2962 clp=0.2580 cth=0.0382 | OA=86.6% | CTH_RMSE=1159
+2026-05-06 08:10:04 [INFO] train -   val 2150/2156 | loss=0.2953 clp=0.2566 cth=0.0387 | OA=86.6% | CTH_RMSE=1164
+2026-05-06 08:10:04 [INFO] train -   val 2156/2156 | loss=0.2953 clp=0.2566 cth=0.0387 | OA=86.6% | CTH_RMSE=1164
+2026-05-06 08:10:04 [INFO] train - Epoch  24/30 | TrainLoss=0.2882 (CLP=0.2498 CTH=0.0384) | ValLoss=0.2953 | OA=86.62% | CTH_RMSE=1164.1 | LR=1.00e-04 | c0=95.1 c1=77.1 c2=91.9 | 821.2s
+2026-05-06 08:10:05 [INFO] train -   ✓ New best val_macro_acc: 88.050353 (OA=86.62% Macro=88.05%) → saved HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 08:11:10 [INFO] train -   train 497/4970 | loss=0.2880 clp=0.2497 cth=0.0383 | OA=87.5% | CTH_RMSE=1191
+2026-05-06 08:12:13 [INFO] train -   train 994/4970 | loss=0.2869 clp=0.2486 cth=0.0383 | OA=87.5% | CTH_RMSE=1192
+2026-05-06 08:13:17 [INFO] train -   train 1491/4970 | loss=0.2867 clp=0.2484 cth=0.0382 | OA=87.6% | CTH_RMSE=1190
+2026-05-06 08:14:20 [INFO] train -   train 1988/4970 | loss=0.2872 clp=0.2489 cth=0.0383 | OA=87.5% | CTH_RMSE=1191
+2026-05-06 08:15:24 [INFO] train -   train 2485/4970 | loss=0.2872 clp=0.2489 cth=0.0383 | OA=87.5% | CTH_RMSE=1192
+2026-05-06 08:16:27 [INFO] train -   train 2982/4970 | loss=0.2872 clp=0.2489 cth=0.0383 | OA=87.5% | CTH_RMSE=1192
+2026-05-06 08:17:31 [INFO] train -   train 3479/4970 | loss=0.2873 clp=0.2490 cth=0.0383 | OA=87.5% | CTH_RMSE=1192
+2026-05-06 08:18:34 [INFO] train -   train 3976/4970 | loss=0.2873 clp=0.2490 cth=0.0383 | OA=87.5% | CTH_RMSE=1191
+2026-05-06 08:19:38 [INFO] train -   train 4473/4970 | loss=0.2874 clp=0.2491 cth=0.0383 | OA=87.5% | CTH_RMSE=1191
+2026-05-06 08:20:41 [INFO] train -   train 4970/4970 | loss=0.2872 clp=0.2489 cth=0.0383 | OA=87.5% | CTH_RMSE=1191
+2026-05-06 08:21:00 [INFO] train -   val 215/2156 | loss=0.2758 clp=0.2387 cth=0.0371 | OA=87.6% | CTH_RMSE=1142
+2026-05-06 08:21:18 [INFO] train -   val 430/2156 | loss=0.2913 clp=0.2539 cth=0.0374 | OA=86.7% | CTH_RMSE=1147
+2026-05-06 08:21:37 [INFO] train -   val 645/2156 | loss=0.2902 clp=0.2526 cth=0.0376 | OA=86.6% | CTH_RMSE=1148
+2026-05-06 08:21:55 [INFO] train -   val 860/2156 | loss=0.2914 clp=0.2536 cth=0.0379 | OA=86.5% | CTH_RMSE=1153
+2026-05-06 08:22:13 [INFO] train -   val 1075/2156 | loss=0.2873 clp=0.2499 cth=0.0374 | OA=86.7% | CTH_RMSE=1148
+2026-05-06 08:22:32 [INFO] train -   val 1290/2156 | loss=0.2837 clp=0.2467 cth=0.0370 | OA=86.9% | CTH_RMSE=1140
+2026-05-06 08:22:50 [INFO] train -   val 1505/2156 | loss=0.2842 clp=0.2472 cth=0.0370 | OA=86.9% | CTH_RMSE=1139
+2026-05-06 08:23:08 [INFO] train -   val 1720/2156 | loss=0.2891 clp=0.2518 cth=0.0373 | OA=86.6% | CTH_RMSE=1144
+2026-05-06 08:23:27 [INFO] train -   val 1935/2156 | loss=0.2923 clp=0.2541 cth=0.0381 | OA=86.5% | CTH_RMSE=1157
+2026-05-06 08:23:44 [INFO] train -   val 2150/2156 | loss=0.2916 clp=0.2530 cth=0.0386 | OA=86.5% | CTH_RMSE=1162
+2026-05-06 08:23:45 [INFO] train -   val 2156/2156 | loss=0.2916 clp=0.2530 cth=0.0386 | OA=86.5% | CTH_RMSE=1162
+2026-05-06 08:23:45 [INFO] train - Epoch  25/30 | TrainLoss=0.2872 (CLP=0.2489 CTH=0.0383) | ValLoss=0.2916 | OA=86.50% | CTH_RMSE=1162.5 | LR=1.00e-04 | c0=95.5 c1=76.4 c2=92.4 | 819.8s
+2026-05-06 08:23:46 [INFO] train -   ✓ New best val_macro_acc: 88.081144 (OA=86.50% Macro=88.08%) → saved HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 08:24:50 [INFO] train -   train 497/4970 | loss=0.2866 clp=0.2483 cth=0.0383 | OA=87.6% | CTH_RMSE=1191
+2026-05-06 08:25:54 [INFO] train -   train 994/4970 | loss=0.2865 clp=0.2483 cth=0.0382 | OA=87.6% | CTH_RMSE=1190
+2026-05-06 08:26:57 [INFO] train -   train 1491/4970 | loss=0.2865 clp=0.2484 cth=0.0381 | OA=87.6% | CTH_RMSE=1188
+2026-05-06 08:28:01 [INFO] train -   train 1988/4970 | loss=0.2869 clp=0.2487 cth=0.0381 | OA=87.5% | CTH_RMSE=1189
+2026-05-06 08:29:04 [INFO] train -   train 2485/4970 | loss=0.2867 clp=0.2486 cth=0.0381 | OA=87.5% | CTH_RMSE=1188
+2026-05-06 08:30:08 [INFO] train -   train 2982/4970 | loss=0.2867 clp=0.2486 cth=0.0382 | OA=87.5% | CTH_RMSE=1189
+2026-05-06 08:31:12 [INFO] train -   train 3479/4970 | loss=0.2865 clp=0.2483 cth=0.0381 | OA=87.6% | CTH_RMSE=1189
+2026-05-06 08:32:15 [INFO] train -   train 3976/4970 | loss=0.2864 clp=0.2483 cth=0.0381 | OA=87.6% | CTH_RMSE=1188
+2026-05-06 08:33:19 [INFO] train -   train 4473/4970 | loss=0.2864 clp=0.2483 cth=0.0381 | OA=87.6% | CTH_RMSE=1188
+2026-05-06 08:34:22 [INFO] train -   train 4970/4970 | loss=0.2863 clp=0.2482 cth=0.0381 | OA=87.6% | CTH_RMSE=1188
+2026-05-06 08:34:41 [INFO] train -   val 215/2156 | loss=0.2897 clp=0.2525 cth=0.0373 | OA=86.8% | CTH_RMSE=1146
+2026-05-06 08:34:59 [INFO] train -   val 430/2156 | loss=0.3063 clp=0.2685 cth=0.0378 | OA=85.9% | CTH_RMSE=1153
+2026-05-06 08:35:17 [INFO] train -   val 645/2156 | loss=0.3039 clp=0.2661 cth=0.0378 | OA=86.0% | CTH_RMSE=1152
+2026-05-06 08:35:36 [INFO] train -   val 860/2156 | loss=0.3050 clp=0.2669 cth=0.0381 | OA=85.9% | CTH_RMSE=1156
+2026-05-06 08:35:54 [INFO] train -   val 1075/2156 | loss=0.2998 clp=0.2623 cth=0.0375 | OA=86.2% | CTH_RMSE=1149
+2026-05-06 08:36:13 [INFO] train -   val 1290/2156 | loss=0.2956 clp=0.2586 cth=0.0370 | OA=86.4% | CTH_RMSE=1140
+2026-05-06 08:36:31 [INFO] train -   val 1505/2156 | loss=0.2957 clp=0.2587 cth=0.0370 | OA=86.4% | CTH_RMSE=1139
+2026-05-06 08:36:49 [INFO] train -   val 1720/2156 | loss=0.3007 clp=0.2634 cth=0.0373 | OA=86.2% | CTH_RMSE=1144
+2026-05-06 08:37:07 [INFO] train -   val 1935/2156 | loss=0.3041 clp=0.2658 cth=0.0382 | OA=86.1% | CTH_RMSE=1158
+2026-05-06 08:37:26 [INFO] train -   val 2150/2156 | loss=0.3030 clp=0.2642 cth=0.0387 | OA=86.1% | CTH_RMSE=1164
+2026-05-06 08:37:26 [INFO] train -   val 2156/2156 | loss=0.3029 clp=0.2642 cth=0.0387 | OA=86.1% | CTH_RMSE=1164
+2026-05-06 08:37:26 [INFO] train - Epoch  26/30 | TrainLoss=0.2863 (CLP=0.2482 CTH=0.0381) | ValLoss=0.3029 | OA=86.14% | CTH_RMSE=1164.1 | LR=1.00e-04 | c0=95.4 c1=76.0 c2=92.2 | 820.5s
+2026-05-06 08:38:31 [INFO] train -   train 497/4970 | loss=0.2838 clp=0.2461 cth=0.0377 | OA=87.7% | CTH_RMSE=1182
+2026-05-06 08:39:34 [INFO] train -   train 994/4970 | loss=0.2846 clp=0.2468 cth=0.0379 | OA=87.6% | CTH_RMSE=1184
+2026-05-06 08:40:38 [INFO] train -   train 1491/4970 | loss=0.2852 clp=0.2473 cth=0.0379 | OA=87.6% | CTH_RMSE=1185
+2026-05-06 08:41:41 [INFO] train -   train 1988/4970 | loss=0.2855 clp=0.2475 cth=0.0380 | OA=87.6% | CTH_RMSE=1187
+2026-05-06 08:42:45 [INFO] train -   train 2485/4970 | loss=0.2855 clp=0.2475 cth=0.0380 | OA=87.6% | CTH_RMSE=1187
+2026-05-06 08:43:50 [INFO] train -   train 2982/4970 | loss=0.2857 clp=0.2476 cth=0.0381 | OA=87.6% | CTH_RMSE=1188
+2026-05-06 08:44:58 [INFO] train -   train 3479/4970 | loss=0.2857 clp=0.2476 cth=0.0381 | OA=87.6% | CTH_RMSE=1188
+2026-05-06 08:46:05 [INFO] train -   train 3976/4970 | loss=0.2856 clp=0.2475 cth=0.0380 | OA=87.6% | CTH_RMSE=1187
+2026-05-06 08:47:12 [INFO] train -   train 4473/4970 | loss=0.2855 clp=0.2475 cth=0.0380 | OA=87.6% | CTH_RMSE=1187
+2026-05-06 08:48:18 [INFO] train -   train 4970/4970 | loss=0.2854 clp=0.2475 cth=0.0380 | OA=87.6% | CTH_RMSE=1186
+2026-05-06 08:48:38 [INFO] train -   val 215/2156 | loss=0.2876 clp=0.2496 cth=0.0379 | OA=87.2% | CTH_RMSE=1158
+2026-05-06 08:48:56 [INFO] train -   val 430/2156 | loss=0.3014 clp=0.2637 cth=0.0376 | OA=86.4% | CTH_RMSE=1152
+2026-05-06 08:49:15 [INFO] train -   val 645/2156 | loss=0.2994 clp=0.2618 cth=0.0376 | OA=86.4% | CTH_RMSE=1150
+2026-05-06 08:49:34 [INFO] train -   val 860/2156 | loss=0.3001 clp=0.2623 cth=0.0378 | OA=86.4% | CTH_RMSE=1155
+2026-05-06 08:49:53 [INFO] train -   val 1075/2156 | loss=0.2952 clp=0.2579 cth=0.0373 | OA=86.6% | CTH_RMSE=1148
+2026-05-06 08:50:11 [INFO] train -   val 1290/2156 | loss=0.2912 clp=0.2543 cth=0.0369 | OA=86.8% | CTH_RMSE=1140
+2026-05-06 08:50:30 [INFO] train -   val 1505/2156 | loss=0.2912 clp=0.2542 cth=0.0370 | OA=86.8% | CTH_RMSE=1139
+2026-05-06 08:50:49 [INFO] train -   val 1720/2156 | loss=0.2962 clp=0.2590 cth=0.0373 | OA=86.6% | CTH_RMSE=1144
+2026-05-06 08:51:08 [INFO] train -   val 1935/2156 | loss=0.2998 clp=0.2616 cth=0.0382 | OA=86.4% | CTH_RMSE=1159
+2026-05-06 08:51:26 [INFO] train -   val 2150/2156 | loss=0.2988 clp=0.2602 cth=0.0386 | OA=86.5% | CTH_RMSE=1164
+2026-05-06 08:51:26 [INFO] train -   val 2156/2156 | loss=0.2988 clp=0.2602 cth=0.0386 | OA=86.5% | CTH_RMSE=1164
+2026-05-06 08:51:27 [INFO] train - Epoch  27/30 | TrainLoss=0.2854 (CLP=0.2475 CTH=0.0380) | ValLoss=0.2988 | OA=86.50% | CTH_RMSE=1163.9 | LR=1.00e-04 | c0=95.4 c1=77.0 c2=91.5 | 840.3s
+2026-05-06 08:52:33 [INFO] train -   train 497/4970 | loss=0.2849 clp=0.2471 cth=0.0378 | OA=87.7% | CTH_RMSE=1184
+2026-05-06 08:53:38 [INFO] train -   train 994/4970 | loss=0.2854 clp=0.2474 cth=0.0380 | OA=87.6% | CTH_RMSE=1187
+2026-05-06 08:54:43 [INFO] train -   train 1491/4970 | loss=0.2849 clp=0.2471 cth=0.0378 | OA=87.7% | CTH_RMSE=1184
+2026-05-06 08:55:47 [INFO] train -   train 1988/4970 | loss=0.2846 clp=0.2468 cth=0.0378 | OA=87.7% | CTH_RMSE=1184
+2026-05-06 08:56:50 [INFO] train -   train 2485/4970 | loss=0.2844 clp=0.2465 cth=0.0379 | OA=87.7% | CTH_RMSE=1185
+2026-05-06 08:57:53 [INFO] train -   train 2982/4970 | loss=0.2848 clp=0.2469 cth=0.0379 | OA=87.6% | CTH_RMSE=1185
+2026-05-06 08:58:57 [INFO] train -   train 3479/4970 | loss=0.2847 clp=0.2468 cth=0.0379 | OA=87.6% | CTH_RMSE=1185
+2026-05-06 09:00:00 [INFO] train -   train 3976/4970 | loss=0.2847 clp=0.2469 cth=0.0379 | OA=87.6% | CTH_RMSE=1185
+2026-05-06 09:01:04 [INFO] train -   train 4473/4970 | loss=0.2849 clp=0.2470 cth=0.0379 | OA=87.6% | CTH_RMSE=1185
+2026-05-06 09:02:07 [INFO] train -   train 4970/4970 | loss=0.2847 clp=0.2469 cth=0.0379 | OA=87.6% | CTH_RMSE=1184
+2026-05-06 09:02:26 [INFO] train -   val 215/2156 | loss=0.2924 clp=0.2556 cth=0.0368 | OA=86.8% | CTH_RMSE=1138
+2026-05-06 09:02:44 [INFO] train -   val 430/2156 | loss=0.3089 clp=0.2715 cth=0.0374 | OA=85.9% | CTH_RMSE=1148
+2026-05-06 09:03:02 [INFO] train -   val 645/2156 | loss=0.3065 clp=0.2689 cth=0.0376 | OA=86.0% | CTH_RMSE=1150
+2026-05-06 09:03:21 [INFO] train -   val 860/2156 | loss=0.3067 clp=0.2688 cth=0.0379 | OA=85.9% | CTH_RMSE=1154
+2026-05-06 09:03:39 [INFO] train -   val 1075/2156 | loss=0.3011 clp=0.2637 cth=0.0374 | OA=86.2% | CTH_RMSE=1148
+2026-05-06 09:03:57 [INFO] train -   val 1290/2156 | loss=0.2967 clp=0.2597 cth=0.0370 | OA=86.4% | CTH_RMSE=1141
+2026-05-06 09:04:16 [INFO] train -   val 1505/2156 | loss=0.2969 clp=0.2598 cth=0.0371 | OA=86.4% | CTH_RMSE=1140
+2026-05-06 09:04:34 [INFO] train -   val 1720/2156 | loss=0.3018 clp=0.2644 cth=0.0374 | OA=86.1% | CTH_RMSE=1145
+2026-05-06 09:04:52 [INFO] train -   val 1935/2156 | loss=0.3052 clp=0.2670 cth=0.0382 | OA=86.0% | CTH_RMSE=1159
+2026-05-06 09:05:11 [INFO] train -   val 2150/2156 | loss=0.3041 clp=0.2654 cth=0.0387 | OA=86.1% | CTH_RMSE=1164
+2026-05-06 09:05:11 [INFO] train -   val 2156/2156 | loss=0.3041 clp=0.2654 cth=0.0387 | OA=86.1% | CTH_RMSE=1164
+2026-05-06 09:05:11 [INFO] train - Epoch  28/30 | TrainLoss=0.2847 (CLP=0.2469 CTH=0.0379) | ValLoss=0.3041 | OA=86.08% | CTH_RMSE=1164.5 | LR=1.00e-04 | c0=95.5 c1=75.6 c2=92.3 | 824.4s
+2026-05-06 09:06:16 [INFO] train -   train 497/4970 | loss=0.2832 clp=0.2458 cth=0.0374 | OA=87.7% | CTH_RMSE=1177
+2026-05-06 09:07:19 [INFO] train -   train 994/4970 | loss=0.2832 clp=0.2456 cth=0.0376 | OA=87.7% | CTH_RMSE=1180
+2026-05-06 09:08:23 [INFO] train -   train 1491/4970 | loss=0.2832 clp=0.2456 cth=0.0376 | OA=87.7% | CTH_RMSE=1181
+2026-05-06 09:09:26 [INFO] train -   train 1988/4970 | loss=0.2836 clp=0.2458 cth=0.0377 | OA=87.7% | CTH_RMSE=1183
+2026-05-06 09:10:30 [INFO] train -   train 2485/4970 | loss=0.2837 clp=0.2460 cth=0.0377 | OA=87.7% | CTH_RMSE=1182
+2026-05-06 09:11:33 [INFO] train -   train 2982/4970 | loss=0.2839 clp=0.2462 cth=0.0377 | OA=87.7% | CTH_RMSE=1182
+2026-05-06 09:12:37 [INFO] train -   train 3479/4970 | loss=0.2837 clp=0.2461 cth=0.0377 | OA=87.7% | CTH_RMSE=1181
+2026-05-06 09:13:40 [INFO] train -   train 3976/4970 | loss=0.2836 clp=0.2460 cth=0.0376 | OA=87.7% | CTH_RMSE=1180
+2026-05-06 09:14:43 [INFO] train -   train 4473/4970 | loss=0.2837 clp=0.2461 cth=0.0376 | OA=87.7% | CTH_RMSE=1181
+2026-05-06 09:15:47 [INFO] train -   train 4970/4970 | loss=0.2837 clp=0.2461 cth=0.0377 | OA=87.7% | CTH_RMSE=1181
+2026-05-06 09:16:06 [INFO] train -   val 215/2156 | loss=0.2843 clp=0.2471 cth=0.0372 | OA=87.2% | CTH_RMSE=1145
+2026-05-06 09:16:25 [INFO] train -   val 430/2156 | loss=0.3003 clp=0.2626 cth=0.0377 | OA=86.4% | CTH_RMSE=1152
+2026-05-06 09:16:42 [INFO] train -   val 645/2156 | loss=0.2985 clp=0.2607 cth=0.0378 | OA=86.4% | CTH_RMSE=1153
+2026-05-06 09:17:01 [INFO] train -   val 860/2156 | loss=0.2988 clp=0.2609 cth=0.0379 | OA=86.3% | CTH_RMSE=1155
+2026-05-06 09:17:19 [INFO] train -   val 1075/2156 | loss=0.2940 clp=0.2565 cth=0.0375 | OA=86.6% | CTH_RMSE=1149
+2026-05-06 09:17:37 [INFO] train -   val 1290/2156 | loss=0.2901 clp=0.2530 cth=0.0371 | OA=86.7% | CTH_RMSE=1142
+2026-05-06 09:17:56 [INFO] train -   val 1505/2156 | loss=0.2901 clp=0.2529 cth=0.0372 | OA=86.7% | CTH_RMSE=1142
+2026-05-06 09:18:14 [INFO] train -   val 1720/2156 | loss=0.2949 clp=0.2574 cth=0.0375 | OA=86.5% | CTH_RMSE=1147
+2026-05-06 09:18:32 [INFO] train -   val 1935/2156 | loss=0.2982 clp=0.2599 cth=0.0383 | OA=86.4% | CTH_RMSE=1161
+2026-05-06 09:18:51 [INFO] train -   val 2150/2156 | loss=0.2971 clp=0.2583 cth=0.0388 | OA=86.4% | CTH_RMSE=1166
+2026-05-06 09:18:51 [INFO] train -   val 2156/2156 | loss=0.2971 clp=0.2583 cth=0.0388 | OA=86.4% | CTH_RMSE=1166
+2026-05-06 09:18:51 [INFO] train - Epoch  29/30 | TrainLoss=0.2837 (CLP=0.2461 CTH=0.0377) | ValLoss=0.2971 | OA=86.42% | CTH_RMSE=1166.2 | LR=1.00e-04 | c0=95.5 c1=76.2 c2=92.4 | 819.8s
+2026-05-06 09:19:56 [INFO] train -   train 497/4970 | loss=0.2822 clp=0.2447 cth=0.0375 | OA=87.7% | CTH_RMSE=1178
+2026-05-06 09:20:59 [INFO] train -   train 994/4970 | loss=0.2831 clp=0.2455 cth=0.0375 | OA=87.7% | CTH_RMSE=1179
+2026-05-06 09:22:03 [INFO] train -   train 1491/4970 | loss=0.2828 clp=0.2453 cth=0.0375 | OA=87.7% | CTH_RMSE=1179
+2026-05-06 09:23:06 [INFO] train -   train 1988/4970 | loss=0.2829 clp=0.2454 cth=0.0375 | OA=87.7% | CTH_RMSE=1178
+2026-05-06 09:24:10 [INFO] train -   train 2485/4970 | loss=0.2832 clp=0.2457 cth=0.0375 | OA=87.7% | CTH_RMSE=1179
+2026-05-06 09:25:13 [INFO] train -   train 2982/4970 | loss=0.2830 clp=0.2455 cth=0.0376 | OA=87.7% | CTH_RMSE=1180
+2026-05-06 09:26:17 [INFO] train -   train 3479/4970 | loss=0.2829 clp=0.2453 cth=0.0375 | OA=87.7% | CTH_RMSE=1179
+2026-05-06 09:27:20 [INFO] train -   train 3976/4970 | loss=0.2828 clp=0.2452 cth=0.0375 | OA=87.7% | CTH_RMSE=1179
+2026-05-06 09:28:23 [INFO] train -   train 4473/4970 | loss=0.2828 clp=0.2452 cth=0.0376 | OA=87.7% | CTH_RMSE=1180
+2026-05-06 09:29:27 [INFO] train -   train 4970/4970 | loss=0.2829 clp=0.2453 cth=0.0376 | OA=87.7% | CTH_RMSE=1180
+2026-05-06 09:29:46 [INFO] train -   val 215/2156 | loss=0.2847 clp=0.2471 cth=0.0376 | OA=87.2% | CTH_RMSE=1152
+2026-05-06 09:30:04 [INFO] train -   val 430/2156 | loss=0.2988 clp=0.2612 cth=0.0377 | OA=86.4% | CTH_RMSE=1153
+2026-05-06 09:30:22 [INFO] train -   val 645/2156 | loss=0.2969 clp=0.2593 cth=0.0376 | OA=86.4% | CTH_RMSE=1150
+2026-05-06 09:30:41 [INFO] train -   val 860/2156 | loss=0.2976 clp=0.2598 cth=0.0378 | OA=86.4% | CTH_RMSE=1154
+2026-05-06 09:30:59 [INFO] train -   val 1075/2156 | loss=0.2932 clp=0.2559 cth=0.0373 | OA=86.6% | CTH_RMSE=1148
+2026-05-06 09:31:17 [INFO] train -   val 1290/2156 | loss=0.2891 clp=0.2522 cth=0.0369 | OA=86.8% | CTH_RMSE=1139
+2026-05-06 09:31:35 [INFO] train -   val 1505/2156 | loss=0.2893 clp=0.2524 cth=0.0369 | OA=86.8% | CTH_RMSE=1138
+2026-05-06 09:31:54 [INFO] train -   val 1720/2156 | loss=0.2944 clp=0.2572 cth=0.0372 | OA=86.5% | CTH_RMSE=1143
+2026-05-06 09:32:12 [INFO] train -   val 1935/2156 | loss=0.2979 clp=0.2599 cth=0.0381 | OA=86.4% | CTH_RMSE=1157
+2026-05-06 09:32:30 [INFO] train -   val 2150/2156 | loss=0.2970 clp=0.2585 cth=0.0385 | OA=86.5% | CTH_RMSE=1163
+2026-05-06 09:32:31 [INFO] train -   val 2156/2156 | loss=0.2970 clp=0.2585 cth=0.0385 | OA=86.5% | CTH_RMSE=1163
+2026-05-06 09:32:31 [INFO] train - Epoch  30/30 | TrainLoss=0.2829 (CLP=0.2453 CTH=0.0376) | ValLoss=0.2970 | OA=86.46% | CTH_RMSE=1162.7 | LR=1.00e-04 | c0=95.4 c1=76.6 c2=91.8 | 819.6s
+2026-05-06 09:32:31 [INFO] train - Training complete. Best val_macro_acc: 88.081144, OA: 86.50%, Macro: 88.08%
+2026-05-06 09:32:31 [INFO] __main__ - Stage TRAIN complete
+2026-05-06 09:32:31 [INFO] __main__ - All stages finished.
+2026-05-06 09:32:32 [INFO] __main__ - ============================================================
+2026-05-06 09:32:32 [INFO] __main__ - Pipeline stages: test
+2026-05-06 09:32:32 [INFO] __main__ - ============================================================
+2026-05-06 09:32:32 [INFO] __main__ - Stage: TEST
+2026-05-06 09:32:34 [INFO] numexpr.utils - Note: detected 96 virtual cores but NumExpr set to maximum of 64, check "NUMEXPR_MAX_THREADS" environment variable.
+2026-05-06 09:32:34 [INFO] numexpr.utils - Note: NumExpr detected 96 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 16.
+2026-05-06 09:32:34 [INFO] numexpr.utils - NumExpr defaulting to 16 threads.
+2026-05-06 09:32:34 [INFO] test - Evaluating on cuda
+2026-05-06 09:32:35 [INFO] test - Loaded checkpoint /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 09:32:35 [INFO] dataset - Loading test split only from /data/Data_yuq/unet_workdir/paired/test (mode=test)
+2026-05-06 09:32:35 [INFO] dataset - Using 228/228 test files after date filter: 20190405,20190412,20190419,20190426,20190505,20190512,20190519,20190526
+2026-05-06 09:32:35 [INFO] dataset - Building patch index from 228 files in /data/Data_yuq/unet_workdir/paired/test (mode=test, min_valid_label=615, min_valid_cloudy=205) …
+2026-05-06 09:33:30 [INFO] dataset - Dataset ready – 116548 patches (from 228 files, mode=test)
+2026-05-06 09:41:06 [INFO] test - ────────────────────────────────────────────────────────────
+2026-05-06 09:41:06 [INFO] test - CLP valid pixels: valid_clp_pixels=453363302 total_pixels=477380608 valid_ratio=0.949689
+2026-05-06 09:41:06 [INFO] test - Cloud Phase  – OA = 86.28%
+2026-05-06 09:41:06 [INFO] test - Cloud Phase  – macro acc/recall = 89.20%
+2026-05-06 09:41:06 [INFO] test -   Clear        acc/recall = 96.17%
+2026-05-06 09:41:06 [INFO] test -   Water        acc/recall = 77.46%
+2026-05-06 09:41:06 [INFO] test -   Ice          acc/recall = 93.97%
+2026-05-06 09:41:06 [INFO] test - CTH (n=270545325)  RMSE=1191.121 m  MAE=707.378  Bias=30.531  R=0.9598
+2026-05-06 09:41:06 [INFO] test - ────────────────────────────────────────────────────────────
+2026-05-06 09:41:06 [INFO] test - Saved confusion matrix → /data/Data_yuq/unet_workdir/eval/confusion_matrix.png
+2026-05-06 09:44:17 [INFO] test - Saved scatter → /data/Data_yuq/unet_workdir/eval/scatter_CTH.png
+2026-05-06 09:44:17 [INFO] test - Evaluation complete – results in /data/Data_yuq/unet_workdir/eval
+2026-05-06 09:44:18 [INFO] __main__ - Stage TEST complete
+2026-05-06 09:44:18 [INFO] __main__ - All stages finished.
+
+2026-05-06 22:38:19,316 [INFO] __main__ - Batch inference on 40 files in /data/Data_yuq/FY4A/20190503
+2026-05-06 22:38:19,761 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:38:30,680 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503000000_20190503001459_4000M_V0001_retrieval.npz
+2026-05-06 22:38:30,882 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:38:41,223 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503001500_20190503002959_4000M_V0001_retrieval.npz
+2026-05-06 22:38:41,470 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:38:51,922 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503010000_20190503011459_4000M_V0001_retrieval.npz
+2026-05-06 22:38:52,120 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:39:02,636 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503020000_20190503021459_4000M_V0001_retrieval.npz
+2026-05-06 22:39:02,892 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:39:13,476 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503024500_20190503025959_4000M_V0001_retrieval.npz
+2026-05-06 22:39:13,674 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:39:24,078 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503030000_20190503031459_4000M_V0001_retrieval.npz
+2026-05-06 22:39:24,276 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:39:34,797 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503031500_20190503032959_4000M_V0001_retrieval.npz
+2026-05-06 22:39:35,005 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:39:45,479 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503040000_20190503041459_4000M_V0001_retrieval.npz
+2026-05-06 22:39:45,674 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:39:56,221 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503050000_20190503051459_4000M_V0001_retrieval.npz
+2026-05-06 22:39:56,420 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:40:06,837 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503054500_20190503055959_4000M_V0001_retrieval.npz
+2026-05-06 22:40:07,080 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:40:17,790 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503060000_20190503061459_4000M_V0001_retrieval.npz
+2026-05-06 22:40:17,985 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:40:28,505 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503061500_20190503062959_4000M_V0001_retrieval.npz
+2026-05-06 22:40:28,703 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:40:39,206 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503070000_20190503071459_4000M_V0001_retrieval.npz
+2026-05-06 22:40:39,465 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:40:50,176 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503080000_20190503081459_4000M_V0001_retrieval.npz
+2026-05-06 22:40:50,372 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:41:01,223 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503084500_20190503085959_4000M_V0001_retrieval.npz
+2026-05-06 22:41:01,483 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:41:12,186 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503090000_20190503091459_4000M_V0001_retrieval.npz
+2026-05-06 22:41:12,393 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:41:23,805 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503091500_20190503092959_4000M_V0001_retrieval.npz
+2026-05-06 22:41:24,007 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:41:35,395 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503100000_20190503101459_4000M_V0001_retrieval.npz
+2026-05-06 22:41:35,651 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:41:47,150 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503110000_20190503111459_4000M_V0001_retrieval.npz
+2026-05-06 22:41:47,347 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:41:58,978 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503114500_20190503115959_4000M_V0001_retrieval.npz
+2026-05-06 22:41:59,234 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:42:10,837 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503120000_20190503121459_4000M_V0001_retrieval.npz
+2026-05-06 22:42:11,035 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:42:22,749 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503121500_20190503122959_4000M_V0001_retrieval.npz
+2026-05-06 22:42:22,945 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:42:34,440 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503130000_20190503131459_4000M_V0001_retrieval.npz
+2026-05-06 22:42:34,671 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:42:46,327 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503140000_20190503141459_4000M_V0001_retrieval.npz
+2026-05-06 22:42:46,526 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:42:58,319 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503144500_20190503145959_4000M_V0001_retrieval.npz
+2026-05-06 22:42:58,525 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:43:10,034 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503150000_20190503151459_4000M_V0001_retrieval.npz
+2026-05-06 22:43:10,283 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:43:22,027 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503151500_20190503152959_4000M_V0001_retrieval.npz
+2026-05-06 22:43:22,225 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:43:34,011 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503160000_20190503161459_4000M_V0001_retrieval.npz
+2026-05-06 22:43:34,211 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:43:45,853 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503170000_20190503171459_4000M_V0001_retrieval.npz
+2026-05-06 22:43:46,113 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:43:57,880 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503174500_20190503175959_4000M_V0001_retrieval.npz
+2026-05-06 22:43:58,080 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:44:10,238 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503180000_20190503181459_4000M_V0001_retrieval.npz
+2026-05-06 22:44:10,437 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:44:22,272 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503181500_20190503182959_4000M_V0001_retrieval.npz
+2026-05-06 22:44:22,519 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:44:34,010 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503190000_20190503191459_4000M_V0001_retrieval.npz
+2026-05-06 22:44:34,238 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:44:46,056 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503200000_20190503201459_4000M_V0001_retrieval.npz
+2026-05-06 22:44:46,253 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:44:58,099 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503204500_20190503205959_4000M_V0001_retrieval.npz
+2026-05-06 22:44:58,296 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:45:09,913 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503210000_20190503211459_4000M_V0001_retrieval.npz
+2026-05-06 22:45:10,162 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:45:21,824 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503211500_20190503212959_4000M_V0001_retrieval.npz
+2026-05-06 22:45:22,020 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:45:34,046 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503220000_20190503221459_4000M_V0001_retrieval.npz
+2026-05-06 22:45:34,249 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:45:46,044 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503230000_20190503231459_4000M_V0001_retrieval.npz
+2026-05-06 22:45:46,282 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-06 22:45:58,044 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190503234500_20190503235959_4000M_V0001_retrieval.npz
+
+2026-05-06 23:12:40,007 [INFO] __main__ - Summary saved → /data/Data_yuq/unet_workdir/eval/agri_l2_validation/summary_20190503.csv
+2026-05-06 23:12:40,008 [INFO] __main__ - === Day 20190503 aggregate (n=40) ===
+2026-05-06 23:12:40,008 [INFO] __main__ - CLP OA:  85.65 ± 3.35 %
+2026-05-06 23:12:40,008 [INFO] __main__ - CLP Macro: 87.31 ± 2.91 %
+2026-05-06 23:12:40,008 [INFO] __main__ - CTH RMSE: 1172 ± 26 m
+2026-05-06 23:12:40,009 [INFO] __main__ - CTH R:    0.9574 ± 0.0020

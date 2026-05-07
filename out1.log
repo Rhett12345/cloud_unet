@@ -1,0 +1,259 @@
+nohup: ignoring input
+2026-05-07 03:00:20,623 [INFO] __main__ - Batch inference on 40 files in /data/Data_yuq/FY4A/20190505
+2026-05-07 03:00:21,168 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:00:33,038 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505000000_20190505001459_4000M_V0001_retrieval.npz
+2026-05-07 03:00:33,254 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:00:44,072 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505001500_20190505002959_4000M_V0001_retrieval.npz
+2026-05-07 03:00:44,322 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:00:55,223 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505010000_20190505011459_4000M_V0001_retrieval.npz
+2026-05-07 03:00:55,418 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:01:06,339 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505020000_20190505021459_4000M_V0001_retrieval.npz
+2026-05-07 03:01:06,533 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:01:17,371 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505024500_20190505025959_4000M_V0001_retrieval.npz
+2026-05-07 03:01:17,571 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:01:28,573 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505030000_20190505031459_4000M_V0001_retrieval.npz
+2026-05-07 03:01:28,766 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:01:39,741 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505031500_20190505032959_4000M_V0001_retrieval.npz
+2026-05-07 03:01:39,934 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:01:51,044 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505040000_20190505041459_4000M_V0001_retrieval.npz
+2026-05-07 03:01:51,236 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:02:02,212 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505050000_20190505051459_4000M_V0001_retrieval.npz
+2026-05-07 03:02:02,414 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:02:13,587 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505054500_20190505055959_4000M_V0001_retrieval.npz
+2026-05-07 03:02:13,854 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:02:25,507 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505060000_20190505061459_4000M_V0001_retrieval.npz
+2026-05-07 03:02:25,708 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:02:37,148 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505061500_20190505062959_4000M_V0001_retrieval.npz
+2026-05-07 03:02:37,349 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:02:48,923 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505070000_20190505071459_4000M_V0001_retrieval.npz
+2026-05-07 03:02:49,156 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:03:00,895 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505080000_20190505081459_4000M_V0001_retrieval.npz
+2026-05-07 03:03:01,093 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:03:12,617 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505084500_20190505085959_4000M_V0001_retrieval.npz
+2026-05-07 03:03:12,824 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:03:24,211 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505090000_20190505091459_4000M_V0001_retrieval.npz
+2026-05-07 03:03:24,405 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:03:35,755 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505091500_20190505092959_4000M_V0001_retrieval.npz
+2026-05-07 03:03:35,959 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:03:47,485 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505100000_20190505101459_4000M_V0001_retrieval.npz
+2026-05-07 03:03:47,751 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:03:59,333 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505110000_20190505111459_4000M_V0001_retrieval.npz
+2026-05-07 03:03:59,535 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:04:10,975 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505114500_20190505115959_4000M_V0001_retrieval.npz
+2026-05-07 03:04:11,177 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:04:22,651 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505120000_20190505121459_4000M_V0001_retrieval.npz
+2026-05-07 03:04:22,859 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:04:34,162 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505121500_20190505122959_4000M_V0001_retrieval.npz
+2026-05-07 03:04:34,400 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:04:45,511 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505130000_20190505131459_4000M_V0001_retrieval.npz
+2026-05-07 03:04:45,721 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:04:56,790 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505140000_20190505141459_4000M_V0001_retrieval.npz
+2026-05-07 03:04:56,988 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:05:08,017 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505144500_20190505145959_4000M_V0001_retrieval.npz
+2026-05-07 03:05:08,213 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:05:19,259 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505150000_20190505151459_4000M_V0001_retrieval.npz
+2026-05-07 03:05:19,452 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:05:30,401 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505151500_20190505152959_4000M_V0001_retrieval.npz
+2026-05-07 03:05:30,598 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:05:41,592 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505160000_20190505161459_4000M_V0001_retrieval.npz
+2026-05-07 03:05:41,790 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:05:52,821 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505170000_20190505171459_4000M_V0001_retrieval.npz
+2026-05-07 03:05:53,014 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:06:03,997 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505174500_20190505175959_4000M_V0001_retrieval.npz
+2026-05-07 03:06:04,203 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:06:15,186 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505180000_20190505181459_4000M_V0001_retrieval.npz
+2026-05-07 03:06:15,385 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:06:26,410 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505181500_20190505182959_4000M_V0001_retrieval.npz
+2026-05-07 03:06:26,655 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:06:43,603 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505190000_20190505191459_4000M_V0001_retrieval.npz
+2026-05-07 03:06:43,929 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:07:03,980 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505200000_20190505201459_4000M_V0001_retrieval.npz
+2026-05-07 03:07:04,354 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:07:24,160 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505204500_20190505205959_4000M_V0001_retrieval.npz
+2026-05-07 03:07:24,455 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:07:43,615 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505210000_20190505211459_4000M_V0001_retrieval.npz
+2026-05-07 03:07:44,052 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:08:03,923 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505211500_20190505212959_4000M_V0001_retrieval.npz
+2026-05-07 03:08:04,358 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:08:24,065 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505220000_20190505221459_4000M_V0001_retrieval.npz
+2026-05-07 03:08:24,396 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:08:44,101 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505230000_20190505231459_4000M_V0001_retrieval.npz
+2026-05-07 03:08:44,387 [INFO] __main__ - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-07 03:09:03,678 [INFO] __main__ - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval/FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_20190505234500_20190505235959_4000M_V0001_retrieval.npz
+nohup: ignoring input
+nohup: ignoring input
+2026-05-07 03:14:46,544 [INFO] __main__ - Found 40 (npz, L2) pairs for day 20190505
+2026-05-07 03:14:49,542 [INFO] __main__ -   20190505_000000  CLP OA=85.52%  CTH R=0.9554  RMSE=1187 m
+2026-05-07 03:15:00,823 [INFO] __main__ -   20190505_001500  CLP OA=86.36%  CTH R=0.9547  RMSE=1192 m
+2026-05-07 03:15:10,767 [INFO] __main__ -   20190505_010000  CLP OA=86.65%  CTH R=0.9536  RMSE=1222 m
+2026-05-07 03:15:20,703 [INFO] __main__ -   20190505_020000  CLP OA=87.01%  CTH R=0.9534  RMSE=1233 m
+2026-05-07 03:15:30,864 [INFO] __main__ -   20190505_024500  CLP OA=87.27%  CTH R=0.9537  RMSE=1234 m
+2026-05-07 03:15:40,966 [INFO] __main__ -   20190505_030000  CLP OA=87.57%  CTH R=0.9540  RMSE=1233 m
+2026-05-07 03:15:52,086 [INFO] __main__ -   20190505_031500  CLP OA=87.64%  CTH R=0.9553  RMSE=1205 m
+2026-05-07 03:16:02,183 [INFO] __main__ -   20190505_040000  CLP OA=88.07%  CTH R=0.9559  RMSE=1206 m
+2026-05-07 03:16:13,374 [INFO] __main__ -   20190505_050000  CLP OA=87.90%  CTH R=0.9563  RMSE=1216 m
+2026-05-07 03:16:23,730 [INFO] __main__ -   20190505_054500  CLP OA=88.07%  CTH R=0.9568  RMSE=1209 m
+2026-05-07 03:16:34,070 [INFO] __main__ -   20190505_060000  CLP OA=88.25%  CTH R=0.9562  RMSE=1219 m
+2026-05-07 03:16:44,643 [INFO] __main__ -   20190505_061500  CLP OA=88.18%  CTH R=0.9552  RMSE=1241 m
+2026-05-07 03:16:54,830 [INFO] __main__ -   20190505_070000  CLP OA=87.86%  CTH R=0.9558  RMSE=1215 m
+2026-05-07 03:17:04,862 [INFO] __main__ -   20190505_080000  CLP OA=88.12%  CTH R=0.9552  RMSE=1220 m
+2026-05-07 03:17:15,612 [INFO] __main__ -   20190505_084500  CLP OA=87.59%  CTH R=0.9547  RMSE=1218 m
+2026-05-07 03:17:26,083 [INFO] __main__ -   20190505_090000  CLP OA=87.49%  CTH R=0.9531  RMSE=1252 m
+2026-05-07 03:17:37,140 [INFO] __main__ -   20190505_091500  CLP OA=87.09%  CTH R=0.9534  RMSE=1248 m
+2026-05-07 03:17:47,867 [INFO] __main__ -   20190505_100000  CLP OA=86.94%  CTH R=0.9555  RMSE=1204 m
+2026-05-07 03:17:58,637 [INFO] __main__ -   20190505_110000  CLP OA=86.30%  CTH R=0.9519  RMSE=1255 m
+2026-05-07 03:18:08,719 [INFO] __main__ -   20190505_114500  CLP OA=85.61%  CTH R=0.9556  RMSE=1182 m
+2026-05-07 03:18:19,328 [INFO] __main__ -   20190505_120000  CLP OA=85.48%  CTH R=0.9530  RMSE=1236 m
+2026-05-07 03:18:29,954 [INFO] __main__ -   20190505_121500  CLP OA=85.50%  CTH R=0.9520  RMSE=1252 m
+2026-05-07 03:18:40,568 [INFO] __main__ -   20190505_130000  CLP OA=85.11%  CTH R=0.9523  RMSE=1237 m
+2026-05-07 03:18:50,953 [INFO] __main__ -   20190505_140000  CLP OA=84.16%  CTH R=0.9516  RMSE=1258 m
+2026-05-07 03:19:01,043 [INFO] __main__ -   20190505_144500  CLP OA=84.39%  CTH R=0.9500  RMSE=1290 m
+2026-05-07 03:19:11,444 [INFO] __main__ -   20190505_150000  CLP OA=84.77%  CTH R=0.9494  RMSE=1289 m
+2026-05-07 03:19:21,518 [INFO] __main__ -   20190505_151500  CLP OA=84.38%  CTH R=0.9507  RMSE=1280 m
+2026-05-07 03:19:31,864 [INFO] __main__ -   20190505_160000  CLP OA=84.20%  CTH R=0.9518  RMSE=1268 m
+2026-05-07 03:19:43,354 [INFO] __main__ -   20190505_170000  CLP OA=70.16%  CTH R=0.9566  RMSE=1255 m
+2026-05-07 03:19:53,985 [INFO] __main__ -   20190505_174500  CLP OA=83.82%  CTH R=0.9538  RMSE=1257 m
+2026-05-07 03:20:04,984 [INFO] __main__ -   20190505_180000  CLP OA=83.68%  CTH R=0.9537  RMSE=1275 m
+2026-05-07 03:20:15,235 [INFO] __main__ -   20190505_181500  CLP OA=84.60%  CTH R=0.9537  RMSE=1255 m
+2026-05-07 03:20:26,176 [INFO] __main__ -   20190505_190000  CLP OA=85.01%  CTH R=0.9542  RMSE=1234 m
+2026-05-07 03:20:36,294 [INFO] __main__ -   20190505_200000  CLP OA=84.90%  CTH R=0.9557  RMSE=1210 m
+2026-05-07 03:20:47,621 [INFO] __main__ -   20190505_204500  CLP OA=84.64%  CTH R=0.9556  RMSE=1215 m
+2026-05-07 03:20:59,497 [INFO] __main__ -   20190505_210000  CLP OA=84.66%  CTH R=0.9580  RMSE=1166 m
+2026-05-07 03:21:09,525 [INFO] __main__ -   20190505_211500  CLP OA=84.60%  CTH R=0.9574  RMSE=1177 m
+2026-05-07 03:21:20,383 [INFO] __main__ -   20190505_220000  CLP OA=84.83%  CTH R=0.9565  RMSE=1189 m
+2026-05-07 03:21:30,579 [INFO] __main__ -   20190505_230000  CLP OA=85.40%  CTH R=0.9557  RMSE=1208 m
+2026-05-07 03:21:41,140 [INFO] __main__ -   20190505_234500  CLP OA=85.97%  CTH R=0.9552  RMSE=1209 m
+2026-05-07 03:21:49,074 [INFO] numexpr.utils - Note: detected 96 virtual cores but NumExpr set to maximum of 64, check "NUMEXPR_MAX_THREADS" environment variable.
+2026-05-07 03:21:49,075 [INFO] numexpr.utils - Note: NumExpr detected 96 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 16.
+2026-05-07 03:21:49,075 [INFO] numexpr.utils - NumExpr defaulting to 16 threads.
+2026-05-07 03:21:49,613 [INFO] __main__ - === Day 20190505 aggregate (n=40) ===
+2026-05-07 03:21:49,613 [INFO] __main__ - CLP OA:  85.64 ± 2.90 %
+2026-05-07 03:21:49,613 [INFO] __main__ - CLP Macro: 87.31 ± 2.49 %
+2026-05-07 03:21:49,614 [INFO] __main__ - CTH RMSE: 1229 ± 31 m
+2026-05-07 03:21:49,614 [INFO] __main__ - CTH R:    0.9543 ± 0.0020
+nohup: ignoring input
+2026-05-07 03:30:45,549 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0300.061.2019125225228.hdf | clp=2688966 cth=2476603 | scantime=MYD06_Scan_Start_Time
+2026-05-07 03:30:50,041 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0255.061.2019125225238.hdf | clp=2692973 cth=2249567 | scantime=MYD06_Scan_Start_Time
+2026-05-07 03:30:54,669 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0305.061.2019125224031.hdf | clp=2613616 cth=1323672 | scantime=MYD06_Scan_Start_Time
+2026-05-07 03:31:43,227 [INFO] __main__ -   20190505_030000  vs MODIS  CLP OA=61.09%  CTH R=0.4616  RMSE=5567 m
+2026-05-07 03:31:54,625 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0310.061.2019125224136.hdf | clp=2701950 cth=1151267 | scantime=MYD06_Scan_Start_Time
+2026-05-07 03:32:34,824 [INFO] __main__ -   20190505_031500  vs MODIS  CLP OA=25.33%  CTH R=-0.1836  RMSE=6197 m
+2026-05-07 03:32:59,194 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0600.061.2019125224523.hdf | clp=2623492 cth=2706458 | scantime=MYD06_Scan_Start_Time
+2026-05-07 03:33:06,168 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0605.061.2019125224844.hdf | clp=2641284 cth=2022769 | scantime=MYD06_Scan_Start_Time
+2026-05-07 03:33:48,163 [INFO] __main__ -   20190505_060000  vs MODIS  CLP OA=35.93%  CTH R=-0.1567  RMSE=5527 m
+2026-05-07 03:33:56,178 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0615.061.2019125224517.hdf | clp=2654491 cth=1476884 | scantime=MYD06_Scan_Start_Time
+2026-05-07 03:34:00,213 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0610.061.2019125224026.hdf | clp=2760172 cth=626526 | scantime=MYD06_Scan_Start_Time
+2026-05-07 03:34:04,395 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0620.061.2019125224621.hdf | clp=2623750 cth=1962682 | scantime=MYD06_Scan_Start_Time
+2026-05-07 03:34:54,873 [INFO] __main__ -   20190505_061500  vs MODIS  CLP OA=33.04%  CTH R=0.1416  RMSE=6539 m
+2026-05-07 03:35:05,563 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0800.061.2019125225630.hdf | clp=2684562 cth=1059037 | scantime=MYD06_Scan_Start_Time
+2026-05-07 03:35:09,909 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0755.061.2019125225931.hdf | clp=2670550 cth=1595690 | scantime=MYD06_Scan_Start_Time
+2026-05-07 03:35:14,303 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0805.061.2019125225140.hdf | clp=2538789 cth=847437 | scantime=MYD06_Scan_Start_Time
+2026-05-07 03:36:01,273 [INFO] __main__ -   20190505_080000  vs MODIS  CLP OA=29.20%  CTH R=0.0309  RMSE=7129 m
+2026-05-07 03:36:21,684 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0920.061.2019125225530.hdf | clp=2612045 cth=2518985 | scantime=MYD06_Scan_Start_Time
+2026-05-07 03:36:52,113 [INFO] __main__ -   20190505_091500  vs MODIS  CLP OA=28.26%  CTH R=-0.2283  RMSE=5672 m
+2026-05-07 03:37:51,239 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.1515.061.2019126151705.hdf | clp=2726923 cth=1458638 | scantime=MYD06_Scan_Start_Time
+2026-05-07 03:37:57,004 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.1520.061.2019126151855.hdf | clp=2583638 cth=2604888 | scantime=MYD06_Scan_Start_Time
+2026-05-07 03:38:36,766 [INFO] __main__ -   20190505_151500  vs MODIS  CLP OA=50.25%  CTH R=0.2821  RMSE=6250 m
+2026-05-07 03:38:47,310 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.1700.061.2019126151643.hdf | clp=2599767 cth=1881307 | scantime=MYD06_Scan_Start_Time
+2026-05-07 03:38:51,349 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.1655.061.2019126151805.hdf | clp=2651693 cth=1449874 | scantime=MYD06_Scan_Start_Time
+2026-05-07 03:38:55,024 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.1705.061.2019126151530.hdf | clp=2745829 cth=283349 | scantime=MYD06_Scan_Start_Time
+2026-05-07 03:39:43,910 [INFO] __main__ -   20190505_170000  vs MODIS  CLP OA=31.90%  CTH R=-0.0491  RMSE=6508 m
+2026-05-07 03:40:17,278 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.2005.061.2019126151639.hdf | clp=1940909 cth=2067307 | scantime=MYD06_Scan_Start_Time
+2026-05-07 03:40:49,998 [INFO] __main__ -   20190505_200000  vs MODIS  CLP OA=22.13%  CTH R=-0.2878  RMSE=4939 m
+2026-05-07 03:41:07,883 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.2200.061.2019126152837.hdf | clp=2725726 cth=1277505 | scantime=MYD06_Scan_Start_Time
+2026-05-07 03:41:11,859 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.2155.061.2019126152806.hdf | clp=2697657 cth=1066789 | scantime=MYD06_Scan_Start_Time
+2026-05-07 03:41:51,622 [INFO] __main__ -   20190505_220000  vs MODIS  CLP OA=35.89%  CTH R=-0.1747  RMSE=7023 m
+2026-05-07 03:42:07,227 [INFO] numexpr.utils - Note: detected 96 virtual cores but NumExpr set to maximum of 64, check "NUMEXPR_MAX_THREADS" environment variable.
+2026-05-07 03:42:07,227 [INFO] numexpr.utils - Note: NumExpr detected 96 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 16.
+2026-05-07 03:42:07,228 [INFO] numexpr.utils - NumExpr defaulting to 16 threads.
+2026-05-07 03:42:07,359 [INFO] __main__ - MODIS cross-val: n=10  OA mean=35.30%
+
+nohup: ignoring input
+2026-05-07 04:27:17,437 [INFO] __main__ - Day 20190505: 162 MODIS granules
+2026-05-07 04:27:19,632 [INFO] __main__ -   loaded 162 MODIS granules
+2026-05-07 04:27:20,917 [INFO] __main__ -   20190505_000000  vs MODIS  R=-0.1463  RMSE=10638 m  n=3692  granules=2
+2026-05-07 04:27:23,252 [INFO] __main__ -   20190505_001500  vs MODIS  R=-0.2176  RMSE=5728 m  n=13478  granules=3
+2026-05-07 04:27:25,153 [INFO] __main__ -   20190505_010000  vs MODIS  R=-0.1956  RMSE=4866 m  n=13  granules=2
+2026-05-07 04:27:27,221 [INFO] __main__ -   20190505_024500  vs MODIS  R=-0.1420  RMSE=6818 m  n=48173  granules=3
+2026-05-07 04:27:29,429 [INFO] __main__ -   20190505_030000  vs MODIS  R=0.5210  RMSE=5475 m  n=161352  granules=3
+2026-05-07 04:27:31,462 [INFO] __main__ -   20190505_031500  vs MODIS  R=-0.0194  RMSE=5541 m  n=81284  granules=3
+2026-05-07 04:27:33,553 [INFO] __main__ -   20190505_050000  vs MODIS  R=-0.2612  RMSE=5319 m  n=52420  granules=3
+2026-05-07 04:27:35,712 [INFO] __main__ -   20190505_060000  vs MODIS  R=-0.2125  RMSE=5442 m  n=126687  granules=3
+2026-05-07 04:27:37,889 [INFO] __main__ -   20190505_061500  vs MODIS  R=-0.0188  RMSE=7312 m  n=229810  granules=3
+2026-05-07 04:27:39,920 [INFO] __main__ -   20190505_080000  vs MODIS  R=-0.0782  RMSE=6444 m  n=192544  granules=3
+2026-05-07 04:27:43,064 [INFO] __main__ -   20190505_091500  vs MODIS  R=-0.0826  RMSE=4965 m  n=60587  granules=3
+2026-05-07 04:27:45,057 [INFO] __main__ -   20190505_100000  vs MODIS  R=0.2220  RMSE=9048 m  n=625  granules=1
+2026-05-07 04:27:47,150 [INFO] __main__ -   20190505_110000  vs MODIS  R=0.0578  RMSE=5203 m  n=59996  granules=3
+2026-05-07 04:27:49,266 [INFO] __main__ -   20190505_121500  vs MODIS  R=-0.3821  RMSE=5153 m  n=2826  granules=2
+2026-05-07 04:27:51,287 [INFO] __main__ -   20190505_140000  vs MODIS  R=-0.1359  RMSE=5883 m  n=40722  granules=3
+2026-05-07 04:27:53,324 [INFO] __main__ -   20190505_150000  vs MODIS  R=-0.1765  RMSE=6853 m  n=14679  granules=2
+2026-05-07 04:27:55,430 [INFO] __main__ -   20190505_151500  vs MODIS  R=0.2347  RMSE=6157 m  n=182885  granules=3
+2026-05-07 04:27:57,693 [INFO] __main__ -   20190505_170000  vs MODIS  R=-0.1247  RMSE=6327 m  n=142071  granules=3
+2026-05-07 04:27:59,893 [INFO] __main__ -   20190505_181500  vs MODIS  R=-0.5381  RMSE=6223 m  n=36921  granules=2
+2026-05-07 04:28:01,885 [INFO] __main__ -   20190505_190000  vs MODIS  R=0.0664  RMSE=3365 m  n=31892  granules=2
+2026-05-07 04:28:03,947 [INFO] __main__ -   20190505_200000  vs MODIS  R=-0.3975  RMSE=6164 m  n=148087  granules=3
+2026-05-07 04:28:05,909 [INFO] __main__ -   20190505_204500  vs MODIS  R=-0.3926  RMSE=5048 m  n=96  granules=1
+2026-05-07 04:28:08,000 [INFO] __main__ -   20190505_220000  vs MODIS  R=-0.1970  RMSE=6394 m  n=60168  granules=3
+2026-05-07 04:28:09,951 [INFO] __main__ -   20190505_230000  vs MODIS  R=-0.2304  RMSE=11038 m  n=210  granules=1
+2026-05-07 04:28:11,916 [INFO] __main__ -   20190505_234500  vs MODIS  R=0.0790  RMSE=5223 m  n=2198  granules=3
+2026-05-07 04:28:12,613 [INFO] numexpr.utils - Note: detected 96 virtual cores but NumExpr set to maximum of 64, check "NUMEXPR_MAX_THREADS" environment variable.
+2026-05-07 04:28:12,613 [INFO] numexpr.utils - Note: NumExpr detected 96 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 16.
+2026-05-07 04:28:12,613 [INFO] numexpr.utils - NumExpr defaulting to 16 threads.
+2026-05-07 04:28:12,709 [INFO] __main__ - === MODIS cross-val 20190505 (n=25/40 scenes) ===
+2026-05-07 04:28:12,709 [INFO] __main__ - CTH R:     -0.1107 ± 0.2229
+2026-05-07 04:28:12,709 [INFO] __main__ - CTH RMSE:  6265 ± 1693 m
+2026-05-07 04:28:12,709 [INFO] __main__ - CTH Bias:  +1441 ± 3944 m
+nohup: ignoring input
+2026-05-07 04:57:38,334 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0300.061.2019125225228.hdf | clp=2416708 cth=2389347 | scantime=MYD06_Scan_Start_Time
+2026-05-07 04:57:41,339 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0255.061.2019125225238.hdf | clp=2478002 cth=2148363 | scantime=MYD06_Scan_Start_Time
+2026-05-07 04:57:44,811 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0305.061.2019125224031.hdf | clp=1878590 cth=1206384 | scantime=MYD06_Scan_Start_Time
+2026-05-07 04:58:27,245 [INFO] fusion_io - post-qc | clp=235410 cth=197892 | clp_pct=3.1% wt_mean=0.030 dt_mean=2.99min
+2026-05-07 04:58:27,336 [INFO] __main__ -   20190505_030000  vs MODIS  CLP OA=66.99%  CTH R=0.4485  RMSE=5498 m
+2026-05-07 04:58:36,370 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0310.061.2019125224136.hdf | clp=2010193 cth=997437 | scantime=MYD06_Scan_Start_Time
+2026-05-07 04:59:11,820 [INFO] fusion_io - post-qc | clp=79561 cth=40850 | clp_pct=1.1% wt_mean=0.011 dt_mean=2.49min
+2026-05-07 04:59:11,879 [INFO] __main__ -   20190505_031500  vs MODIS  CLP OA=23.53%  CTH R=-0.2206  RMSE=6412 m
+2026-05-07 04:59:33,207 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0600.061.2019125224523.hdf | clp=2573602 cth=2690535 | scantime=MYD06_Scan_Start_Time
+2026-05-07 04:59:38,757 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0605.061.2019125224844.hdf | clp=2363614 cth=1940589 | scantime=MYD06_Scan_Start_Time
+2026-05-07 05:00:18,929 [INFO] fusion_io - post-qc | clp=149288 cth=147856 | clp_pct=2.0% wt_mean=0.017 dt_mean=4.50min
+2026-05-07 05:00:19,001 [INFO] __main__ -   20190505_060000  vs MODIS  CLP OA=36.62%  CTH R=-0.1565  RMSE=5527 m
+2026-05-07 05:00:25,836 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0615.061.2019125224517.hdf | clp=2226360 cth=1323911 | scantime=MYD06_Scan_Start_Time
+2026-05-07 05:00:29,305 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0610.061.2019125224026.hdf | clp=2332508 cth=550087 | scantime=MYD06_Scan_Start_Time
+2026-05-07 05:00:32,430 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0620.061.2019125224621.hdf | clp=2068748 cth=1736237 | scantime=MYD06_Scan_Start_Time
+2026-05-07 05:01:19,896 [INFO] fusion_io - post-qc | clp=540271 cth=263593 | clp_pct=7.2% wt_mean=0.068 dt_mean=3.20min
+2026-05-07 05:01:20,002 [INFO] __main__ -   20190505_061500  vs MODIS  CLP OA=32.35%  CTH R=0.1322  RMSE=6642 m
+2026-05-07 05:01:29,550 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0800.061.2019125225630.hdf | clp=1869153 cth=890409 | scantime=MYD06_Scan_Start_Time
+2026-05-07 05:01:32,862 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0755.061.2019125225931.hdf | clp=2136493 cth=1396990 | scantime=MYD06_Scan_Start_Time
+2026-05-07 05:01:36,295 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0805.061.2019125225140.hdf | clp=2171712 cth=739334 | scantime=MYD06_Scan_Start_Time
+2026-05-07 05:02:23,598 [INFO] fusion_io - post-qc | clp=430007 cth=230490 | clp_pct=5.7% wt_mean=0.055 dt_mean=3.08min
+2026-05-07 05:02:23,692 [INFO] __main__ -   20190505_080000  vs MODIS  CLP OA=27.89%  CTH R=0.0460  RMSE=7442 m
+2026-05-07 05:02:41,813 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0920.061.2019125225530.hdf | clp=2358193 cth=2467231 | scantime=MYD06_Scan_Start_Time
+2026-05-07 05:03:14,234 [INFO] fusion_io - post-qc | clp=39085 cth=39078 | clp_pct=0.5% wt_mean=0.004 dt_mean=6.38min
+2026-05-07 05:03:14,299 [INFO] __main__ -   20190505_091500  vs MODIS  CLP OA=27.41%  CTH R=-0.2353  RMSE=5679 m
+2026-05-07 05:04:08,329 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.1515.061.2019126151705.hdf | clp=2505934 cth=1353207 | scantime=MYD06_Scan_Start_Time
+2026-05-07 05:04:13,549 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.1520.061.2019126151855.hdf | clp=2478116 cth=2569276 | scantime=MYD06_Scan_Start_Time
+2026-05-07 05:04:51,274 [INFO] fusion_io - post-qc | clp=159887 cth=112175 | clp_pct=2.1% wt_mean=0.019 dt_mean=4.03min
+2026-05-07 05:04:51,345 [INFO] __main__ -   20190505_151500  vs MODIS  CLP OA=52.30%  CTH R=0.2741  RMSE=6172 m
+2026-05-07 05:05:00,582 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.1700.061.2019126151643.hdf | clp=2206081 cth=1705543 | scantime=MYD06_Scan_Start_Time
+2026-05-07 05:05:04,053 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.1655.061.2019126151805.hdf | clp=2309913 cth=1334104 | scantime=MYD06_Scan_Start_Time
+2026-05-07 05:05:07,013 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.1705.061.2019126151530.hdf | clp=2256022 cth=165215 | scantime=MYD06_Scan_Start_Time
+2026-05-07 05:05:52,973 [INFO] fusion_io - post-qc | clp=457705 cth=259337 | clp_pct=6.1% wt_mean=0.058 dt_mean=3.13min
+2026-05-07 05:05:53,070 [INFO] __main__ -   20190505_170000  vs MODIS  CLP OA=30.53%  CTH R=-0.0481  RMSE=6613 m
+2026-05-07 05:06:22,882 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.2005.061.2019126151639.hdf | clp=1580150 cth=1509239 | scantime=MYD06_Scan_Start_Time
+2026-05-07 05:06:55,242 [INFO] fusion_io - post-qc | clp=46310 cth=28579 | clp_pct=0.6% wt_mean=0.004 dt_mean=6.39min
+2026-05-07 05:06:55,292 [INFO] __main__ -   20190505_200000  vs MODIS  CLP OA=21.07%  CTH R=-0.2871  RMSE=5085 m
+2026-05-07 05:07:12,205 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.2200.061.2019126152837.hdf | clp=2341928 cth=1148102 | scantime=MYD06_Scan_Start_Time
+2026-05-07 05:07:15,245 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.2155.061.2019126152806.hdf | clp=2301861 cth=970367 | scantime=MYD06_Scan_Start_Time
+2026-05-07 05:07:56,768 [INFO] fusion_io - post-qc | clp=208949 cth=94703 | clp_pct=2.8% wt_mean=0.028 dt_mean=2.39min
+2026-05-07 05:07:56,839 [INFO] __main__ -   20190505_220000  vs MODIS  CLP OA=34.54%  CTH R=-0.1912  RMSE=7280 m
+2026-05-07 05:08:10,969 [INFO] numexpr.utils - Note: detected 96 virtual cores but NumExpr set to maximum of 64, check "NUMEXPR_MAX_THREADS" environment variable.
+2026-05-07 05:08:10,969 [INFO] numexpr.utils - Note: NumExpr detected 96 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 16.
+2026-05-07 05:08:10,969 [INFO] numexpr.utils - NumExpr defaulting to 16 threads.
+2026-05-07 05:08:11,064 [INFO] __main__ - MODIS cross-val: n=10  OA mean=35.32%
+nohup: ignoring input
+2026-05-07 07:10:44,024 [INFO] __main__ - Day 20190505: 40 AGRI scenes, quality=True
+2026-05-07 07:11:21,992 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0300.061.2019125225228.hdf | clp=2416708 cth=2389347 | scantime=MYD06_Scan_Start_Time
+2026-05-07 07:11:24,932 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0255.061.2019125225238.hdf | clp=2478002 cth=2148363 | scantime=MYD06_Scan_Start_Time
+2026-05-07 07:11:27,894 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0305.061.2019125224031.hdf | clp=1878590 cth=1206384 | scantime=MYD06_Scan_Start_Time
+2026-05-07 07:12:04,770 [INFO] fusion_io - post-qc | clp=235410 cth=197892 | clp_pct=3.1% wt_mean=0.030 dt_mean=2.99min
+2026-05-07 07:12:04,842 [INFO] __main__ -   20190505_030000  AGRI L2 vs MODIS  OA=65.83%  CTH R=+0.3979  RMSE=5490 m  n_px=235410
+2026-05-07 07:12:14,800 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0310.061.2019125224136.hdf | clp=2010193 cth=997437 | scantime=MYD06_Scan_Start_Time
