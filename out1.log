@@ -257,3 +257,100 @@ nohup: ignoring input
 2026-05-07 07:12:04,770 [INFO] fusion_io - post-qc | clp=235410 cth=197892 | clp_pct=3.1% wt_mean=0.030 dt_mean=2.99min
 2026-05-07 07:12:04,842 [INFO] __main__ -   20190505_030000  AGRI L2 vs MODIS  OA=65.83%  CTH R=+0.3979  RMSE=5490 m  n_px=235410
 2026-05-07 07:12:14,800 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0310.061.2019125224136.hdf | clp=2010193 cth=997437 | scantime=MYD06_Scan_Start_Time
+2026-05-07 07:12:48,156 [INFO] fusion_io - post-qc | clp=79561 cth=40850 | clp_pct=1.1% wt_mean=0.011 dt_mean=2.49min
+2026-05-07 07:12:48,210 [INFO] __main__ -   20190505_031500  AGRI L2 vs MODIS  OA=23.22%  CTH R=-0.2235  RMSE=6396 m  n_px=79561
+2026-05-07 07:13:08,552 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0600.061.2019125224523.hdf | clp=2573602 cth=2690535 | scantime=MYD06_Scan_Start_Time
+2026-05-07 07:13:13,446 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0605.061.2019125224844.hdf | clp=2363614 cth=1940589 | scantime=MYD06_Scan_Start_Time
+2026-05-07 07:13:47,372 [INFO] fusion_io - post-qc | clp=149288 cth=147856 | clp_pct=2.0% wt_mean=0.017 dt_mean=4.50min
+2026-05-07 07:13:47,435 [INFO] __main__ -   20190505_060000  AGRI L2 vs MODIS  OA=39.31%  CTH R=-0.1319  RMSE=5525 m  n_px=149288
+2026-05-07 07:13:54,839 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0615.061.2019125224517.hdf | clp=2226360 cth=1323911 | scantime=MYD06_Scan_Start_Time
+2026-05-07 07:13:57,801 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0610.061.2019125224026.hdf | clp=2332508 cth=550087 | scantime=MYD06_Scan_Start_Time
+2026-05-07 07:14:00,774 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0620.061.2019125224621.hdf | clp=2068748 cth=1736237 | scantime=MYD06_Scan_Start_Time
+2026-05-07 07:14:44,355 [INFO] fusion_io - post-qc | clp=540271 cth=263593 | clp_pct=7.2% wt_mean=0.068 dt_mean=3.20min
+2026-05-07 07:14:44,464 [INFO] __main__ -   20190505_061500  AGRI L2 vs MODIS  OA=31.38%  CTH R=+0.0973  RMSE=6836 m  n_px=540271
+2026-05-07 07:14:54,546 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0800.061.2019125225630.hdf | clp=1869153 cth=890409 | scantime=MYD06_Scan_Start_Time
+2026-05-07 07:14:57,536 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0755.061.2019125225931.hdf | clp=2136493 cth=1396990 | scantime=MYD06_Scan_Start_Time
+2026-05-07 07:15:00,483 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0805.061.2019125225140.hdf | clp=2171712 cth=739334 | scantime=MYD06_Scan_Start_Time
+2026-05-07 07:15:44,445 [INFO] fusion_io - post-qc | clp=430007 cth=230490 | clp_pct=5.7% wt_mean=0.055 dt_mean=3.08min
+2026-05-07 07:15:44,539 [INFO] __main__ -   20190505_080000  AGRI L2 vs MODIS  OA=27.50%  CTH R=+0.0218  RMSE=7529 m  n_px=430007
+2026-05-07 07:16:02,499 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0920.061.2019125225530.hdf | clp=2358193 cth=2467231 | scantime=MYD06_Scan_Start_Time
+2026-05-07 07:16:28,726 [INFO] fusion_io - post-qc | clp=39085 cth=39078 | clp_pct=0.5% wt_mean=0.004 dt_mean=6.38min
+2026-05-07 07:16:28,774 [INFO] __main__ -   20190505_091500  AGRI L2 vs MODIS  OA=29.09%  CTH R=-0.1881  RMSE=6153 m  n_px=39085
+2026-05-07 07:17:18,593 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.1515.061.2019126151705.hdf | clp=2505934 cth=1353207 | scantime=MYD06_Scan_Start_Time
+2026-05-07 07:17:23,437 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.1520.061.2019126151855.hdf | clp=2478116 cth=2569276 | scantime=MYD06_Scan_Start_Time
+2026-05-07 07:17:56,724 [INFO] fusion_io - post-qc | clp=159887 cth=112175 | clp_pct=2.1% wt_mean=0.019 dt_mean=4.03min
+2026-05-07 07:17:56,788 [INFO] __main__ -   20190505_151500  AGRI L2 vs MODIS  OA=51.05%  CTH R=+0.2621  RMSE=6015 m  n_px=159887
+2026-05-07 07:18:06,886 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.1700.061.2019126151643.hdf | clp=2206081 cth=1705543 | scantime=MYD06_Scan_Start_Time
+2026-05-07 07:18:09,894 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.1655.061.2019126151805.hdf | clp=2309913 cth=1334104 | scantime=MYD06_Scan_Start_Time
+2026-05-07 07:18:12,847 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.1705.061.2019126151530.hdf | clp=2256022 cth=165215 | scantime=MYD06_Scan_Start_Time
+2026-05-07 07:18:55,484 [INFO] fusion_io - post-qc | clp=457705 cth=259337 | clp_pct=6.1% wt_mean=0.058 dt_mean=3.13min
+2026-05-07 07:18:55,584 [INFO] __main__ -   20190505_170000  AGRI L2 vs MODIS  OA=27.05%  CTH R=-0.0459  RMSE=7000 m  n_px=457705
+2026-05-07 07:19:24,475 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.2005.061.2019126151639.hdf | clp=1580150 cth=1509239 | scantime=MYD06_Scan_Start_Time
+2026-05-07 07:19:51,358 [INFO] fusion_io - post-qc | clp=46310 cth=28579 | clp_pct=0.6% wt_mean=0.004 dt_mean=6.39min
+2026-05-07 07:19:51,410 [INFO] __main__ -   20190505_200000  AGRI L2 vs MODIS  OA=22.75%  CTH R=-0.2852  RMSE=5266 m  n_px=46310
+2026-05-07 07:20:08,907 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.2200.061.2019126152837.hdf | clp=2341928 cth=1148102 | scantime=MYD06_Scan_Start_Time
+2026-05-07 07:20:11,995 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.2155.061.2019126152806.hdf | clp=2301861 cth=970367 | scantime=MYD06_Scan_Start_Time
+2026-05-07 07:20:49,002 [INFO] fusion_io - post-qc | clp=208949 cth=94703 | clp_pct=2.8% wt_mean=0.028 dt_mean=2.39min
+2026-05-07 07:20:49,070 [INFO] __main__ -   20190505_220000  AGRI L2 vs MODIS  OA=35.71%  CTH R=-0.1729  RMSE=6915 m  n_px=208949
+2026-05-07 07:21:03,565 [INFO] numexpr.utils - Note: detected 96 virtual cores but NumExpr set to maximum of 64, check "NUMEXPR_MAX_THREADS" environment variable.
+2026-05-07 07:21:03,565 [INFO] numexpr.utils - Note: NumExpr detected 96 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 16.
+2026-05-07 07:21:03,565 [INFO] numexpr.utils - NumExpr defaulting to 16 threads.
+2026-05-07 07:21:03,657 [INFO] __main__ - === BASELINE: AGRI L2 vs MODIS  20190505 (n=10/40) ===
+2026-05-07 07:21:03,657 [INFO] __main__ - CLP OA:     35.29 ± 12.97 %
+2026-05-07 07:21:03,657 [INFO] __main__ - CTH R:      -0.0268 ± 0.2112
+2026-05-07 07:21:03,657 [INFO] __main__ - CTH RMSE:   6312 ± 714 m
+2026-05-07 07:21:03,658 [INFO] __main__ - CTH Bias:   -755 ± 1601 m
+2026-05-07 07:21:03,658 [INFO] __main__ - Coverage:   3.1 ± 2.3 %
+nohup: ignoring input
+2026-05-07 22:19:28,791 [INFO] __main__ - Day 20190505: 40 AGRI scenes, 162 MODIS, 162 MYD03, ref=model
+2026-05-07 22:20:06,386 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0300.061.2019125225228.hdf | clp=2416708 cth=2389347 | scantime=MYD06_Scan_Start_Time
+2026-05-07 22:20:09,282 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0255.061.2019125225238.hdf | clp=2478002 cth=2148363 | scantime=MYD06_Scan_Start_Time
+2026-05-07 22:20:12,221 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0305.061.2019125224031.hdf | clp=1878590 cth=1206384 | scantime=MYD06_Scan_Start_Time
+2026-05-07 22:20:50,654 [INFO] fusion_io - post-qc | clp=235410 cth=197892 | clp_pct=3.1% wt_mean=0.030 dt_mean=2.99min
+2026-05-07 22:20:50,746 [INFO] __main__ -   20190505_030000  POD=0.888 FAR=0.129 HSS=0.279  CTH R: Low=+0.20 Mid=+0.07 High=+0.11
+2026-05-07 22:20:58,138 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0310.061.2019125224136.hdf | clp=2010193 cth=997437 | scantime=MYD06_Scan_Start_Time
+2026-05-07 22:21:32,099 [INFO] fusion_io - post-qc | clp=79561 cth=40850 | clp_pct=1.1% wt_mean=0.011 dt_mean=2.49min
+2026-05-07 22:21:32,181 [INFO] __main__ -   20190505_031500  POD=0.484 FAR=0.235 HSS=-0.098  CTH R: Low=-0.16 Mid=+0.05 High=+0.20
+2026-05-07 22:21:51,634 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0600.061.2019125224523.hdf | clp=2573602 cth=2690535 | scantime=MYD06_Scan_Start_Time
+2026-05-07 22:21:56,407 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0605.061.2019125224844.hdf | clp=2363614 cth=1940589 | scantime=MYD06_Scan_Start_Time
+2026-05-07 22:22:28,677 [INFO] fusion_io - post-qc | clp=149288 cth=147856 | clp_pct=2.0% wt_mean=0.017 dt_mean=4.50min
+2026-05-07 22:22:28,756 [INFO] __main__ -   20190505_060000  POD=0.994 FAR=0.221 HSS=0.026  CTH R: Low=+0.14 Mid=-0.15 High=-0.08
+2026-05-07 22:22:34,428 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0615.061.2019125224517.hdf | clp=2226360 cth=1323911 | scantime=MYD06_Scan_Start_Time
+2026-05-07 22:22:37,326 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0610.061.2019125224026.hdf | clp=2332508 cth=550087 | scantime=MYD06_Scan_Start_Time
+2026-05-07 22:22:40,261 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0620.061.2019125224621.hdf | clp=2068748 cth=1736237 | scantime=MYD06_Scan_Start_Time
+2026-05-07 22:23:24,248 [INFO] fusion_io - post-qc | clp=540271 cth=263593 | clp_pct=7.2% wt_mean=0.068 dt_mean=3.20min
+2026-05-07 22:23:24,349 [INFO] __main__ -   20190505_061500  POD=0.469 FAR=0.331 HSS=-0.053  CTH R: Low=-0.08 Mid=-0.11 High=+0.36
+2026-05-07 22:23:32,729 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0800.061.2019125225630.hdf | clp=1869153 cth=890409 | scantime=MYD06_Scan_Start_Time
+2026-05-07 22:23:35,636 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0755.061.2019125225931.hdf | clp=2136493 cth=1396990 | scantime=MYD06_Scan_Start_Time
+2026-05-07 22:23:38,567 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0805.061.2019125225140.hdf | clp=2171712 cth=739334 | scantime=MYD06_Scan_Start_Time
+2026-05-07 22:24:22,748 [INFO] fusion_io - post-qc | clp=430007 cth=230490 | clp_pct=5.7% wt_mean=0.055 dt_mean=3.08min
+2026-05-07 22:24:22,835 [INFO] __main__ -   20190505_080000  POD=0.488 FAR=0.369 HSS=-0.136  CTH R: Low=+0.03 Mid=+0.06 High=-0.28
+2026-05-07 22:24:39,565 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0920.061.2019125225530.hdf | clp=2358193 cth=2467231 | scantime=MYD06_Scan_Start_Time
+2026-05-07 22:25:09,531 [INFO] fusion_io - post-qc | clp=39085 cth=39078 | clp_pct=0.5% wt_mean=0.004 dt_mean=6.38min
+2026-05-07 22:25:09,610 [INFO] __main__ -   20190505_091500  POD=1.000 FAR=0.412 HSS=-0.000  CTH R: Low=+0.03 Mid=-0.22 High=+0.01
+2026-05-07 22:26:00,293 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.1515.061.2019126151705.hdf | clp=2505934 cth=1353207 | scantime=MYD06_Scan_Start_Time
+2026-05-07 22:26:05,043 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.1520.061.2019126151855.hdf | clp=2478116 cth=2569276 | scantime=MYD06_Scan_Start_Time
+2026-05-07 22:26:38,663 [INFO] fusion_io - post-qc | clp=159887 cth=112175 | clp_pct=2.1% wt_mean=0.019 dt_mean=4.03min
+2026-05-07 22:26:38,751 [INFO] __main__ -   20190505_151500  POD=0.755 FAR=0.137 HSS=0.227  CTH R: Low=+0.12 Mid=+0.28 High=+0.16
+2026-05-07 22:26:47,119 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.1700.061.2019126151643.hdf | clp=2206081 cth=1705543 | scantime=MYD06_Scan_Start_Time
+2026-05-07 22:26:50,028 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.1655.061.2019126151805.hdf | clp=2309913 cth=1334104 | scantime=MYD06_Scan_Start_Time
+2026-05-07 22:26:52,907 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.1705.061.2019126151530.hdf | clp=2256022 cth=165215 | scantime=MYD06_Scan_Start_Time
+2026-05-07 22:27:35,256 [INFO] fusion_io - post-qc | clp=457705 cth=259337 | clp_pct=6.1% wt_mean=0.058 dt_mean=3.13min
+2026-05-07 22:27:35,344 [INFO] __main__ -   20190505_170000  POD=0.503 FAR=0.539 HSS=-0.133  CTH R: Low=+0.06 Mid=-0.04 High=-0.03
+2026-05-07 22:28:03,144 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.2005.061.2019126151639.hdf | clp=1580150 cth=1509239 | scantime=MYD06_Scan_Start_Time
+2026-05-07 22:28:32,949 [INFO] fusion_io - post-qc | clp=46310 cth=28579 | clp_pct=0.6% wt_mean=0.004 dt_mean=6.39min
+2026-05-07 22:28:33,029 [INFO] __main__ -   20190505_200000  POD=0.600 FAR=0.152 HSS=-0.071  CTH R: Low=+0.25 Mid=-0.15 High=-0.27
+2026-05-07 22:28:48,782 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.2200.061.2019126152837.hdf | clp=2341928 cth=1148102 | scantime=MYD06_Scan_Start_Time
+2026-05-07 22:28:51,708 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.2155.061.2019126152806.hdf | clp=2301861 cth=970367 | scantime=MYD06_Scan_Start_Time
+2026-05-07 22:29:30,036 [INFO] fusion_io - post-qc | clp=208949 cth=94703 | clp_pct=2.8% wt_mean=0.028 dt_mean=2.39min
+2026-05-07 22:29:30,124 [INFO] __main__ -   20190505_220000  POD=0.321 FAR=0.717 HSS=-0.216  CTH R: Low=+0.02 Mid=-0.13 High=+0.04
+2026-05-07 22:29:43,159 [INFO] numexpr.utils - Note: detected 96 virtual cores but NumExpr set to maximum of 64, check "NUMEXPR_MAX_THREADS" environment variable.
+2026-05-07 22:29:43,159 [INFO] numexpr.utils - Note: NumExpr detected 96 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 16.
+2026-05-07 22:29:43,159 [INFO] numexpr.utils - NumExpr defaulting to 16 threads.
+2026-05-07 22:29:43,249 [INFO] __main__ - === Cloud detection: model vs MODIS  20190505 (n=10) ===
+2026-05-07 22:29:43,249 [INFO] __main__ - POD:   0.650 ± 0.230
+2026-05-07 22:29:43,250 [INFO] __main__ - FAR:   0.324 ± 0.182
+2026-05-07 22:29:43,250 [INFO] __main__ - HSS:   -0.018 ± 0.151
+2026-05-07 22:29:43,250 [INFO] __main__ - CTH Low: R=+0.062±0.116  RMSE=6486±1128 m  (n_scenes=10)
+2026-05-07 22:29:43,250 [INFO] __main__ - CTH Mid: R=-0.034±0.141  RMSE=5514±1185 m  (n_scenes=10)
+2026-05-07 22:29:43,250 [INFO] __main__ - CTH High: R=+0.020±0.190  RMSE=7244±1780 m  (n_scenes=10)
