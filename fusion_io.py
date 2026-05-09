@@ -177,14 +177,28 @@ def _derive_latlon(gf: h5py.File) -> Tuple[np.ndarray, np.ndarray]:
     line[~np.isfinite(line) | (line < 0)] = np.nan
     col[ ~np.isfinite(col)  | (col  < 0)] = np.nan
 
-    coff = 0.5 * (np.nanmin(col) + np.nanmax(col))
-    loff = 0.5 * (np.nanmin(line) + np.nanmax(line))
+    # ── 图像中心：从元数据读取，而非从有效数据范围反算 ──
+    # ColumnNumber/LineNumber 在地球圆盘边缘有大量 NaN，nanmin/nanmax
+    # 会给出错误的不对称中心（如 (0+2732)/2=1366 而非 1373.5），
+    # 导致经纬度整体偏移 ~30-40 km。
+    begin_pixel = _attr_scalar(gf, "Begin Pixel Number", 0.0)
+    end_pixel   = _attr_scalar(gf, "End Pixel Number", 2747.0)
+    begin_line  = _attr_scalar(gf, "Begin Line Number", 0.0)
+    end_line    = _attr_scalar(gf, "End Line Number", 2747.0)
+    coff = (begin_pixel + end_pixel) / 2.0
+    loff = (begin_line + end_line) / 2.0
 
-    col_step  = float(np.nanmedian(np.diff(np.unique(col[0,  :][np.isfinite(col[0,  :])])))) if np.isfinite(col[0, :]).any()   else 1.0
-    line_step = float(np.nanmedian(np.diff(np.unique(line[:, 0][np.isfinite(line[:, 0])])))) if np.isfinite(line[:, 0]).any() else 1.0
+    # ── 扫描步长：优先用中间行/列，row0/col0 可能在太空 ──
+    H, W = line.shape
+    mid_row = H // 2
+    mid_col = W // 2
+    col_vals  = col[mid_row, :][np.isfinite(col[mid_row, :])]
+    line_vals = line[:, mid_col][np.isfinite(line[:, mid_col])]
+    col_step  = float(np.nanmedian(np.diff(np.unique(col_vals))))  if len(col_vals)  > 1 else -1.0
+    line_step = float(np.nanmedian(np.diff(np.unique(line_vals)))) if len(line_vals) > 1 else -1.0
 
-    x_pix = samp_ang * 1e-6 / (col_step  if col_step  > 1.5 else 1.0)
-    y_pix = step_ang * 1e-6 / (line_step if line_step > 1.5 else 1.0)
+    x_pix = samp_ang * 1e-6 / (col_step  if abs(col_step)  > 1.5 else 1.0)
+    y_pix = step_ang * 1e-6 / (line_step if abs(line_step) > 1.5 else 1.0)
 
     x = (col - coff) * x_pix
     y = (loff - line) * y_pix

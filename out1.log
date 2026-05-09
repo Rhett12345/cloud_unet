@@ -354,3 +354,19 @@ nohup: ignoring input
 2026-05-07 22:29:43,250 [INFO] __main__ - CTH Low: R=+0.062±0.116  RMSE=6486±1128 m  (n_scenes=10)
 2026-05-07 22:29:43,250 [INFO] __main__ - CTH Mid: R=-0.034±0.141  RMSE=5514±1185 m  (n_scenes=10)
 2026-05-07 22:29:43,250 [INFO] __main__ - CTH High: R=+0.020±0.190  RMSE=7244±1780 m  (n_scenes=10)
+
+nohup: ignoring input
+2026-05-08 05:10:59,322 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0300.061.2019125225228.hdf | clp=2416708 cth=2389347 | scantime=MYD06_Scan_Start_Time
+2026-05-08 05:11:02,161 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0255.061.2019125225238.hdf | clp=2478002 cth=2148363 | scantime=MYD06_Scan_Start_Time
+2026-05-08 05:11:05,005 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0305.061.2019125224031.hdf | clp=1878590 cth=1206384 | scantime=MYD06_Scan_Start_Time
+2026-05-08 05:11:42,003 [INFO] fusion_io - post-qc | clp=168837 cth=140830 | clp_pct=2.2% wt_mean=0.021 dt_mean=3.06min
+2026-05-08 05:11:42,083 [INFO] __main__ -   20190505_030000  vs MODIS  CLP OA=66.90%  CTH R=0.3792  RMSE=5631 m  MODIS_clp_cover=2.2%  MODIS_cth_cover=1.9%  dt_med=2.8 min
+2026-05-08 05:11:50,269 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0310.061.2019125224136.hdf | clp=2010193 cth=997437 | scantime=MYD06_Scan_Start_Time
+2026-05-08 05:12:21,654 [INFO] fusion_io - post-qc | clp=48130 cth=20648 | clp_pct=0.6% wt_mean=0.006 dt_mean=2.68min
+2026-05-08 05:12:21,716 [INFO] __main__ -   20190505_031500  vs MODIS  CLP OA=20.45%  CTH R=0.0045  RMSE=5146 m  MODIS_clp_cover=0.6%  MODIS_cth_cover=0.3%  dt_med=2.8 min
+2026-05-08 05:12:39,752 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0600.061.2019125224523.hdf | clp=2573602 cth=2690535 | scantime=MYD06_Scan_Start_Time
+2026-05-08 05:12:44,353 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0605.061.2019125224844.hdf | clp=2363614 cth=1940589 | scantime=MYD06_Scan_Start_Time
+2026-05-08 05:13:18,038 [INFO] fusion_io - post-qc | clp=97054 cth=95880 | clp_pct=1.3% wt_mean=0.010 dt_mean=5.74min
+2026-05-08 05:13:18,105 [INFO] __main__ -   20190505_060000  vs MODIS  CLP OA=26.20%  CTH R=-0.1825  RMSE=5497 m  MODIS_clp_cover=1.3%  MODIS_cth_cover=1.3%  dt_med=5.8 min
+2026-05-08 05:13:23,757 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0615.061.2019125224517.hdf | clp=2226360 cth=1323911 | scantime=MYD06_Scan_Start_Time
+2026-05-08 05:13:26,551 [INFO] fusion_io - MYD06 qa | MYD06_L2.A2019125.0610.061.2019125224026.hdf | clp=2332508 cth=550087 | scantime=MYD06_Scan_Start_Time
