@@ -1,56 +1,34 @@
 """
-validate_modis_cloud.py  (已修复)
-==================================
-Simplified MODIS cross-validation: binary cloud detection + stratified CTH.
+validate_modis_cloud.py → validate_modis_cth_stratified.py (v2)
+================================================================
+Stratified CTH validation against MODIS MYD06 5km Cloud_Top_Height.
+Matches Low (0-3km), Mid (3-8km), High (8-20km) layers.
+Aligned with original MODISCOMPmatched.py: 5km SDS only, CTH only.
 
-修复的两个 bug（与 validate_modis.py 相同根因）
-------------------------------------------------
-Bug 1 — geo_cache 格式不兼容导致 1km 坐标实际不生效
-    read_modis_geo_quick 返回的 dict 在有 MYD03 时只含 lat_1km/lon_1km，
-    缺少 lat_5km。read_myd06 优先检查 lat_5km 是否存在：不存在则重读文件，
-    导致 1km 缓存的精确坐标实际上从未被用到，全部退化为 5km upsample。
-    修复：在此脚本的 match_modis_to_agri_grid 里，当 MYD03 可用时，
-    额外从 MYD06 文件读取 5km geo 并补充到 cache dict，
-    使 read_myd06 能正确走 "5km初始化 + 1km精化" 的路径。
-
-Bug 2 — labels 缺失 MATCH_DT_MIN → reg_time_ok 全 False → CTH 全部被滤掉
-    apply_quality_filter 里 CTH 过滤依赖 MATCH_DT_MIN <= REG_TIME_MAX_MIN，
-    若该字段不在 labels 里，reg_time_ok = np.zeros(shape, bool)，
-    所有 CTH 像元被置 NaN，分层 CTH 验证退化为纯噪声。
-    修复：
-      1. aggregate_modis_to_agri 已写入 MATCH_DT_MIN，正常路径无需额外处理；
-      2. 兜底：若字段缺失，注入文件级时间差作为保守上限；
-      3. 将全零 VZA/SZA 替换为真实 AGRI 场景角度。
+All required functions inlined — no dependency on fusion_io / fusion_core.
 
 Usage:
   # Model vs MODIS
   python validate_modis_cloud.py --npz_dir /path/to/retrieval/ --day 20190505
 
-  # AGRI L2 vs MODIS (baseline)
+  # AGRI L2 CTH vs MODIS (baseline)
   python validate_modis_cloud.py --day 20190505 --reference l2
 """
 
-import argparse, logging, sys
+import argparse, logging, re, sys
+from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Optional, Dict
+from typing import Optional
 
+import h5py
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+from scipy.spatial import cKDTree
+from pyhdf.SD import SD, SDC
 
 import config as cfg
-import fusion_config as fc
-from fusion_core import aggregate_modis_to_agri, check_modis_in_agri_disk
-from fusion_io import (
-    apply_quality_filter,
-    parse_agri_datetime, parse_modis_datetime,
-    find_matching_modis, find_matching_myd03,
-    read_agri_scene, read_myd06, read_modis_geo_quick,
-    _extract_timestamp_from_filename, _find_matching_l2_file,
-)
 
-logging.getLogger("fontTools").setLevel(logging.WARNING)
-logging.getLogger("matplotlib").setLevel(logging.WARNING)
 log = logging.getLogger(__name__)
 
 mpl.rcParams.update({
@@ -61,233 +39,330 @@ mpl.rcParams.update({
     "axes.linewidth": 0.8, "legend.frameon": False,
 })
 
-OUT_DIR = cfg.ROOT / "eval" / "modis_cloud_validation"
+OUT_DIR = cfg.ROOT / "eval" / "modis_cth_stratified_v2"
+TIME_WINDOW_MIN = 5.0
+SEARCH_RADIUS_KM = 4.0
+MAX_DIST_DEG = SEARCH_RADIUS_KM / 111.0
+AGRI_SUB_LON = 104.7
+AGRI_DISK_MAX_ANGLE = 75.0
 
 CTH_LAYERS = {"Low": (0, 3000), "Mid": (3000, 8000), "High": (8000, 20000)}
 
 
-def save_figure(fig, stem: str):
-    OUT_DIR.mkdir(parents=True, exist_ok=True)
-    for ext, dpi in [("svg", None), ("pdf", None), ("png", 300)]:
-        fig.savefig(OUT_DIR / f"{stem}.{ext}", dpi=dpi, bbox_inches="tight")
+# ═════════════════════════════════════════════════════════════════════════════
+# Inlined utility functions
+# ═════════════════════════════════════════════════════════════════════════════
+
+def parse_agri_datetime(filename: str) -> Optional[datetime]:
+    m = re.search(r"(\d{8})(\d{6})", filename)
+    if m:
+        try:
+            return datetime.strptime(m.group(1) + m.group(2), "%Y%m%d%H%M%S")
+        except ValueError:
+            pass
+    return None
 
 
-# ---------------------------------------------------------------------------
-# AGRI L2 readers
-# ---------------------------------------------------------------------------
-
-def read_l2_clp_raw(nc_path: Path) -> Optional[np.ndarray]:
-    """Read L2 CLP as raw int16 (no remap)."""
-    import netCDF4 as nc
-    ds = nc.Dataset(str(nc_path), "r")
-    var = ds.variables["CLP"]
-    var.set_auto_mask(False)
-    raw = np.asarray(var[:], dtype=np.int16)
-    ds.close()
-    return raw
+def parse_modis_datetime(filename: str) -> Optional[datetime]:
+    m = re.search(r"\.A(\d{7})\.(\d{4})\.", filename)
+    if m:
+        try:
+            year = int(m.group(1)[:4])
+            doy  = int(m.group(1)[4:])
+            dt   = datetime(year, 1, 1) + timedelta(days=doy - 1)
+            return dt.replace(hour=int(m.group(2)[:2]), minute=int(m.group(2)[2:]))
+        except (ValueError, IndexError):
+            pass
+    return None
 
 
-def read_l2_cth(nc_path: Path) -> Optional[np.ndarray]:
-    import netCDF4 as nc
-    ds = nc.Dataset(str(nc_path), "r")
-    var = ds.variables["CTH"]
-    var.set_auto_mask(False)
-    raw = np.asarray(var[:], dtype=np.float32)
-    ds.close()
-    vmin, vmax = cfg.AGRI_L2_CTH_VALID_RANGE
-    raw[(raw <= 0) | (raw >= 65500) | ~np.isfinite(raw)] = np.nan
-    raw[raw < vmin] = np.nan
-    raw[raw > vmax] = np.nan
-    return raw
+def find_matching_modis(agri_dt: datetime, modis_files: list,
+                         time_window_min: float = TIME_WINDOW_MIN) -> list:
+    td = timedelta(minutes=time_window_min)
+    candidates = []
+    for f in modis_files:
+        mdt = parse_modis_datetime(f.name)
+        if mdt and abs(mdt - agri_dt) <= td:
+            candidates.append((abs(mdt - agri_dt), f))
+    return [f for _, f in sorted(candidates)]
 
 
-# ---------------------------------------------------------------------------
-# Binary cloud mask from CLP
-# ---------------------------------------------------------------------------
-
-def to_cloud_mask(clp: np.ndarray, source: str = "agri_l2") -> np.ndarray:
-    """Convert CLP array to binary cloud mask: 0=clear, 1=cloudy, NaN=invalid."""
-    mask = np.full(clp.shape, np.nan, dtype=np.float32)
-    valid = np.isfinite(clp)
-    if source == "agri_l2_raw":
-        mask[valid & (clp == 0)] = 0
-        mask[valid & (clp >= 1) & (clp <= 4)] = 1
-    else:
-        mask[valid & (clp == 0)] = 0
-        mask[valid & (clp > 0)] = 1
-    return mask
+def _extract_timestamp(filename: str) -> Optional[str]:
+    m = re.search(r"_NOM_(\d{8})(\d{6})_", filename)
+    if m:
+        return m.group(1) + m.group(2)
+    m = re.search(r"(\d{14})", filename)
+    return m.group(1) if m else None
 
 
-# ---------------------------------------------------------------------------
-# MODIS matching（修复版）
-# ---------------------------------------------------------------------------
+def _h5_first(hf: h5py.File, candidates: list) -> np.ndarray:
+    for name in candidates:
+        if name in hf:
+            return hf[name][()]
+    raise KeyError(f"None of {candidates} found")
 
-def match_modis_to_agri_grid(
+
+def _attr_scalar(obj, key: str, default=None):
+    v = obj.attrs.get(key, default)
+    if isinstance(v, np.ndarray):
+        v = v.reshape(-1)[0] if v.size else default
+    if isinstance(v, (bytes, bytearray)):
+        try:
+            v = v.decode()
+        except Exception:
+            return default
+    try:
+        return float(v)
+    except Exception:
+        return default
+
+
+def _dataset_scaled(ds: h5py.Dataset) -> np.ndarray:
+    arr = ds[()].astype(np.float64)
+    fv = _attr_scalar(ds, "FillValue")
+    if fv is not None:
+        arr[arr == fv] = np.nan
+    return arr * _attr_scalar(ds, "Slope", 1.0) + _attr_scalar(ds, "Intercept", 0.0)
+
+
+def _wrap_lon(lon: np.ndarray) -> np.ndarray:
+    return (((lon + 180.0) % 360.0) - 180.0).astype(np.float32)
+
+
+def _derive_latlon(gf: h5py.File):
+    """Compute lat/lon from LineNumber/ColumnNumber + orbital params (AGRI GEO)."""
+    line = _dataset_scaled(gf["LineNumber"])
+    col  = _dataset_scaled(gf["ColumnNumber"])
+    lon0_deg = _attr_scalar(gf, "NOMCenterLon")
+    sat_h    = _attr_scalar(gf, "NOMSatHeight")
+    ea_attr  = _attr_scalar(gf, "dEA")
+    flat_inv = _attr_scalar(gf, "dObRecFlat")
+    samp_ang = _attr_scalar(gf, "dSamplingAngle")
+    step_ang = _attr_scalar(gf, "dSteppingAngle")
+
+    if None in [lon0_deg, sat_h, ea_attr, flat_inv, samp_ang, step_ang]:
+        raise KeyError("Missing GEO orbital params")
+
+    ea_km    = ea_attr / 1000.0 if ea_attr > 1e5 else ea_attr
+    sat_h_km = sat_h  / 1000.0 if sat_h   > 1e5 else sat_h
+    H_sat    = sat_h_km + ea_km if sat_h_km < 40000 else sat_h_km
+    eb_km    = ea_km * (1.0 - 1.0 / flat_inv)
+
+    line[~np.isfinite(line) | (line < 0)] = np.nan
+    col[ ~np.isfinite(col)  | (col  < 0)] = np.nan
+
+    begin_pixel = _attr_scalar(gf, "Begin Pixel Number", 0.0)
+    end_pixel   = _attr_scalar(gf, "End Pixel Number", 2747.0)
+    begin_line  = _attr_scalar(gf, "Begin Line Number", 0.0)
+    end_line    = _attr_scalar(gf, "End Line Number", 2747.0)
+    coff = (begin_pixel + end_pixel) / 2.0
+    loff = (begin_line + end_line) / 2.0
+
+    H, W = line.shape
+    mid_row = H // 2
+    mid_col = W // 2
+    col_vals  = col[mid_row, :][np.isfinite(col[mid_row, :])]
+    line_vals = line[:, mid_col][np.isfinite(line[:, mid_col])]
+    col_step  = float(np.nanmedian(np.diff(np.unique(col_vals))))  if len(col_vals)  > 1 else -1.0
+    line_step = float(np.nanmedian(np.diff(np.unique(line_vals)))) if len(line_vals) > 1 else -1.0
+
+    x_pix = samp_ang * 1e-6 / (col_step  if abs(col_step)  > 1.5 else 1.0)
+    y_pix = step_ang * 1e-6 / (line_step if abs(line_step) > 1.5 else 1.0)
+
+    x = (col - coff) * x_pix
+    y = (loff - line) * y_pix
+    lon0 = np.deg2rad(lon0_deg)
+
+    ea2, eb2 = ea_km**2, eb_km**2
+    cosx, sinx = np.cos(x), np.sin(x)
+    cosy, siny = np.cos(y), np.sin(y)
+    a = sinx**2 + cosx**2 * (cosy**2 + (ea2/eb2) * siny**2)
+    b = -2.0 * H_sat * cosx * cosy
+    c = H_sat**2 - ea2
+    disc = b**2 - 4.0 * a * c
+
+    lat = np.full(line.shape, np.nan, np.float64)
+    lon = np.full(line.shape, np.nan, np.float64)
+    valid = np.isfinite(disc) & (disc >= 0.0)
+    if valid.any():
+        sd  = np.sqrt(disc[valid])
+        sn  = (-b[valid] - sd) / (2.0 * a[valid])
+        s1  = H_sat - sn * cosx[valid] * cosy[valid]
+        s2  = sn * sinx[valid] * cosy[valid]
+        s3  = -sn * siny[valid]
+        sxy = np.sqrt(s1**2 + s2**2)
+        lat[valid] = np.rad2deg(np.arctan((ea2/eb2) * s3 / sxy))
+        lon[valid] = np.rad2deg(np.arctan2(s2, s1) + lon0)
+
+    bad = (lat < -90) | (lat > 90)
+    lat[bad] = np.nan
+    lon[bad] = np.nan
+    return lat.astype(np.float32), _wrap_lon(lon)
+
+
+def read_agri_geo(agri_file: Path) -> Optional[dict]:
+    try:
+        if "_FDI-_" not in agri_file.name:
+            return None
+        geo_file = Path(str(agri_file).replace("_FDI-_", "_GEO-_"))
+        if not geo_file.exists():
+            log.warning("GEO file missing for %s", agri_file.name)
+            return None
+        with h5py.File(geo_file, "r") as gf:
+            try:
+                lat = _h5_first(gf, ["Geolocation/NOMLatitude", "NOMLatitude", "Latitude"]).astype(np.float32)
+                lon = _h5_first(gf, ["Geolocation/NOMLongitude", "NOMLongitude", "Longitude"]).astype(np.float32)
+            except KeyError:
+                lat, lon = _derive_latlon(gf)
+        for arr in [lat, lon]:
+            arr[(arr > 1e4) | (arr < -1e4)] = np.nan
+        lon = _wrap_lon(lon)
+        return {"lat": lat, "lon": lon}
+    except Exception as exc:
+        log.warning("read_agri_geo failed %s: %s", agri_file, exc)
+        return None
+
+
+def read_myd06_cth_5km(modis_file: Path) -> Optional[dict]:
+    try:
+        sd = SD(str(modis_file), SDC.READ)
+        lat = sd.select("Latitude")[:].astype(np.float32)
+        lon = sd.select("Longitude")[:].astype(np.float32)
+        cth_raw = sd.select("Cloud_Top_Height")[:].astype(np.float32)
+        fv = sd.select("Cloud_Top_Height").attributes().get("_FillValue", -9999)
+        sd.end()
+        cth_raw[cth_raw == fv] = np.nan
+        cth = cth_raw.copy()
+        cth[(cth <= 0) | (cth > 20000)] = np.nan
+        lat[~np.isfinite(lat)] = np.nan
+        lon[~np.isfinite(lon)] = np.nan
+        return {"lat": lat, "lon": lon, "CTH": cth}
+    except Exception as exc:
+        log.warning("read_myd06_cth_5km failed %s: %s", modis_file, exc)
+        return None
+
+
+def _modis_in_agri_disk(modis_lat: np.ndarray, modis_lon: np.ndarray,
+                       max_angle_deg: float = AGRI_DISK_MAX_ANGLE) -> float:
+    """Return fraction of valid MODIS pixels within AGRI Earth disk."""
+    valid = np.isfinite(modis_lat) & np.isfinite(modis_lon)
+    if not valid.any():
+        return 0.0
+    lat_r, lon_r = np.deg2rad(modis_lat[valid]), np.deg2rad(modis_lon[valid])
+    sub_lat_r = 0.0
+    sub_lon_r = np.deg2rad(AGRI_SUB_LON)
+    cos_angle = (np.sin(sub_lat_r) * np.sin(lat_r) +
+                 np.cos(sub_lat_r) * np.cos(lat_r) * np.cos(lon_r - sub_lon_r))
+    angle = np.rad2deg(np.arccos(np.clip(cos_angle, -1, 1)))
+    return float(np.mean(angle <= max_angle_deg))
+
+
+def match_modis_cth_to_agri(
     agri_lat: np.ndarray,
     agri_lon: np.ndarray,
-    agri_dt,
     modis_files: list,
-    myd03_files: list,
-    agri_vza: Optional[np.ndarray] = None,
-    agri_sza: Optional[np.ndarray] = None,
-) -> Optional[Dict[str, np.ndarray]]:
-    """
-    Match MODIS to AGRI grid with strict quality filtering.
-
-    修复 Bug 1：正确构造 geo_cache，使 MYD03 1km 坐标实际生效。
-    修复 Bug 2：
-      - 使用真实 VZA/SZA（而非全零）供 apply_quality_filter 使用；
-      - 确保 MATCH_DT_MIN 存在于 labels 中，避免 CTH 被全部过滤。
-    """
-    cfg.MODIS_FILTER_WEAK_QUALITY = True
-    cfg.MODIS_ALLOWED_CLOUD_MASK_FLAGS_FOR_CLP = (0, 3)
-    cfg.MODIS_ALLOWED_CLOUD_MASK_FLAGS_FOR_REG = (0,)
-
-    modis_list = []
+) -> Optional[dict]:
+    all_lat, all_lon, all_cth = [], [], []
+    n_granules, n_skipped = 0, 0
     for mf in modis_files:
-        mf = Path(mf) if isinstance(mf, str) else mf
-        m03 = find_matching_myd03(mf, myd03_files)
-
-        # ── 修复 Bug 1：构造完整 geo_cache ─────────────────────────────
-        raw_geo = read_modis_geo_quick(mf, myd03_file=m03)
-        if raw_geo is None:
+        d = read_myd06_cth_5km(mf)
+        if d is None:
             continue
-
-        geo_source = raw_geo.get("_geo_source", "")
-
-        if geo_source == "MYD03_1KM":
-            # 有 MYD03 1km：额外补充 MYD06 5km geo，构造完整 cache
-            # 原因：read_myd06 先检查 lat_5km 是否存在；若缺失则忽略整个 cache
-            try:
-                from pyhdf.SD import SD, SDC
-                sd_tmp = SD(str(mf), SDC.READ)
-                lat_5km_tmp = sd_tmp.select("Latitude")[:].astype(np.float32)
-                lon_5km_tmp = sd_tmp.select("Longitude")[:].astype(np.float32)
-                sd_tmp.end()
-                geo_cache = {
-                    "lat_5km": lat_5km_tmp,
-                    "lon_5km": lon_5km_tmp,
-                    "lat_1km": raw_geo["lat_1km"],
-                    "lon_1km": raw_geo["lon_1km"],
-                    "scan_time_1km": raw_geo.get("scan_time_1km"),
-                    "scan_time_source": raw_geo.get("scan_time_source", "none"),
-                    "_geo_source": "MYD03_1KM",
-                }
-            except Exception as e:
-                log.debug("Cannot supplement 5km geo into cache: %s", e)
-                geo_cache = raw_geo  # 退化为原始 cache（走 upsample 路径）
-        else:
-            geo_cache = raw_geo
-
-        # 地理预检
-        mlat = geo_cache.get("lat_1km") if geo_cache.get("lat_1km") is not None \
-               else geo_cache.get("lat_5km")
-        mlon = geo_cache.get("lon_1km") if geo_cache.get("lon_1km") is not None \
-               else geo_cache.get("lon_5km")
-        if mlat is None or mlon is None:
+        frac = _modis_in_agri_disk(d["lat"], d["lon"])
+        if frac < 0.95:
+            n_skipped += 1
             continue
-        if not check_modis_in_agri_disk(mlat, mlon, agri_lat, agri_lon):
-            continue
+        all_lat.append(d["lat"])
+        all_lon.append(d["lon"])
+        all_cth.append(d["CTH"])
+        n_granules += 1
+    if n_skipped:
+        log.info("  Skipped %d MODIS granules not fully in AGRI disk", n_skipped)
 
-        m = read_myd06(mf, agri_dt=agri_dt, myd03_file=m03, geo_cache=geo_cache)
-        if m is None:
-            continue
-
-        mdt = parse_modis_datetime(mf.name)
-        if mdt:
-            m["_dt_min"] = abs((mdt - agri_dt).total_seconds()) / 60.0
-        modis_list.append(m)
-
-    if not modis_list:
+    if not all_lat:
         return None
 
-    labels = aggregate_modis_to_agri(agri_lat, agri_lon, modis_list)
-    if labels is None:
+    modis_lat = np.concatenate(all_lat, axis=0)
+    modis_lon = np.concatenate(all_lon, axis=0)
+    modis_cth = np.concatenate(all_cth, axis=0)
+
+    valid_m = (np.isfinite(modis_lat) & np.isfinite(modis_lon) & np.isfinite(modis_cth))
+    if not valid_m.any():
         return None
 
-    # ── 修复 Bug 2：真实 VZA/SZA + 确保 MATCH_DT_MIN 存在 ──────────────
-    # VZA/SZA：使用调用方传入的真实角度；若未提供则用全零（允许所有像元通过）
-    vza = agri_vza if agri_vza is not None else np.zeros_like(agri_lat)
-    sza = agri_sza if agri_sza is not None else np.zeros_like(agri_lat)
-    agri_geo_for_qc = {"VZA": vza, "SZA": sza}
+    modis_pts = np.column_stack((modis_lat[valid_m].ravel(), modis_lon[valid_m].ravel()))
+    tree = cKDTree(modis_pts)
 
-    # MATCH_DT_MIN：aggregate_modis_to_agri 已写入；若意外缺失则注入兜底值
-    if "MATCH_DT_MIN" not in labels or labels["MATCH_DT_MIN"] is None:
-        log.warning("MATCH_DT_MIN missing after aggregation; injecting file-level dt as fallback")
-        file_dt_vals = [m.get("_dt_min", np.nan) for m in modis_list]
-        fallback_dt = float(np.nanmin(file_dt_vals)) if file_dt_vals else fc.TIME_LOW_Q_MIN
-        labels["MATCH_DT_MIN"] = np.full(agri_lat.shape, fallback_dt, dtype=np.float32)
+    agri_shape = agri_lat.shape
+    agri_valid = np.isfinite(agri_lat) & np.isfinite(agri_lon)
+    agri_pts = np.column_stack((agri_lat[agri_valid].ravel(), agri_lon[agri_valid].ravel()))
 
-    return apply_quality_filter(agri_geo_for_qc, labels)
+    distances, indices = tree.query(agri_pts, k=1, distance_upper_bound=MAX_DIST_DEG)
+    valid_match = distances < MAX_DIST_DEG
+
+    out_cth = np.full(agri_shape, np.nan, dtype=np.float32)
+    out_dist = np.full(agri_shape, np.nan, dtype=np.float32)
+
+    agri_valid_idx = np.where(agri_valid.ravel())[0]
+    matched_agri_idx = agri_valid_idx[valid_match]
+    modis_matched = indices[valid_match]
+    valid_m_idx = np.where(valid_m.ravel())[0]
+    out_cth.ravel()[matched_agri_idx] = modis_cth.ravel()[valid_m_idx[modis_matched]]
+    out_dist.ravel()[matched_agri_idx] = distances[valid_match] * 111.0
+
+    n_matched = int(valid_match.sum())
+    log.info("  MODIS match: %d pixels from %d granules  coverage=%.1f%%",
+             n_matched, n_granules,
+             100.0 * n_matched / max(agri_valid.sum(), 1))
+
+    return {"CTH": out_cth, "MATCH_DIST_KM": out_dist, "n_granules": n_granules}
 
 
-# ---------------------------------------------------------------------------
+# ═════════════════════════════════════════════════════════════════════════════
+# AGRI L2 CTH reader (for --reference l2 mode)
+# ═════════════════════════════════════════════════════════════════════════════
+
+def _find_l2_file(l1_fdi_path: Path, product: str) -> Optional[Path]:
+    """Find matching L2 NetCDF file for a given L1B FDI file."""
+    ts = _extract_timestamp(l1_fdi_path.name)
+    if ts is None:
+        return None
+    date_str = ts[:8]
+    l2_dir = cfg.FY4A_L2_ROOT / product / date_str
+    if not l2_dir.is_dir():
+        return None
+    for f in sorted(l2_dir.iterdir()):
+        if not f.name.endswith(".NC"):
+            continue
+        f_ts = _extract_timestamp(f.name)
+        if f_ts == ts:
+            return f
+    return None
+
+
+def read_agri_l2_cth(nc_path: Path) -> Optional[np.ndarray]:
+    """Read AGRI L2 CTH NetCDF, return float32 2D array with fill-filtering."""
+    import netCDF4 as nc
+    try:
+        ds = nc.Dataset(str(nc_path), "r")
+        var = ds.variables["CTH"]
+        var.set_auto_mask(False)
+        raw = np.asarray(var[:], dtype=np.float32)
+        ds.close()
+
+        vmin, vmax = cfg.AGRI_L2_CTH_VALID_RANGE
+        raw[(raw <= 0) | (raw >= 65500) | ~np.isfinite(raw)] = np.nan
+        raw[raw < vmin] = np.nan
+        raw[raw > vmax] = np.nan
+        return raw
+    except Exception as exc:
+        log.warning("read_agri_l2_cth failed %s: %s", nc_path, exc)
+        return None
+
+
+# ═════════════════════════════════════════════════════════════════════════════
 # Metrics
-# ---------------------------------------------------------------------------
-
-def cloud_detection_metrics(cmask_ref: np.ndarray, cmask_test: np.ndarray) -> dict:
-    """Binary cloud detection metrics."""
-    valid = np.isfinite(cmask_ref) & np.isfinite(cmask_test)
-    ref = cmask_ref[valid]
-    tst = cmask_test[valid]
-    n = len(ref)
-    if n == 0:
-        return {"n_cloud": 0}
-
-    tp = int(((ref == 1) & (tst == 1)).sum())
-    tn = int(((ref == 0) & (tst == 0)).sum())
-    fp = int(((ref == 0) & (tst == 1)).sum())
-    fn = int(((ref == 1) & (tst == 0)).sum())
-
-    pod = tp / max(tp + fn, 1)
-    far = fp / max(tp + fp, 1)
-    oa  = (tp + tn) / max(n, 1) * 100
-    denom = (tp + fn) * (fn + tn) + (tp + fp) * (fp + tn)
-    hss = 2 * (tp * tn - fp * fn) / max(denom, 1)
-
-    return {"n": n, "tp": tp, "tn": tn, "fp": fp, "fn": fn,
-            "pod": pod, "far": far, "oa_cloud": oa, "hss": hss}
-
-
-def cth_stratified_metrics(
-    cth_ref: np.ndarray,
-    cth_test: np.ndarray,
-    cmask_ref: np.ndarray,
-    cmask_test: np.ndarray,
-) -> dict:
-    """CTH metrics stratified by reference cloud height."""
-    cloudy = (
-        np.isfinite(cmask_ref) & np.isfinite(cmask_test) &
-        (cmask_ref == 1) & (cmask_test == 1) &
-        np.isfinite(cth_ref) & np.isfinite(cth_test)
-    )
-    p, t = cth_ref[cloudy], cth_test[cloudy]
-
-    result = {"n_cth_total": int(cloudy.sum())}
-    if result["n_cth_total"] < 10:
-        return result
-
-    result["cth_r_all"] = _pearson_r(p, t)
-    result["cth_rmse_all"] = float(np.sqrt(np.mean((p - t) ** 2)))
-    result["cth_bias_all"] = float(np.mean(t - p))
-
-    for name, (lo, hi) in CTH_LAYERS.items():
-        mask = (p >= lo) & (p < hi)
-        n_layer = int(mask.sum())
-        result[f"n_{name}"] = n_layer
-        if n_layer > 10:
-            pl, tl = p[mask], t[mask]
-            result[f"cth_r_{name}"]        = _pearson_r(pl, tl)
-            result[f"cth_rmse_{name}"]     = float(np.sqrt(np.mean((pl - tl) ** 2)))
-            result[f"cth_bias_{name}"]     = float(np.mean(tl - pl))
-            result[f"cth_mean_ref_{name}"] = float(np.mean(pl))
-            result[f"cth_mean_modis_{name}"] = float(np.mean(tl))
-        else:
-            for k in ["cth_r", "cth_rmse", "cth_bias", "cth_mean_ref", "cth_mean_modis"]:
-                result[f"{k}_{name}"] = np.nan
-
-    return result
-
+# ═════════════════════════════════════════════════════════════════════════════
 
 def _pearson_r(x, y):
     xm, ym = x - x.mean(), y - y.mean()
@@ -295,36 +370,69 @@ def _pearson_r(x, y):
     return float((xm * ym).sum() / max(denom, 1e-12))
 
 
-# ---------------------------------------------------------------------------
-# Figures
-# ---------------------------------------------------------------------------
+def cth_stratified_metrics(cth_pred: np.ndarray, cth_true: np.ndarray) -> dict:
+    """Stratified CTH metrics by cloud height layer."""
+    valid = np.isfinite(cth_pred) & np.isfinite(cth_true)
+    p, t = cth_pred[valid], cth_true[valid]
+    n_total = len(p)
 
-def _plot_stratified_cth(cth_ref, cth_test, cmask_ref, cmask_test, metrics, scene_id):
-    cloudy = (
-        np.isfinite(cmask_ref) & np.isfinite(cmask_test) &
-        (cmask_ref == 1) & (cmask_test == 1) &
-        np.isfinite(cth_ref) & np.isfinite(cth_test)
-    )
-    p_all, t_all = cth_ref[cloudy], cth_test[cloudy]
+    result = {"n_cth_total": n_total}
+    if n_total < 10:
+        return result
+
+    result["cth_r_all"] = _pearson_r(p, t)
+    result["cth_rmse_all"] = float(np.sqrt(np.mean((p - t) ** 2)))
+    result["cth_bias_all"] = float(np.mean(p - t))
+
+    for name, (lo, hi) in CTH_LAYERS.items():
+        mask = (t >= lo) & (t < hi)
+        n_layer = int(mask.sum())
+        result[f"n_{name}"] = n_layer
+        if n_layer > 10:
+            pl, tl = p[mask], t[mask]
+            result[f"cth_r_{name}"]    = _pearson_r(pl, tl)
+            result[f"cth_rmse_{name}"] = float(np.sqrt(np.mean((pl - tl) ** 2)))
+            result[f"cth_bias_{name}"] = float(np.mean(pl - tl))
+        else:
+            for k in ["cth_r", "cth_rmse", "cth_bias"]:
+                result[f"{k}_{name}"] = np.nan
+
+    return result
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# Figure
+# ═════════════════════════════════════════════════════════════════════════════
+
+def save_figure(fig, stem: str):
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
+    for ext, dpi in [("svg", None), ("pdf", None), ("png", 300)]:
+        fig.savefig(OUT_DIR / f"{stem}.{ext}", dpi=dpi, bbox_inches="tight")
+
+
+def _plot_stratified_cth(cth_pred, cth_true, metrics, scene_id):
+    valid = np.isfinite(cth_pred) & np.isfinite(cth_true)
+    p_all, t_all = cth_pred[valid], cth_true[valid]
 
     fig, axes = plt.subplots(1, 4, figsize=(10, 2.6))
     colors = {"Low": "#2E86AB", "Mid": "#A23B72", "High": "#F18F01"}
 
     for ax, (name, (lo, hi)) in zip(axes[:3], CTH_LAYERS.items()):
-        mask = (p_all >= lo) & (p_all < hi)
-        pts = p_all[mask], t_all[mask]
-        if mask.sum() > 10:
-            idx = np.random.choice(mask.sum(), min(5000, mask.sum()), replace=False)
-            pts = pts[0][idx], pts[1][idx]
-        ax.scatter(pts[1], pts[0], s=0.4, alpha=0.35, color=colors[name], rasterized=True)
+        mask = (t_all >= lo) & (t_all < hi)
+        pts_p, pts_t = p_all[mask], t_all[mask]
+        if mask.sum() > 5000:
+            idx = np.random.choice(mask.sum(), 5000, replace=False)
+            pts_p, pts_t = pts_p[idx], pts_t[idx]
+        ax.scatter(pts_t, pts_p, s=0.4, alpha=0.35, color=colors[name], rasterized=True)
         ax.plot([lo, hi], [lo, hi], "k--", lw=0.6, alpha=0.4)
         ax.set_xlim(lo, hi); ax.set_ylim(lo, hi)
-        ax.set_title(f"{name} ({lo/1000:.0f}–{hi/1000:.0f} km)",
+        ax.set_title(f"{name} ({lo//1000}–{hi//1000} km)",
                      fontsize=6.5, fontweight="bold", color=colors[name])
         ax.set_xlabel("MODIS CTH (m)", fontsize=6)
         if name == "Low":
             ax.set_ylabel("Ref CTH (m)", fontsize=6)
 
+    # text panel
     ax = axes[3]; ax.axis("off")
     lines = [f"  {scene_id}", "", "Layer    R      RMSE    Bias"]
     for name in ["Low", "Mid", "High"]:
@@ -333,12 +441,9 @@ def _plot_stratified_cth(cth_ref, cth_test, cmask_ref, cmask_test, metrics, scen
         bias = metrics.get(f"cth_bias_{name}", np.nan)
         n    = metrics.get(f"n_{name}", 0)
         lines.append(f"  {name:5s}  {r:+.3f}  {rmse:4.0f}m  {bias:+.0f}m  n={n}")
-    lines += [
-        "",
-        f"  ALL   {metrics.get('cth_r_all', 0):+.3f}  "
-        f"{metrics.get('cth_rmse_all', 0):4.0f}m  "
-        f"{metrics.get('cth_bias_all', 0):+.0f}m",
-    ]
+    lines += ["", f"  ALL   {metrics.get('cth_r_all',0):+.3f}  "
+              f"{metrics.get('cth_rmse_all',0):4.0f}m  "
+              f"{metrics.get('cth_bias_all',0):+.0f}m"]
     ax.text(0, 0.95, "\n".join(lines), transform=ax.transAxes,
             fontsize=5.5, va="top", fontfamily="monospace")
 
@@ -348,95 +453,50 @@ def _plot_stratified_cth(cth_ref, cth_test, cmask_ref, cmask_test, metrics, scen
     return fig
 
 
-# ---------------------------------------------------------------------------
-# Scene validation
-# ---------------------------------------------------------------------------
+# ═════════════════════════════════════════════════════════════════════════════
+# Per-scene validation
+# ═════════════════════════════════════════════════════════════════════════════
 
 def validate_one(
-    ref_clp: np.ndarray,
     ref_cth: np.ndarray,
     agri_lat: np.ndarray,
     agri_lon: np.ndarray,
-    agri_vza: Optional[np.ndarray],
-    agri_sza: Optional[np.ndarray],
-    agri_dt,
+    agri_dt: datetime,
     modis_files: list,
-    myd03_files: list,
     scene_id: str,
-    ref_type: str = "model",
 ) -> dict:
-    """
-    Run cloud-mask + stratified-CTH validation for one scene.
-
-    Parameters
-    ----------
-    agri_vza, agri_sza : 真实 AGRI 卫星/太阳天顶角（来自 GEO 文件）。
-        传入真实值可使 apply_quality_filter 的几何门控正常工作；
-        若传 None 则退化为全零（允许所有像元通过几何门控，CTH 仍正常过滤）。
-    """
+    """Run stratified CTH validation for one scene."""
     matched = find_matching_modis(agri_dt, modis_files)
     if not matched:
         return {"scene_id": scene_id, "status": "no_modis", "n_granules": 0}
 
-    labels = match_modis_to_agri_grid(
-        agri_lat, agri_lon, agri_dt, matched, myd03_files,
-        agri_vza=agri_vza, agri_sza=agri_sza,
-    )
+    labels = match_modis_cth_to_agri(agri_lat, agri_lon, matched)
     if labels is None:
         return {"scene_id": scene_id, "status": "match_failed", "n_granules": len(matched)}
 
-    modis_clp = labels["CLP"].astype(np.float32)
-    modis_clp[(modis_clp < 0) | (modis_clp >= 3)] = np.nan
-    modis_cmask = to_cloud_mask(modis_clp, "modis")
     modis_cth = labels["CTH"]
 
-    if ref_type == "agri_l2_raw":
-        ref_cmask = to_cloud_mask(ref_clp.astype(np.float32), "agri_l2_raw")
-    else:
-        ref_cmask = to_cloud_mask(ref_clp.astype(np.float32), "model")
+    if ref_cth.shape != modis_cth.shape:
+        log.warning("Shape mismatch: ref=%s modis=%s", ref_cth.shape, modis_cth.shape)
+        return {"scene_id": scene_id, "status": "shape_mismatch"}
 
-    assert ref_clp.shape == modis_clp.shape, (
-        f"Shape mismatch: ref={ref_clp.shape} modis={modis_clp.shape}"
-    )
-
-    cloud_m = cloud_detection_metrics(ref_cmask, modis_cmask)
-    cth_m = cth_stratified_metrics(ref_cth, modis_cth, ref_cmask, modis_cmask)
-    metrics = {
-        **cloud_m, **cth_m,
-        "scene_id": scene_id,
-        "status": "ok",
-        "n_granules": len(matched),
-    }
-
-    # 诊断字段
-    dt_arr = labels.get("MATCH_DT_MIN")
-    if dt_arr is not None:
-        valid_dt = dt_arr[np.isfinite(dt_arr)]
-        metrics["modis_dt_median_min"] = float(np.median(valid_dt)) if valid_dt.size else np.nan
-        metrics["modis_dt_max_min"] = float(np.max(valid_dt)) if valid_dt.size else np.nan
-    metrics["modis_clp_coverage_pct"] = 100.0 * float(np.isfinite(modis_clp).mean())
-    metrics["modis_cth_coverage_pct"] = 100.0 * float(np.isfinite(modis_cth).mean())
+    metrics = cth_stratified_metrics(ref_cth, modis_cth)
+    metrics["scene_id"] = scene_id
+    metrics["status"] = "ok"
+    metrics["n_granules"] = len(matched)
 
     layers_str = " ".join(
         f"{n}={metrics.get(f'cth_r_{n}', np.nan):+.2f}" for n in ["Low", "Mid", "High"]
     )
-    log.info(
-        "  %s  POD=%.3f FAR=%.3f HSS=%.3f  CTH R: %s  "
-        "clp_cover=%.1f%%  cth_cover=%.1f%%  dt_med=%.1f min",
-        scene_id,
-        cloud_m.get("pod", 0), cloud_m.get("far", 0), cloud_m.get("hss", 0),
-        layers_str,
-        metrics["modis_clp_coverage_pct"],
-        metrics["modis_cth_coverage_pct"],
-        metrics.get("modis_dt_median_min", float("nan")),
-    )
+    log.info("  %s  CTH R: %s  n=%d",
+             scene_id, layers_str, metrics.get("n_cth_total", 0))
 
     return metrics
 
 
-# ---------------------------------------------------------------------------
+# ═════════════════════════════════════════════════════════════════════════════
 # CLI
-# ---------------------------------------------------------------------------
+# ═════════════════════════════════════════════════════════════════════════════
 
 def main():
     logging.basicConfig(
@@ -445,7 +505,7 @@ def main():
         stream=sys.stdout,
     )
     parser = argparse.ArgumentParser(
-        description="Cloud-mask + stratified-CTH MODIS validation"
+        description="MODIS 5km stratified CTH validation"
     )
     parser.add_argument("--day", required=True)
     parser.add_argument("--npz_dir", default=None)
@@ -454,141 +514,124 @@ def main():
     args = parser.parse_args()
 
     day = args.day
-    agri_day_dir = cfg.AGRI_ROOT / day
-    if not agri_day_dir.is_dir():
-        log.error("AGRI L1B dir not found: %s", agri_day_dir)
-        sys.exit(1)
+    OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-    agri_files = sorted([
-        f for f in agri_day_dir.glob("*_FDI-_*.HDF")
-        if not f.name.endswith(".db")
-    ])
-
-    modis_dir  = cfg.MODIS_ROOT / day
-    myd03_dir  = cfg.MYD03_ROOT / day
-    all_modis  = sorted(
+    # shared MODIS file listing
+    modis_dir = cfg.MODIS_ROOT / day
+    all_modis = sorted(
         list(modis_dir.glob("MYD06*.hdf")) + list(modis_dir.glob("MYD06*.HDF"))
     ) if modis_dir.is_dir() else []
-    all_myd03  = sorted(
-        list(myd03_dir.glob("MYD03*.hdf")) + list(myd03_dir.glob("MYD03*.HDF"))
-    ) if myd03_dir.is_dir() else []
 
-    npz_index = {}
-    if args.reference == "model" and args.npz_dir:
-        for npz_p in Path(args.npz_dir).rglob(f"*{day}*.npz"):
-            ts = _extract_timestamp_from_filename(npz_p.name)
-            if ts:
-                npz_index[ts] = npz_p
-
-    log.info(
-        "Day %s: %d AGRI scenes, %d MODIS, %d MYD03, ref=%s",
-        day, len(agri_files), len(all_modis), len(all_myd03), args.reference,
-    )
-
-    OUTPUT_DIR = OUT_DIR
+    # model mode: iterate npz directly (use npz lat/lon)
+    # l2 mode: iterate AGRI FDI files (derive geo from GEO)
     all_metrics = []
-    for agri_f in agri_files:
-        ts = _extract_timestamp_from_filename(agri_f.name)
-        if ts is None:
-            continue
-        scene_id = f"{ts[:8]}_{ts[8:]}"
 
-        # ── 读取 AGRI geo（含真实 VZA/SZA）──────────────────────────────
-        agri = read_agri_scene(agri_f)
-        if agri is None:
-            continue
-        agri_dt = parse_agri_datetime(agri_f.name)
-        if agri_dt is None:
-            continue
+    if args.reference == "model":
+        if not args.npz_dir:
+            log.error("--npz_dir required for model reference mode")
+            sys.exit(1)
+        npz_files = sorted(Path(args.npz_dir).rglob(f"*{day}*.npz"))
+        log.info("Day %s: %d npz files, %d MODIS, ref=model",
+                 day, len(npz_files), len(all_modis))
 
-        # ── 获取参考数据 ──────────────────────────────────────────────────
-        if args.reference == "model":
-            if ts not in npz_index:
+        for npz_p in npz_files:
+            ts = _extract_timestamp(npz_p.name)
+            if ts is None:
                 continue
-            data = np.load(npz_index[ts])
-            ref_clp = data["CLP_pred"].astype(np.float32)
-            ref_cth = data["CTH_pred"].astype(np.float32)
-            data.close()
-            ref_type = "model"
-        else:
-            dummy = Path(
-                f"FY4A-_AGRI--_N_DISK_1047E_L1-_FDI-_MULT_NOM_{ts}_x_4000M_V0001.HDF"
-            )
-            clp_nc = _find_matching_l2_file(dummy, "CLP")
-            cth_nc = _find_matching_l2_file(dummy, "CTH")
-            if clp_nc is None or cth_nc is None:
-                continue
-            ref_clp_raw = read_l2_clp_raw(clp_nc)
-            ref_cth = read_l2_cth(cth_nc)
-            if ref_clp_raw is None or ref_cth is None:
-                continue
-            ref_clp = ref_clp_raw
-            ref_type = "agri_l2_raw"
+            scene_id = f"{ts[:8]}_{ts[8:]}"
 
-        try:
-            m = validate_one(
-                ref_clp, ref_cth,
-                agri["lat"], agri["lon"],
-                agri["VZA"], agri["SZA"],   # ← 传入真实角度（修复 Bug 2）
-                agri_dt,
-                all_modis, all_myd03,
-                scene_id, ref_type,
-            )
+            try:
+                data = np.load(npz_p)
+                ref_cth = data["CTH_pred"].astype(np.float32)
+                lat = data["latitude"].astype(np.float32)
+                lon = data["longitude"].astype(np.float32)
+                data.close()
+
+                agri_dt = parse_agri_datetime(npz_p.name)
+                if agri_dt is None:
+                    continue
+
+                m = validate_one(ref_cth, lat, lon, agri_dt, all_modis, scene_id)
+                all_metrics.append(m)
+            except Exception as exc:
+                log.error("Failed %s: %s", scene_id, exc)
+    else:
+        # l2 reference mode: need AGRI FDI + GEO files
+        agri_day_dir = cfg.AGRI_ROOT / day
+        if not agri_day_dir.is_dir():
+            log.error("AGRI L1B dir not found: %s", agri_day_dir)
+            sys.exit(1)
+        agri_files = sorted([
+            f for f in agri_day_dir.glob("*_FDI-_*.HDF")
+            if not f.name.endswith(".db")
+        ])
+        log.info("Day %s: %d AGRI scenes, %d MODIS, ref=l2",
+                 day, len(agri_files), len(all_modis))
+
+        for agri_f in agri_files:
+            ts = _extract_timestamp(agri_f.name)
+            if ts is None:
+                continue
+            scene_id = f"{ts[:8]}_{ts[8:]}"
+
+            agri = read_agri_geo(agri_f)
+            if agri is None:
+                continue
+            agri_dt = parse_agri_datetime(agri_f.name)
+            if agri_dt is None:
+                continue
+
+            cth_nc = _find_l2_file(agri_f, "CTH")
+            if cth_nc is None:
+                continue
+            ref_cth = read_agri_l2_cth(cth_nc)
+            if ref_cth is None:
+                continue
+
+            try:
+                m = validate_one(ref_cth, agri["lat"], agri["lon"],
+                                 agri_dt, all_modis, scene_id)
+                all_metrics.append(m)
+            except Exception as exc:
+                log.error("Failed %s: %s", scene_id, exc)
             all_metrics.append(m)
         except Exception as exc:
             log.error("Failed %s: %s", scene_id, exc)
 
+    # ── Summary ──
     if all_metrics and args.summary:
         import pandas as pd
         rows = [
             {k: v for k, v in m.items() if not isinstance(v, np.ndarray)}
             for m in all_metrics
         ]
-        df = pd.DataFrame(rows)
         tag = "model" if args.reference == "model" else "l2"
-        df.to_csv(OUTPUT_DIR / f"cloud_validation_{tag}_{day}.csv", index=False)
+        df = pd.DataFrame(rows)
+        df.to_csv(OUT_DIR / f"cth_stratified_{tag}_{day}.csv", index=False)
 
-        ok = [m for m in all_metrics if m.get("status") == "ok"]
+        ok = [m for m in all_metrics
+              if m.get("status") == "ok" and m.get("n_cth_total", 0) > 10]
         if ok:
-            pod_vals = [m["pod"] for m in ok if m.get("pod", 0) > 0]
-            far_vals = [m["far"] for m in ok]
-            hss_vals = [m["hss"] for m in ok]
-            log.info(
-                "=== Cloud detection: %s vs MODIS  %s (n=%d) ===",
-                tag, day, len(ok),
-            )
-            log.info("POD:   %.3f ± %.3f", np.mean(pod_vals), np.std(pod_vals))
-            log.info("FAR:   %.3f ± %.3f", np.mean(far_vals), np.std(far_vals))
-            log.info("HSS:   %.3f ± %.3f", np.mean(hss_vals), np.std(hss_vals))
-            log.info(
-                "MODIS CLP coverage: %.1f%% ± %.1f%%",
-                np.mean([m["modis_clp_coverage_pct"] for m in ok]),
-                np.std([m["modis_clp_coverage_pct"] for m in ok]),
-            )
-            log.info(
-                "MODIS CTH coverage: %.1f%% ± %.1f%%",
-                np.mean([m["modis_cth_coverage_pct"] for m in ok]),
-                np.std([m["modis_cth_coverage_pct"] for m in ok]),
-            )
+            r_vals    = [m["cth_r_all"] for m in ok]
+            rmse_vals = [m["cth_rmse_all"] for m in ok]
+            bias_vals = [m["cth_bias_all"] for m in ok]
+            log.info("=" * 60)
+            log.info("CTH stratified summary: %s vs MODIS  %s (n=%d scenes)",
+                     tag, day, len(ok))
+            log.info("  CTH R:     %+.4f ± %.4f", np.mean(r_vals), np.std(r_vals))
+            log.info("  CTH RMSE:  %.0f ± %.0f m", np.mean(rmse_vals), np.std(rmse_vals))
+            log.info("  CTH Bias:  %+.0f ± %.0f m", np.mean(bias_vals), np.std(bias_vals))
             for layer in ["Low", "Mid", "High"]:
-                r_vals = [
-                    m[f"cth_r_{layer}"] for m in ok
-                    if m.get(f"n_{layer}", 0) > 10
-                    and np.isfinite(m.get(f"cth_r_{layer}", np.nan))
-                ]
-                rmse_vals = [
-                    m[f"cth_rmse_{layer}"] for m in ok
-                    if m.get(f"n_{layer}", 0) > 10
-                    and np.isfinite(m.get(f"cth_rmse_{layer}", np.nan))
-                ]
-                if r_vals:
-                    log.info(
-                        "CTH %s: R=%+.3f±%.3f  RMSE=%.0f±%.0f m  (n_scenes=%d)",
-                        layer,
-                        np.mean(r_vals), np.std(r_vals),
-                        np.mean(rmse_vals), np.std(rmse_vals),
-                        len(r_vals),
-                    )
+                r_layer = [m[f"cth_r_{layer}"] for m in ok
+                           if m.get(f"n_{layer}", 0) > 10
+                           and np.isfinite(m.get(f"cth_r_{layer}", np.nan))]
+                rmse_layer = [m[f"cth_rmse_{layer}"] for m in ok
+                              if m.get(f"n_{layer}", 0) > 10
+                              and np.isfinite(m.get(f"cth_rmse_{layer}", np.nan))]
+                if r_layer:
+                    log.info("  CTH %s: R=%+.3f±%.3f  RMSE=%.0f±%.0f m  (n=%d)",
+                             layer, np.mean(r_layer), np.std(r_layer),
+                             np.mean(rmse_layer), np.std(rmse_layer), len(r_layer))
 
 
 if __name__ == "__main__":

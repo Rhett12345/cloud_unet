@@ -1,300 +1,500 @@
 """
-tools/validate_modis.py  (已修复)
-=================================
-Cross-validate model predictions against MODIS MYD06 (independent sensor).
+validate_modis.py — MODIS 5km CTH cross-validation (simplified, v2)
+====================================================================
+Matches MODIS MYD06 5km Cloud_Top_Height to AGRI 4km grid using
+simple KD-tree nearest-neighbour。Aligned with the original
+MODISCOMPmatched.py approach: 5km SDS only, CTH only, no cloud detection.
 
-修复的两个 bug
---------------
-Bug 1 — geo_cache shape 检查逻辑错误
-    原始代码：read_modis_geo_quick 返回 lat_1km（无 lat_5km），
-    但 read_myd06 只在 geo_cache.get("lat_5km") is not None 时才用缓存；
-    否则重新从文件读 5km geo，使 1km 缓存路径的条件判断全部失效。
-    修复：在 match_modis_to_agri_grid 里显式区分两种 geo_cache 格式，
-    构造完整的 geo_cache dict，确保 read_myd06 走正确的分支。
-
-Bug 2 — apply_quality_filter 时 MATCH_DT_MIN 缺失 → CTH 被全部过滤
-    原始代码：validate 脚本构造的 labels 没有 MATCH_DT_MIN 字段，
-    apply_quality_filter 里 reg_time_ok 退化为全 False（np.zeros），
-    导致所有 CTH 值被置 NaN，CTH 验证变成纯噪声。
-    修复：在调用 apply_quality_filter 前，向 labels 注入
-    MATCH_DT_MIN（像元级实际时间差）和 MATCH_DT_MAX 字段；
-    同时使用真实 VZA/SZA（来自 agri 场景），而不是全零数组。
+All required functions are inlined — no dependency on fusion_io / fusion_core.
 
 Usage:
   python validate_modis.py --npz_dir /path/to/retrieval/ --day 20190503
-
-Requires: MODIS MYD06 + MYD03 data under cfg.MODIS_ROOT / cfg.MYD03_ROOT.
 """
 
-import argparse, logging, sys
+import argparse, logging, re, sys
+from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Optional, Dict
+from typing import Optional
 
+import h5py
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+from scipy.spatial import cKDTree
+from pyhdf.SD import SD, SDC
 
 import config as cfg
-import fusion_config as fc
-from fusion_core import aggregate_modis_to_agri, check_modis_in_agri_disk
-from fusion_io import (
-    apply_quality_filter,
-    parse_agri_datetime, parse_modis_datetime,
-    find_matching_modis, find_matching_myd03,
-    read_agri_scene, read_myd06, read_modis_geo_quick,
-    _extract_timestamp_from_filename,
-)
-
-logging.getLogger("fontTools").setLevel(logging.WARNING)
-logging.getLogger("matplotlib").setLevel(logging.WARNING)
 
 log = logging.getLogger(__name__)
 
+# ── matplotlib rc ──────────────────────────────────────────────────────────
 mpl.rcParams.update({
     "font.family": "sans-serif",
     "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans", "sans-serif"],
-    "svg.fonttype": "none",
-    "pdf.fonttype": 42,
-    "font.size": 7,
-    "axes.spines.right": False,
-    "axes.spines.top": False,
-    "axes.linewidth": 0.8,
-    "legend.frameon": False,
+    "svg.fonttype": "none", "pdf.fonttype": 42, "font.size": 7,
+    "axes.spines.right": False, "axes.spines.top": False,
+    "axes.linewidth": 0.8, "legend.frameon": False,
 })
 
-OUT_DIR = cfg.ROOT / "eval" / "modis_validation"
+OUT_DIR = cfg.ROOT / "eval" / "modis_validation_v2"
+TIME_WINDOW_MIN = 5.0        # ±5 min temporal matching (tighter than original 15 min)
+SEARCH_RADIUS_KM = 4.0       # 4 km search radius (aligned w/ original)
+MAX_DIST_DEG = SEARCH_RADIUS_KM / 111.0  # approximate degree conversion
+AGRI_SUB_LON = 104.7         # AGRI sub-satellite longitude (FY-4A)
+AGRI_DISK_MAX_ANGLE = 75.0   # max angular distance from sub-satellite point (deg)
 
+
+# ═════════════════════════════════════════════════════════════════════════════
+# Inlined utility functions (from fusion_io / fusion_core — don't touch those)
+# ═════════════════════════════════════════════════════════════════════════════
+
+def parse_agri_datetime(filename: str) -> Optional[datetime]:
+    """Extract datetime from AGRI FDI filename."""
+    m = re.search(r"(\d{8})(\d{6})", filename)
+    if m:
+        try:
+            return datetime.strptime(m.group(1) + m.group(2), "%Y%m%d%H%M%S")
+        except ValueError:
+            pass
+    return None
+
+
+def parse_modis_datetime(filename: str) -> Optional[datetime]:
+    """Extract datetime from MODIS filename: MYD06_L2.AYYYYDDD.HHMM.*"""
+    m = re.search(r"\.A(\d{7})\.(\d{4})\.", filename)
+    if m:
+        try:
+            year = int(m.group(1)[:4])
+            doy  = int(m.group(1)[4:])
+            hhmm = m.group(2)
+            dt   = datetime(year, 1, 1) + timedelta(days=doy - 1)
+            return dt.replace(hour=int(hhmm[:2]), minute=int(hhmm[2:]))
+        except (ValueError, IndexError):
+            pass
+    return None
+
+
+def find_matching_modis(agri_dt: datetime, modis_files: list,
+                         time_window_min: float = TIME_WINDOW_MIN) -> list:
+    """Return MODIS files whose granule time is within ±time_window_min of agri_dt."""
+    td = timedelta(minutes=time_window_min)
+    candidates = []
+    for f in modis_files:
+        mdt = parse_modis_datetime(f.name)
+        if mdt and abs(mdt - agri_dt) <= td:
+            candidates.append((abs(mdt - agri_dt), f))
+    return [f for _, f in sorted(candidates)]
+
+
+def _extract_timestamp(filename: str) -> Optional[str]:
+    """Extract YYYYMMDDHHMMSS from FY-4A filename."""
+    m = re.search(r"_NOM_(\d{8})(\d{6})_", filename)
+    if m:
+        return m.group(1) + m.group(2)
+    m = re.search(r"(\d{14})", filename)
+    return m.group(1) if m else None
+
+
+def _h5_first(hf: h5py.File, candidates: list) -> np.ndarray:
+    """Return first matching dataset from HDF5 file."""
+    for name in candidates:
+        if name in hf:
+            return hf[name][()]
+    raise KeyError(f"None of {candidates} found")
+
+
+def _attr_scalar(obj, key: str, default=None):
+    v = obj.attrs.get(key, default)
+    if isinstance(v, np.ndarray):
+        v = v.reshape(-1)[0] if v.size else default
+    if isinstance(v, (bytes, bytearray)):
+        try:
+            v = v.decode()
+        except Exception:
+            return default
+    try:
+        return float(v)
+    except Exception:
+        return default
+
+
+def _dataset_scaled(ds: h5py.Dataset) -> np.ndarray:
+    arr = ds[()].astype(np.float64)
+    fv = _attr_scalar(ds, "FillValue")
+    if fv is not None:
+        arr[arr == fv] = np.nan
+    return arr * _attr_scalar(ds, "Slope", 1.0) + _attr_scalar(ds, "Intercept", 0.0)
+
+
+def _wrap_lon(lon: np.ndarray) -> np.ndarray:
+    return (((lon + 180.0) % 360.0) - 180.0).astype(np.float32)
+
+
+def _derive_latlon(gf: h5py.File):
+    """Compute lat/lon from LineNumber/ColumnNumber + orbital params (AGRI GEO)."""
+    line = _dataset_scaled(gf["LineNumber"])
+    col  = _dataset_scaled(gf["ColumnNumber"])
+    lon0_deg = _attr_scalar(gf, "NOMCenterLon")
+    sat_h    = _attr_scalar(gf, "NOMSatHeight")
+    ea_attr  = _attr_scalar(gf, "dEA")
+    flat_inv = _attr_scalar(gf, "dObRecFlat")
+    samp_ang = _attr_scalar(gf, "dSamplingAngle")
+    step_ang = _attr_scalar(gf, "dSteppingAngle")
+
+    if None in [lon0_deg, sat_h, ea_attr, flat_inv, samp_ang, step_ang]:
+        raise KeyError("Missing GEO orbital params")
+
+    ea_km    = ea_attr / 1000.0 if ea_attr > 1e5 else ea_attr
+    sat_h_km = sat_h  / 1000.0 if sat_h   > 1e5 else sat_h
+    H_sat    = sat_h_km + ea_km if sat_h_km < 40000 else sat_h_km
+    eb_km    = ea_km * (1.0 - 1.0 / flat_inv)
+
+    line[~np.isfinite(line) | (line < 0)] = np.nan
+    col[ ~np.isfinite(col)  | (col  < 0)] = np.nan
+
+    begin_pixel = _attr_scalar(gf, "Begin Pixel Number", 0.0)
+    end_pixel   = _attr_scalar(gf, "End Pixel Number", 2747.0)
+    begin_line  = _attr_scalar(gf, "Begin Line Number", 0.0)
+    end_line    = _attr_scalar(gf, "End Line Number", 2747.0)
+    coff = (begin_pixel + end_pixel) / 2.0
+    loff = (begin_line + end_line) / 2.0
+
+    H, W = line.shape
+    mid_row = H // 2
+    mid_col = W // 2
+    col_vals  = col[mid_row, :][np.isfinite(col[mid_row, :])]
+    line_vals = line[:, mid_col][np.isfinite(line[:, mid_col])]
+    col_step  = float(np.nanmedian(np.diff(np.unique(col_vals))))  if len(col_vals)  > 1 else -1.0
+    line_step = float(np.nanmedian(np.diff(np.unique(line_vals)))) if len(line_vals) > 1 else -1.0
+
+    x_pix = samp_ang * 1e-6 / (col_step  if abs(col_step)  > 1.5 else 1.0)
+    y_pix = step_ang * 1e-6 / (line_step if abs(line_step) > 1.5 else 1.0)
+
+    x = (col - coff) * x_pix
+    y = (loff - line) * y_pix
+    lon0 = np.deg2rad(lon0_deg)
+
+    ea2, eb2 = ea_km**2, eb_km**2
+    cosx, sinx = np.cos(x), np.sin(x)
+    cosy, siny = np.cos(y), np.sin(y)
+    a = sinx**2 + cosx**2 * (cosy**2 + (ea2/eb2) * siny**2)
+    b = -2.0 * H_sat * cosx * cosy
+    c = H_sat**2 - ea2
+    disc = b**2 - 4.0 * a * c
+
+    lat = np.full(line.shape, np.nan, np.float64)
+    lon = np.full(line.shape, np.nan, np.float64)
+    valid = np.isfinite(disc) & (disc >= 0.0)
+    if valid.any():
+        sd  = np.sqrt(disc[valid])
+        sn  = (-b[valid] - sd) / (2.0 * a[valid])
+        s1  = H_sat - sn * cosx[valid] * cosy[valid]
+        s2  = sn * sinx[valid] * cosy[valid]
+        s3  = -sn * siny[valid]
+        sxy = np.sqrt(s1**2 + s2**2)
+        lat[valid] = np.rad2deg(np.arctan((ea2/eb2) * s3 / sxy))
+        lon[valid] = np.rad2deg(np.arctan2(s2, s1) + lon0)
+
+    bad = (lat < -90) | (lat > 90)
+    lat[bad] = np.nan
+    lon[bad] = np.nan
+    return lat.astype(np.float32), _wrap_lon(lon)
+
+
+def read_agri_geo(agri_file: Path) -> Optional[dict]:
+    """
+    Read AGRI lat/lon from paired GEO file.
+    Falls back to _derive_latlon if precomputed lat/lon not found.
+    """
+    try:
+        if "_FDI-_" not in agri_file.name:
+            return None
+        geo_file = Path(str(agri_file).replace("_FDI-_", "_GEO-_"))
+        if not geo_file.exists():
+            log.warning("GEO file missing for %s", agri_file.name)
+            return None
+
+        with h5py.File(geo_file, "r") as gf:
+            try:
+                lat = _h5_first(gf, ["Geolocation/NOMLatitude", "NOMLatitude", "Latitude"]).astype(np.float32)
+                lon = _h5_first(gf, ["Geolocation/NOMLongitude", "NOMLongitude", "Longitude"]).astype(np.float32)
+            except KeyError:
+                lat, lon = _derive_latlon(gf)
+
+        # basic cleaning
+        for arr in [lat, lon]:
+            arr[(arr > 1e4) | (arr < -1e4)] = np.nan
+        lon = _wrap_lon(lon)
+
+        return {"lat": lat, "lon": lon}
+    except Exception as exc:
+        log.warning("read_agri_geo failed %s: %s", agri_file, exc)
+        return None
+
+
+def read_myd06_cth_5km(modis_file: Path) -> Optional[dict]:
+    """
+    Read MODIS MYD06 5km CTH + geolocation.
+    Reads three 5km SDS: Latitude, Longitude, Cloud_Top_Height.
+    CTH is already in metres (scale_factor=1.0 in this product version).
+    No MYD03, no 1km data, no cloud mask / phase.
+    """
+    try:
+        sd = SD(str(modis_file), SDC.READ)
+
+        lat = sd.select("Latitude")[:].astype(np.float32)
+        lon = sd.select("Longitude")[:].astype(np.float32)
+        cth_raw = sd.select("Cloud_Top_Height")[:].astype(np.float32)
+        fv = sd.select("Cloud_Top_Height").attributes().get("_FillValue", -9999)
+        sd.end()
+
+        cth_raw[cth_raw == fv] = np.nan
+        cth = cth_raw.astype(np.float32)
+        cth[(cth <= 0) | (cth > 20000)] = np.nan
+
+        # filter invalid geo
+        lat[~np.isfinite(lat)] = np.nan
+        lon[~np.isfinite(lon)] = np.nan
+
+        return {"lat": lat, "lon": lon, "CTH": cth}
+    except Exception as exc:
+        log.warning("read_myd06_cth_5km failed %s: %s", modis_file, exc)
+        return None
+
+
+def _modis_in_agri_disk(modis_lat: np.ndarray, modis_lon: np.ndarray,
+                       max_angle_deg: float = AGRI_DISK_MAX_ANGLE) -> float:
+    """Return fraction of valid MODIS pixels within AGRI Earth disk."""
+    valid = np.isfinite(modis_lat) & np.isfinite(modis_lon)
+    if not valid.any():
+        return 0.0
+    lat_r, lon_r = np.deg2rad(modis_lat[valid]), np.deg2rad(modis_lon[valid])
+    sub_lat_r = 0.0
+    sub_lon_r = np.deg2rad(AGRI_SUB_LON)
+    cos_angle = (np.sin(sub_lat_r) * np.sin(lat_r) +
+                 np.cos(sub_lat_r) * np.cos(lat_r) * np.cos(lon_r - sub_lon_r))
+    angle = np.rad2deg(np.arccos(np.clip(cos_angle, -1, 1)))
+    return float(np.mean(angle <= max_angle_deg))
+
+
+def match_modis_cth_to_agri(
+    agri_lat: np.ndarray,
+    agri_lon: np.ndarray,
+    modis_files: list,
+) -> Optional[dict]:
+    """
+    Match MODIS 5km CTH → AGRI 4km grid (k=1 nearest neighbour).
+    Aligned with original MODISCOMPmatched.py approach.
+    """
+    # ── read & concat MODIS granules (only those fully within AGRI disk) ──
+    all_lat, all_lon, all_cth = [], [], []
+    n_granules, n_skipped = 0, 0
+    for mf in modis_files:
+        d = read_myd06_cth_5km(mf)
+        if d is None:
+            continue
+        frac = _modis_in_agri_disk(d["lat"], d["lon"])
+        if frac < 0.95:
+            n_skipped += 1
+            continue
+        all_lat.append(d["lat"])
+        all_lon.append(d["lon"])
+        all_cth.append(d["CTH"])
+        n_granules += 1
+    if n_skipped:
+        log.info("  Skipped %d MODIS granules not fully in AGRI disk", n_skipped)
+
+    if not all_lat:
+        return None
+
+    modis_lat = np.concatenate(all_lat, axis=0)
+    modis_lon = np.concatenate(all_lon, axis=0)
+    modis_cth = np.concatenate(all_cth, axis=0)
+
+    # ── filter valid MODIS pixels ──
+    valid_m = (
+        np.isfinite(modis_lat) & np.isfinite(modis_lon) &
+        np.isfinite(modis_cth)
+    )
+    if not valid_m.any():
+        return None
+
+    # ── KD-tree: MODIS → AGRI (k=1) ──
+    modis_pts = np.column_stack((
+        modis_lat[valid_m].ravel(),
+        modis_lon[valid_m].ravel(),
+    ))
+    tree = cKDTree(modis_pts)
+
+    agri_shape = agri_lat.shape
+    agri_valid = np.isfinite(agri_lat) & np.isfinite(agri_lon)
+    agri_pts = np.column_stack((
+        agri_lat[agri_valid].ravel(),
+        agri_lon[agri_valid].ravel(),
+    ))
+
+    distances, indices = tree.query(agri_pts, k=1, distance_upper_bound=MAX_DIST_DEG)
+    valid_match = distances < MAX_DIST_DEG
+
+    # ── build output ──
+    out_cth = np.full(agri_shape, np.nan, dtype=np.float32)
+    out_dist = np.full(agri_shape, np.nan, dtype=np.float32)
+
+    agri_valid_flat = agri_valid.ravel()
+    agri_valid_idx = np.where(agri_valid_flat)[0]
+    matched_agri_idx = agri_valid_idx[valid_match]
+    modis_matched = indices[valid_match]
+
+    # map back through valid_m mask
+    valid_m_idx = np.where(valid_m.ravel())[0]
+    out_cth.ravel()[matched_agri_idx] = modis_cth.ravel()[valid_m_idx[modis_matched]]
+    out_dist.ravel()[matched_agri_idx] = distances[valid_match] * 111.0  # deg → km
+
+    n_matched = int(valid_match.sum())
+    log.info("  MODIS match: %d AGRI pixels matched from %d granules  "
+             "coverage=%.1f%%  dist_median=%.1f km",
+             n_matched, n_granules,
+             100.0 * n_matched / max(agri_valid.sum(), 1),
+             float(np.median(out_dist[np.isfinite(out_dist)])) if n_matched > 0 else 0)
+
+    return {"CTH": out_cth, "MATCH_DIST_KM": out_dist, "n_granules": n_granules}
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# CTH metrics
+# ═════════════════════════════════════════════════════════════════════════════
+
+def _pearson_r(x: np.ndarray, y: np.ndarray) -> float:
+    xm, ym = x - x.mean(), y - y.mean()
+    denom = np.sqrt((xm ** 2).sum() * (ym ** 2).sum())
+    return float((xm * ym).sum() / max(denom, 1e-12))
+
+
+def cth_metrics(cth_pred: np.ndarray, cth_true: np.ndarray) -> dict:
+    """Compute CTH regression metrics."""
+    valid = np.isfinite(cth_pred) & np.isfinite(cth_true)
+    n = int(valid.sum())
+    if n < 10:
+        return {"n_cth": n, "cth_r": 0, "cth_rmse": 0, "cth_mae": 0, "cth_bias": 0}
+
+    p, t = cth_pred[valid], cth_true[valid]
+    cth_rmse = float(np.sqrt(np.mean((p - t) ** 2)))
+    cth_mae  = float(np.mean(np.abs(p - t)))
+    cth_bias = float(np.mean(p - t))
+    cth_r    = _pearson_r(p, t)
+    return {"n_cth": n, "cth_r": cth_r, "cth_rmse": cth_rmse,
+            "cth_mae": cth_mae, "cth_bias": cth_bias}
+
+
+# ═════════════════════════════════════════════════════════════════════════════
+# Figure
+# ═════════════════════════════════════════════════════════════════════════════
 
 def save_figure(fig, stem: str):
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for ext, dpi in [("svg", None), ("pdf", None), ("png", 300)]:
-        path = OUT_DIR / f"{stem}.{ext}"
-        fig.savefig(path, dpi=dpi, bbox_inches="tight")
+        fig.savefig(OUT_DIR / f"{stem}.{ext}", dpi=dpi, bbox_inches="tight")
 
 
-# ---------------------------------------------------------------------------
-# MODIS label matching to AGRI grid（修复版）
-# ---------------------------------------------------------------------------
+def _plot_cth_scatter(cth_pred, cth_true, metrics, scene_id):
+    valid = np.isfinite(cth_pred) & np.isfinite(cth_true)
+    p, t = cth_pred[valid], cth_true[valid]
+    if len(p) > 5000:
+        idx = np.random.choice(len(p), 5000, replace=False)
+        p, t = p[idx], t[idx]
 
-def match_modis_to_agri_grid(
-    agri_lat: np.ndarray,
-    agri_lon: np.ndarray,
-    agri_dt,
-    modis_files: list,
-    myd03_files: list,
-    agri_vza: Optional[np.ndarray] = None,
-    agri_sza: Optional[np.ndarray] = None,
-    quality: bool = True,
-) -> Optional[Dict[str, np.ndarray]]:
-    """
-    Run the full MODIS→AGRI spatial matching pipeline for validation.
+    fig, ax = plt.subplots(figsize=(3.6, 3.2))
+    ax.scatter(t, p, s=0.6, alpha=0.35, color="#2E86AB", rasterized=True)
+    ax.plot([0, 20000], [0, 20000], "k--", lw=0.6, alpha=0.4)
 
-    修复说明
-    --------
-    原始代码直接把 read_modis_geo_quick 的返回值作为 geo_cache 传给
-    read_myd06，但两者对 cache dict 的格式预期不一致：
-      - read_modis_geo_quick 在有 MYD03 时返回 {"lat_1km": ..., "lon_1km": ...}
-        （无 "lat_5km" 键）
-      - read_myd06 的分支逻辑：先检查 geo_cache.get("lat_5km") is not None；
-        若为 None 则从文件重读 5km geo，导致 1km 缓存实际不生效
-    修复：在此处显式区分两种情形，构造 read_myd06 能正确识别的 cache dict。
-    """
-    if quality:
-        cfg.MODIS_FILTER_WEAK_QUALITY = True
-        cfg.MODIS_ALLOWED_CLOUD_MASK_FLAGS_FOR_CLP = (0, 3)
-        cfg.MODIS_ALLOWED_CLOUD_MASK_FLAGS_FOR_REG = (0,)
+    r    = metrics.get("cth_r", 0)
+    rmse = metrics.get("cth_rmse", 0)
+    bias = metrics.get("cth_bias", 0)
+    n    = metrics.get("n_cth", 0)
+    ax.text(0.03, 0.95,
+            f"{scene_id}\n"
+            f"R = {r:+.3f}  RMSE = {rmse:.0f} m  Bias = {bias:+.0f} m  n = {n}",
+            transform=ax.transAxes, fontsize=6.5, va="top", fontfamily="monospace")
 
-    modis_list = []
-    for mf in modis_files:
-        mf = Path(mf) if isinstance(mf, str) else mf
-        myd03_file = find_matching_myd03(mf, myd03_files)
-
-        # ── 修复 Bug 1：正确构造 geo_cache ──────────────────────────────
-        # read_modis_geo_quick 可能返回两种格式：
-        #   (A) MYD03 可用：{"lat_1km": ..., "lon_1km": ..., "_geo_source": "MYD03_1KM"}
-        #   (B) 回退 MYD06：{"lat_5km": ..., "lon_5km": ..., "_geo_source": "MYD06_5KM"}
-        # read_myd06 期望：先找 lat_5km（用于 5km 分支），再找 lat_1km（用于 1km 分支）
-        # 当 geo_cache 只有 lat_1km 时，read_myd06 会重新从文件读 5km geo，
-        # 使 1km 缓存失效。因此需要补充 lat_5km 或构造完整 cache。
-        raw_geo = read_modis_geo_quick(mf, myd03_file=myd03_file)
-        if raw_geo is None:
-            continue
-
-        geo_source = raw_geo.get("_geo_source", "")
-
-        if geo_source == "MYD03_1KM":
-            # MYD03 1km 可用：从 MYD06 文件补充 5km geo，构造完整 cache
-            # 这样 read_myd06 先用 5km geo 做初始化，再用 1km 做精确定位
-            try:
-                from pyhdf.SD import SD, SDC
-                sd_tmp = SD(str(mf), SDC.READ)
-                lat_5km_tmp = sd_tmp.select("Latitude")[:].astype(np.float32)
-                lon_5km_tmp = sd_tmp.select("Longitude")[:].astype(np.float32)
-                sd_tmp.end()
-                geo_cache = {
-                    "lat_5km": lat_5km_tmp,          # read_myd06 的 5km 分支入口
-                    "lon_5km": lon_5km_tmp,
-                    "lat_1km": raw_geo["lat_1km"],   # read_myd06 的 1km 精化分支
-                    "lon_1km": raw_geo["lon_1km"],
-                    "scan_time_1km": raw_geo.get("scan_time_1km"),
-                    "scan_time_source": raw_geo.get("scan_time_source", "none"),
-                    "_geo_source": "MYD03_1KM",
-                }
-            except Exception as e:
-                log.debug("Cannot read MYD06 5km geo for cache completion: %s", e)
-                # 退化：只用 MYD06 自身的 5km geo（会走 upsample 路径）
-                geo_cache = raw_geo
-        else:
-            # MYD06 5km：直接用，read_myd06 能正确识别
-            geo_cache = raw_geo
-
-        # ── 快速地理预检（使用实际可用的最精确坐标）────────────────────────
-        mlat = geo_cache.get("lat_1km") if geo_cache.get("lat_1km") is not None \
-               else geo_cache.get("lat_5km")
-        mlon = geo_cache.get("lon_1km") if geo_cache.get("lon_1km") is not None \
-               else geo_cache.get("lon_5km")
-        if mlat is None or mlon is None:
-            continue
-        if not check_modis_in_agri_disk(mlat, mlon, agri_lat, agri_lon):
-            continue
-
-        m = read_myd06(mf, agri_dt=agri_dt, myd03_file=myd03_file, geo_cache=geo_cache)
-        if m is None:
-            continue
-
-        mdt = parse_modis_datetime(mf.name)
-        if mdt:
-            m["_dt_min"] = abs((mdt - agri_dt).total_seconds()) / 60.0
-        modis_list.append(m)
-
-    if not modis_list:
-        return None
-
-    labels = aggregate_modis_to_agri(agri_lat, agri_lon, modis_list)
-    if labels is None:
-        return None
-
-    # ── 修复 Bug 2：真实 VZA/SZA + 确保 MATCH_DT_MIN 存在 ──────────────
-    vza = agri_vza if agri_vza is not None else np.zeros_like(agri_lat)
-    sza = agri_sza if agri_sza is not None else np.zeros_like(agri_lat)
-    agri_geo_for_qc = {"VZA": vza, "SZA": sza}
-
-    # MATCH_DT_MIN：aggregate_modis_to_agri 已写入；若意外缺失则注入兜底值
-    if "MATCH_DT_MIN" not in labels or labels["MATCH_DT_MIN"] is None:
-        log.warning("MATCH_DT_MIN missing after aggregation; injecting file-level dt as fallback")
-        file_dt_vals = [m.get("_dt_min", np.nan) for m in modis_list]
-        fallback_dt = float(np.nanmin(file_dt_vals)) if file_dt_vals else fc.TIME_LOW_Q_MIN
-        labels["MATCH_DT_MIN"] = np.full(agri_lat.shape, fallback_dt, dtype=np.float32)
-
-    return apply_quality_filter(agri_geo_for_qc, labels)
+    ax.set_xlabel("MODIS CTH (m)", fontsize=7)
+    ax.set_ylabel("Predicted CTH (m)", fontsize=7)
+    ax.set_xlim(0, 20000)
+    ax.set_ylim(0, 20000)
+    fig.tight_layout()
+    return fig
 
 
-# ---------------------------------------------------------------------------
-# Validation
-# ---------------------------------------------------------------------------
+# ═════════════════════════════════════════════════════════════════════════════
+# Per-scene validation
+# ═════════════════════════════════════════════════════════════════════════════
 
-def validate_one_modis(
+def validate_one(
     npz_path: Path,
-    agri_file: Path,
     out_dir: Path,
     scene_id: str = "",
 ) -> dict:
-    """Run MODIS cross-validation for one scene."""
-    # Read model predictions
+    """Run MODIS 5km CTH cross-validation for one scene."""
+    # 1. Read model predictions + lat/lon from npz (same as original approach)
     data = np.load(npz_path)
-    clp_pred = data["CLP_pred"].astype(np.float32)
     cth_pred = data["CTH_pred"].astype(np.float32)
+    lat = data["latitude"].astype(np.float32)
+    lon = data["longitude"].astype(np.float32)
     data.close()
 
-    # Read AGRI for geo coordinates, time, and real VZA/SZA
-    agri = read_agri_scene(agri_file)
-    if agri is None:
-        raise RuntimeError(f"Failed to read AGRI scene {agri_file}")
-
-    agri_dt = parse_agri_datetime(agri_file.name)
+    # 2. Parse datetime from npz filename
+    agri_dt = parse_agri_datetime(npz_path.name)
     if agri_dt is None:
-        raise RuntimeError(f"Cannot parse datetime from {agri_file.name}")
+        return {"scene_id": scene_id, "status": "bad_datetime"}
 
-    # Find matching MODIS
+    # 3. Find matching MODIS files
     day_str = agri_dt.strftime("%Y%m%d")
     modis_day_dir = cfg.MODIS_ROOT / day_str
-    myd03_day_dir = cfg.MYD03_ROOT / day_str
+    if not modis_day_dir.is_dir():
+        return {"scene_id": scene_id, "status": "no_modis_dir"}
 
-    modis_files = []
-    if modis_day_dir.is_dir():
-        modis_files = sorted(
-            list(modis_day_dir.glob("MYD06*.hdf")) +
-            list(modis_day_dir.glob("MYD06*.HDF"))
-        )
-    myd03_files = []
-    if myd03_day_dir.is_dir():
-        myd03_files = sorted(
-            list(myd03_day_dir.glob("MYD03*.hdf")) +
-            list(myd03_day_dir.glob("MYD03*.HDF"))
-        )
-
+    modis_files = sorted(
+        list(modis_day_dir.glob("MYD06*.hdf")) +
+        list(modis_day_dir.glob("MYD06*.HDF"))
+    )
     matched = find_matching_modis(agri_dt, modis_files)
     if not matched:
         return {"scene_id": scene_id, "status": "no_matching_modis"}
 
-    # Spatial matching — pass real VZA/SZA directly
-    labels = match_modis_to_agri_grid(
-        agri["lat"], agri["lon"], agri_dt, matched, myd03_files,
-        agri_vza=agri["VZA"], agri_sza=agri["SZA"],
-    )
+    # 4. Match MODIS 5km CTH → AGRI grid
+    labels = match_modis_cth_to_agri(lat, lon, matched)
     if labels is None:
         return {"scene_id": scene_id, "status": "modis_matching_failed"}
 
-    clp_true = labels["CLP"]
     cth_true = labels["CTH"]
 
-    clp_true_f = clp_true.astype(np.float32)
-    clp_true_f[(clp_true_f < 0) | (clp_true_f >= 3)] = np.nan
+    # 5. Verify shape
+    if cth_pred.shape != cth_true.shape:
+        log.warning("Shape mismatch: pred=%s true=%s", cth_pred.shape, cth_true.shape)
+        return {"scene_id": scene_id, "status": "shape_mismatch"}
 
-    assert clp_pred.shape == clp_true_f.shape, (
-        f"Shape mismatch: pred={clp_pred.shape} true={clp_true_f.shape}"
-    )
-
-    from validate_agri_l2 import compute_metrics
-    metrics = compute_metrics(clp_pred, clp_true_f, cth_pred, cth_true)
+    # 6. Metrics
+    metrics = cth_metrics(cth_pred, cth_true)
     metrics["scene_id"] = scene_id
     metrics["status"] = "ok"
+    metrics["n_granules"] = labels.get("n_granules", 0)
 
-    # 新增诊断字段：MODIS 覆盖率和时间差
-    dt_arr = labels.get("MATCH_DT_MIN")
-    if dt_arr is not None:
-        valid_dt = dt_arr[np.isfinite(dt_arr)]
-        metrics["modis_dt_median_min"] = float(np.median(valid_dt)) if valid_dt.size else np.nan
-        metrics["modis_dt_max_min"] = float(np.max(valid_dt)) if valid_dt.size else np.nan
-    metrics["modis_clp_coverage_pct"] = 100.0 * float(np.isfinite(clp_true_f).mean())
-    metrics["modis_cth_coverage_pct"] = 100.0 * float(np.isfinite(cth_true).mean())
+    log.info("  %s  CTH R=%+.3f  RMSE=%.0f m  Bias=%+.0f m  n=%d",
+             scene_id, metrics["cth_r"], metrics["cth_rmse"],
+             metrics["cth_bias"], metrics["n_cth"])
 
-    log.info(
-        "  %s  vs MODIS  CLP OA=%5.2f%%  CTH R=%.4f  RMSE=%.0f m  "
-        "MODIS_clp_cover=%.1f%%  MODIS_cth_cover=%.1f%%  dt_med=%.1f min",
-        scene_id,
-        metrics["oa"],
-        metrics.get("cth_r", 0),
-        metrics["cth_rmse"],
-        metrics["modis_clp_coverage_pct"],
-        metrics["modis_cth_coverage_pct"],
-        metrics.get("modis_dt_median_min", float("nan")),
-    )
-
+    # 7. Scatter plot
     if metrics["n_cth"] > 10:
-        from validate_agri_l2 import _plot_cth_scatter
-        fig = _plot_cth_scatter(cth_pred, cth_true, metrics, f"{scene_id} vs MODIS")
-        out_dir.mkdir(parents=True, exist_ok=True)
+        fig = _plot_cth_scatter(cth_pred, cth_true, metrics, scene_id)
         stem = scene_id.replace(" ", "_")
-        save_figure(fig, f"{stem}_modis_cth_scatter")
+        save_figure(fig, f"{stem}_modis_cth_5km")
         plt.close(fig)
 
     return metrics
 
 
-# ---------------------------------------------------------------------------
+# ═════════════════════════════════════════════════════════════════════════════
 # CLI
-# ---------------------------------------------------------------------------
+# ═════════════════════════════════════════════════════════════════════════════
 
 def main():
     logging.basicConfig(
@@ -302,7 +502,9 @@ def main():
         format="%(asctime)s [%(levelname)s] %(name)s - %(message)s",
         stream=sys.stdout,
     )
-    parser = argparse.ArgumentParser(description="Cross-validate model against MODIS MYD06")
+    parser = argparse.ArgumentParser(
+        description="MODIS 5km CTH cross-validation (simplified)"
+    )
     parser.add_argument("--npz_dir", required=True)
     parser.add_argument("--day", required=True)
     parser.add_argument("--out_dir", default=str(OUT_DIR))
@@ -310,50 +512,48 @@ def main():
     args = parser.parse_args()
 
     npz_files = sorted(Path(args.npz_dir).rglob(f"*{args.day}*.npz"))
-    agri_day_dir = cfg.AGRI_ROOT / args.day
-    agri_files = {
-        f.stem.replace("_retrieval", ""): f
-        for f in agri_day_dir.glob("*_FDI-_*.HDF")
-    } if agri_day_dir.is_dir() else {}
+    if not npz_files:
+        log.error("No npz files found for day %s in %s", args.day, args.npz_dir)
+        sys.exit(1)
 
     out_dir = Path(args.out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
     all_metrics = []
+
     for npz_p in npz_files:
-        ts = _extract_timestamp_from_filename(npz_p.name)
+        ts = _extract_timestamp(npz_p.name)
         if ts is None:
             continue
         scene_id = f"{ts[:8]}_{ts[8:]}"
-        agri_match = None
-        for stem, agri_p in agri_files.items():
-            if ts in stem:
-                agri_match = agri_p
-                break
-        if agri_match is None:
-            log.warning("No AGRI FDI file for timestamp %s", ts)
-            continue
+
         try:
-            m = validate_one_modis(npz_p, agri_match, out_dir, scene_id)
+            m = validate_one(npz_p, out_dir, scene_id)
             all_metrics.append(m)
         except Exception as exc:
             log.error("Failed %s: %s", scene_id, exc)
 
+    # ── Summary ──
     if all_metrics and args.summary:
         import pandas as pd
-        rows = [{k: v for k, v in m.items() if k != "confusion_matrix"}
-                for m in all_metrics]
+        rows = [
+            {k: v for k, v in m.items() if not isinstance(v, np.ndarray)}
+            for m in all_metrics
+        ]
         df = pd.DataFrame(rows)
-        df.to_csv(out_dir / f"summary_modis_{args.day}.csv", index=False)
-        ok = [m for m in all_metrics if m.get("status") == "ok"]
+        df.to_csv(out_dir / f"summary_modis_cth_5km_{args.day}.csv", index=False)
+
+        ok = [m for m in all_metrics if m.get("status") == "ok" and m.get("n_cth", 0) > 10]
         if ok:
-            oa_vals = [m["oa"] for m in ok if m["oa"] > 0]
-            log.info(
-                "MODIS cross-val: n=%d  OA mean=%.2f%%  "
-                "MODIS_clp_coverage mean=%.1f%%  MODIS_cth_coverage mean=%.1f%%",
-                len(ok),
-                np.mean(oa_vals) if oa_vals else 0,
-                np.mean([m["modis_clp_coverage_pct"] for m in ok]),
-                np.mean([m["modis_cth_coverage_pct"] for m in ok]),
-            )
+            r_vals    = [m["cth_r"] for m in ok]
+            rmse_vals = [m["cth_rmse"] for m in ok]
+            bias_vals = [m["cth_bias"] for m in ok]
+            n_vals    = [m["n_cth"]  for m in ok]
+            log.info("=" * 60)
+            log.info("MODIS 5km CTH validation summary: %s (n=%d scenes)", args.day, len(ok))
+            log.info("  CTH R:     %+.4f ± %.4f", np.mean(r_vals), np.std(r_vals))
+            log.info("  CTH RMSE:  %.0f ± %.0f m", np.mean(rmse_vals), np.std(rmse_vals))
+            log.info("  CTH Bias:  %+.0f ± %.0f m", np.mean(bias_vals), np.std(bias_vals))
+            log.info("  Total matched pixels: %d", sum(n_vals))
 
 
 if __name__ == "__main__":
