@@ -10,8 +10,8 @@ Metrics reported
 
 Outputs saved to cfg.EVAL_OUTPUT_DIR:
   - metrics_summary.csv
-  - confusion_matrix.png
-  - scatter_CTH.png
+  - confusion_matrix.{svg,pdf,png}
+  - scatter_CTH.{svg,pdf,png}
 
 Usage (called by main.py or standalone):
     python test.py [--checkpoint <path>]
@@ -21,6 +21,7 @@ import argparse
 import logging
 from pathlib import Path
 
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -34,6 +35,32 @@ from model import build_model
 log = logging.getLogger(__name__)
 
 PHASE_NAMES = list(getattr(cfg, "CLP_CLASS_NAMES", ["Clear", "Water", "Ice"]))
+
+# ── Nature 风格全局设置 ──
+mpl.rcParams.update({
+    "font.family": "sans-serif",
+    "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"],
+    "svg.fonttype": "none",
+    "pdf.fonttype": 42,
+    "font.size": 7,
+    "axes.spines.right": False,
+    "axes.spines.top": False,
+    "axes.linewidth": 0.6,
+    "legend.frameon": False,
+    "xtick.major.width": 0.5,
+    "ytick.major.width": 0.5,
+    "xtick.major.size": 3,
+    "ytick.major.size": 3,
+})
+
+# 色板
+C_BLUE   = "#0F4D92"
+C_GREEN  = "#2E9E44"
+C_RED    = "#E53935"
+C_TEAL   = "#42949E"
+C_ORANGE = "#E8871D"
+C_NEUTRAL = "#767676"
+C_LIGHT  = "#CFCECE"
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -58,39 +85,94 @@ def _stats(true: np.ndarray, pred: np.ndarray, valid: np.ndarray):
 # Plotting
 # ─────────────────────────────────────────────────────────────────────────────
 
+def _save_pub(fig, base_path):
+    """导出 SVG + PDF + PNG"""
+    base = str(base_path).replace(".png", "")
+    fig.savefig(f"{base}.svg", bbox_inches="tight")
+    fig.savefig(f"{base}.pdf", bbox_inches="tight")
+    fig.savefig(f"{base}.png", dpi=300, bbox_inches="tight")
+    log.info("Saved → %s.{svg,pdf,png}", base)
+
+
+def _label_panel(ax, s):
+    ax.set_title(s, fontweight="bold", fontsize=8, loc="left", pad=4)
+
+
 def _plot_confusion_matrix(cm: np.ndarray, out_path: Path):
-    fig, ax = plt.subplots(figsize=(7, 6))
-    im = ax.imshow(cm, cmap="Blues")
-    ax.set_xticks(range(cfg.CLP_CLASSES))
-    ax.set_yticks(range(cfg.CLP_CLASSES))
-    ax.set_xticklabels(PHASE_NAMES, rotation=30, ha="right")
-    ax.set_yticklabels(PHASE_NAMES)
-    ax.set_xlabel("Predicted")
-    ax.set_ylabel("True")
-    ax.set_title("Cloud Phase Confusion Matrix")
-    for i in range(cfg.CLP_CLASSES):
-        for j in range(cfg.CLP_CLASSES):
-            ax.text(j, i, f"{cm[i,j]:,}", ha="center", va="center",
-                    color="white" if cm[i,j] > cm.max() * 0.5 else "black", fontsize=8)
-    fig.colorbar(im)
-    fig.tight_layout()
-    fig.savefig(out_path, dpi=150, bbox_inches="tight")
+    """混淆矩阵热力图 — 三分类 CLP"""
+    n_cls = cm.shape[0]
+    cm_pct = cm / cm.sum() * 100
+
+    fig, ax = plt.subplots(figsize=(90 / 25.4, 75 / 25.4))
+    ax.imshow(cm_pct, cmap="Blues", vmin=0, vmax=cm_pct.max() * 1.1, aspect="auto")
+
+    # 四象限类别标签 (对角=正确, 非对角=错误)
+    for i in range(n_cls):
+        for j in range(n_cls):
+            pct = cm_pct[i, j]
+            cnt = cm[i, j]
+            color = "white" if pct > cm_pct.max() * 0.5 else "black"
+            txt = f"{cnt:,}" if cnt < 1e6 else f"{cnt/1e6:.1f}M"
+            ax.text(j, i - 0.15, txt, ha="center", va="center",
+                    fontsize=7, color=color, fontweight="bold")
+            ax.text(j, i + 0.18, f"({pct:.1f}%)", ha="center", va="center",
+                    fontsize=5.5, color=color)
+            # 角标: correct / misclassified
+            tag, tag_c = ("Correct", C_GREEN) if i == j else ("Error", C_RED)
+            lbl_c = "white" if pct > cm_pct.max() * 0.5 else tag_c
+            ax.text(j, i + 0.42, tag, ha="center", va="center",
+                    fontsize=5, color=lbl_c, style="italic")
+
+    ax.set_xticks(range(n_cls))
+    ax.set_yticks(range(n_cls))
+    ax.set_xticklabels(PHASE_NAMES, fontsize=6)
+    ax.set_yticklabels(PHASE_NAMES, fontsize=6)
+    ax.set_xlabel("Predicted", fontsize=6.5)
+    ax.set_ylabel("True", fontsize=6.5)
+    ax.tick_params(length=0)
+
+    _label_panel(ax, "a")
+    _save_pub(fig, out_path)
     plt.close(fig)
-    log.info("Saved confusion matrix → %s", out_path)
 
 
-def _plot_scatter(true, pred, label, unit, out_path: Path):
-    fig, ax = plt.subplots(figsize=(5, 5))
-    ax.hexbin(true, pred, gridsize=60, cmap="plasma", mincnt=1)
+def _plot_scatter(true, pred, label, unit, metrics_dict, out_path: Path):
+    """CTH 密度散点图 + 1:1 线 + 指标标注"""
+    fig, ax = plt.subplots(figsize=(85 / 25.4, 80 / 25.4))
+
+    hb = ax.hexbin(true, pred, gridsize=70, cmap="YlOrBr", mincnt=1, bins="log")
     lim = [min(true.min(), pred.min()), max(true.max(), pred.max())]
-    ax.plot(lim, lim, "w--", lw=1)
-    ax.set_xlabel(f"MYD06 {label} ({unit})")
-    ax.set_ylabel(f"Predicted {label} ({unit})")
-    ax.set_title(label)
-    fig.tight_layout()
-    fig.savefig(out_path, dpi=150, bbox_inches="tight")
+    padding = (lim[1] - lim[0]) * 0.05
+    lim[0] -= padding
+    lim[1] += padding
+    ax.plot(lim, lim, "--", color="black", lw=0.6, alpha=0.4, zorder=2)
+
+    ax.set_xlim(lim)
+    ax.set_ylim(lim)
+    ax.set_xlabel(f"MYD06 {label} (m)", fontsize=6.5)
+    ax.set_ylabel(f"Predicted {label} (m)", fontsize=6.5)
+    ax.set_aspect("equal")
+
+    cb = fig.colorbar(hb, ax=ax, fraction=0.046, pad=0.04)
+    cb.set_label("Count", fontsize=5.5)
+    cb.ax.tick_params(labelsize=5)
+
+    # 标注指标
+    text = (
+        f"RMSE = {metrics_dict['rmse']:.1f} m\n"
+        f"MAE  = {metrics_dict['mae']:.1f} m\n"
+        f"Bias = {metrics_dict['bias']:+.1f} m\n"
+        f"R    = {metrics_dict['r']:.3f}\n"
+        f"N    = {metrics_dict['n']:,}"
+    )
+    ax.text(0.03, 0.97, text, transform=ax.transAxes,
+            fontsize=5, verticalalignment="top", fontfamily="monospace",
+            bbox=dict(boxstyle="round,pad=0.4", facecolor="white",
+                       edgecolor=C_LIGHT, lw=0.5, alpha=0.9))
+
+    _label_panel(ax, "b")
+    _save_pub(fig, out_path)
     plt.close(fig)
-    log.info("Saved scatter → %s", out_path)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -246,11 +328,11 @@ def evaluate(stats: NormStats, checkpoint: Optional[Path] = None):
         rows.append({"variable": f"CTH_{k}", "value": v, "unit": "m"})
     pd.DataFrame(rows).to_csv(cfg.EVAL_OUTPUT_DIR / "metrics_summary.csv", index=False)
 
-    _plot_confusion_matrix(cm, cfg.EVAL_OUTPUT_DIR / "confusion_matrix.png")
+    _plot_confusion_matrix(cm, cfg.EVAL_OUTPUT_DIR / "confusion_matrix")
 
     if v_cth.sum() > 100:
-        _plot_scatter(cth_true[v_cth], cth_pred[v_cth], "CTH", "m",
-                      cfg.EVAL_OUTPUT_DIR / "scatter_CTH.png")
+        _plot_scatter(cth_true[v_cth], cth_pred[v_cth], "CTH", "m", cth_m,
+                      cfg.EVAL_OUTPUT_DIR / "scatter_CTH")
 
     log.info("Evaluation complete – results in %s", cfg.EVAL_OUTPUT_DIR)
 

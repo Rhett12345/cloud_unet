@@ -1,56 +1,61 @@
 """
-AGRI L2 CLP vs MODIS 验证可视化 — 双方案合并为一张 2×2 图。
-
-用法:
-    python plot_validation_figures.py
-输出:
-    validation_report.{svg,pdf,tiff,png}
+AGRI L2 CLP vs MODIS 验证可视化 — 精致重绘版
 """
 
-import sys
 from pathlib import Path
 import numpy as np
-
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 from matplotlib.gridspec import GridSpec
+from matplotlib.colors import LinearSegmentedColormap
+import matplotlib.patheffects as pe
 
 # ═══════════════════════════════════════════════════════════════════════
-# Nature 风格设置
+# 全局样式
 # ═══════════════════════════════════════════════════════════════════════
 mpl.rcParams.update({
     "font.family": "sans-serif",
-    "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"],
+    "font.sans-serif": ["Helvetica Neue", "Arial", "DejaVu Sans"],
     "svg.fonttype": "none",
     "pdf.fonttype": 42,
     "font.size": 7,
     "axes.spines.right": False,
     "axes.spines.top": False,
-    "axes.linewidth": 0.6,
+    "axes.linewidth": 0.5,
+    "axes.edgecolor": "#AAAAAA",
     "legend.frameon": False,
     "xtick.major.width": 0.5,
     "ytick.major.width": 0.5,
-    "xtick.major.size": 3,
-    "ytick.major.size": 3,
+    "xtick.major.size": 2.5,
+    "ytick.major.size": 2.5,
+    "xtick.color": "#555555",
+    "ytick.color": "#555555",
+    "axes.labelcolor": "#333333",
+    "text.color": "#222222",
 })
 
-# ═══════════════════════════════════════════════════════════════════════
-# 统一字号：3 档
-# ═══════════════════════════════════════════════════════════════════════
-FS_MAIN  = 7    # 轴标签、tick、bar 数值
-FS_ANNOT = 6    # 次要标注
-FS_SMALL = 5.5  # colorbar 等最小级
+FS_MAIN  = 7
+FS_ANNOT = 6
+FS_SMALL = 5.5
 
 # ═══════════════════════════════════════════════════════════════════════
-# 色板
+# 配色方案
 # ═══════════════════════════════════════════════════════════════════════
-C_BLUE    = "#0F4D92"
-C_GREEN   = "#2E9E44"
-C_RED     = "#E53935"
-C_TEAL    = "#42949E"
-C_ORANGE  = "#E8871D"
-C_NEUTRAL = "#767676"
-C_LIGHT   = "#CFCECE"
+# 主色调：深海蓝系 + 珊瑚红点缀
+C_NAVY    = "#1A3A5C"
+C_BLUE    = "#2166AC"
+C_SKYBLUE = "#74B3CE"
+C_TEAL    = "#1B9E8A"
+C_GREEN   = "#2A9D60"
+C_LIME    = "#8BC34A"
+C_RED     = "#D62728"
+C_CORAL   = "#E07050"
+C_AMBER   = "#E8A020"
+C_PURPLE  = "#7B5EA7"
+C_NEUTRAL = "#888888"
+C_LIGHT   = "#E8EDF2"
+C_BG      = "#F7F9FC"  # 极浅蓝灰背景
 
 # ═══════════════════════════════════════════════════════════════════════
 # 数据
@@ -64,34 +69,10 @@ ALL_SCENES = [
     {"ts": "17:00", "l2_cf": 83.3, "cm_cf": 68.5, "oa": 56.3, "n": 393832},
     {"ts": "22:00", "l2_cf": 65.5, "cm_cf": 46.2, "oa": 41.2, "n": 209806},
 ]
+SCENES = ALL_SCENES
 
-# 场景筛选: "all" | "cm_gt_l2" (MODIS 云量 > L2 云量, 效果好) | 自定义 ts 列表 eg. ["03:00","06:00"]
-SCENE_FILTER = "all"
-
-def _apply_filter(scenes, rule):
-    if rule == "all":
-        return scenes
-    if rule == "cm_gt_l2":
-        return [s for s in scenes if s["cm_cf"] > s["l2_cf"]]
-    if isinstance(rule, (list, tuple)):
-        names = set(rule)
-        return [s for s in scenes if s["ts"] in names]
-    raise ValueError(f"Unknown SCENE_FILTER: {rule}")
-
-SCENES = _apply_filter(ALL_SCENES, SCENE_FILTER)
-
-# Pooled 混淆矩阵 (全场景)
-CM_ALL = np.array([[543008, 538363],
-                    [210412, 136200]])
-
-# 如果用筛选，提示 CM 也需对应更新
-if SCENE_FILTER != "all":
-    print(f"SCENE_FILTER={SCENE_FILTER!r}, using {len(SCENES)}/{len(ALL_SCENES)} scenes: "
-          f"{[s['ts'] for s in SCENES]}")
-    print("WARNING: CM still uses all-scene pooled values. "
-          "Update CM manually if per-scene confusion matrices are available.")
-
-CM = CM_ALL
+CM = np.array([[543008, 538363],
+               [210412, 136200]])
 
 tp, fp = CM[0, 0], CM[0, 1]
 fn, tn = CM[1, 0], CM[1, 1]
@@ -104,8 +85,7 @@ LOW_CF  = [s for s in SCENES if s["cm_cf"] <= 60]
 
 def _pooled_oa(ss):
     total_n = sum(s["n"] for s in ss)
-    if total_n == 0:
-        return 0.0
+    if total_n == 0: return 0.0
     return sum(int(s["n"] * s["oa"] / 100) for s in ss) / total_n * 100
 
 OA_HIGH = _pooled_oa(HIGH_CF)
@@ -113,12 +93,32 @@ OA_LOW  = _pooled_oa(LOW_CF)
 
 
 # ═══════════════════════════════════════════════════════════════════════
+# 辅助：渐变矩形填充（模拟渐变条）
+# ═══════════════════════════════════════════════════════════════════════
+def _gradient_hbar(ax, y, width, height, color_start, color_end, alpha=1.0):
+    """用多个小矩形模拟水平渐变条"""
+    n_steps = 200
+    x_vals = np.linspace(0, width, n_steps + 1)
+    r1, g1, b1 = mpl.colors.to_rgb(color_start)
+    r2, g2, b2 = mpl.colors.to_rgb(color_end)
+    for k in range(n_steps):
+        t = k / n_steps
+        c = (r1 + t*(r2-r1), g1 + t*(g2-g1), b1 + t*(b2-b1))
+        rect = mpatches.Rectangle((x_vals[k], y - height/2),
+                                   x_vals[k+1] - x_vals[k], height,
+                                   color=c, alpha=alpha, ec="none")
+        ax.add_patch(rect)
+
+
+# ═══════════════════════════════════════════════════════════════════════
 # 主图
 # ═══════════════════════════════════════════════════════════════════════
 def main():
-    fig = plt.figure(figsize=(170 / 25.4, 130 / 25.4))
-    gs = GridSpec(2, 2, wspace=0.38, hspace=0.48,
-                  left=0.09, right=0.97, top=0.93, bottom=0.08)
+    fig = plt.figure(figsize=(175/25.4, 135/25.4), facecolor="white")
+    fig.patch.set_facecolor("white")
+
+    gs = GridSpec(2, 2, wspace=0.35, hspace=0.42,
+                  left=0.12, right=0.93, top=0.91, bottom=0.11)
 
     ax_a = fig.add_subplot(gs[0, 0])
     _draw_cdr_far(ax_a)
@@ -137,9 +137,7 @@ def main():
     _label(ax_d, "d")
 
     out = Path(__file__).resolve().parent / "validation_report"
-    for fmt, kw in [("svg", {}), ("pdf", {}),
-                    # ("tiff", {"dpi": 600}),
-                    ("png", {"dpi": 300})]:
+    for fmt, kw in [("svg", {}), ("pdf", {}), ("png", {"dpi": 300})]:
         fig.savefig(f"{out}.{fmt}", bbox_inches="tight", **kw)
     print(f"Saved: {out}.{{svg,pdf,png}}")
     plt.close(fig)
@@ -149,190 +147,250 @@ def main():
 # 子图
 # ═══════════════════════════════════════════════════════════════════════
 def _label(ax, s):
-    ax.set_title(s, fontweight="bold", fontsize=8, loc="left", pad=4)
+    ax.text(-0.12, 1.06, s, transform=ax.transAxes,
+            fontweight="bold", fontsize=9, va="top",
+            color=C_NAVY,
+            # bbox=dict(boxstyle="round,pad=0.15", facecolor=C_LIGHT,
+            #           edgecolor="none", alpha=0.8)
+            )
 
 
 def _draw_cdr_far(ax):
-    """
-    a: CDR & FAR 水平条形图
-    修改：
-    - 删除右侧浮动描述文字，改用 y 轴副标签传达语义
-    - x 轴还原 [0, 110]，消除比例失真
-    - 删除 axvline(50) 参考线
-    - 统一字号
-    """
-    labels  = ["CDR", "FAR"]
-    vals    = [CDR, FAR]
-    colors  = [C_GREEN, C_RED]
-    # sublbls = ["MODIS Cloud → L2 Cloud", "MODIS Clear → L2 Cloud"]
+    """a: CDR & FAR — 渐变条 + 精致标注"""
+    ax.set_facecolor("white")
 
-    y = np.arange(len(labels))
-    bars = ax.barh(y, vals, color=colors, height=0.42, edgecolor="none")
-    ax.barh(y, [100 - v for v in vals], left=vals,
-            color=[C_LIGHT] * 2, height=0.42, edgecolor="none", alpha=0.45)
+    labels = ["CDR", "FAR"]
+    vals   = [CDR, FAR]
+    c_main = [C_TEAL, C_CORAL]
+    c_fade = ["#A8D8D0", "#F2C4B4"]
 
-    for bar, val in zip(bars, vals):
-        ax.text(val - 2, bar.get_y() + bar.get_height() / 2,
-                f"{val:.1f}%", ha="right", va="center",
-                fontsize=FS_MAIN, fontweight="bold", color="white")
+    y = np.array([0.72, 0.28])
+    bar_h = 0.22
 
-    ax.set_xlim(0, 110)
-    ax.set_yticks(y)
-    ax.set_yticklabels(labels, fontsize=FS_MAIN, fontweight="bold")
-    ax.set_xlabel("Rate (%)", fontsize=FS_MAIN)
-    ax.invert_yaxis()
+    for i, (lbl, val, cm, cf) in enumerate(zip(labels, vals, c_main, c_fade)):
+        # 背景轨道
+        bg = mpatches.FancyBboxPatch((0, y[i]-bar_h/2), 100, bar_h,
+                                     boxstyle="round,pad=0.005",
+                                     facecolor="#EEF1F5", edgecolor="none")
+        ax.add_patch(bg)
+        # 渐变填充条
+        _gradient_hbar(ax, y[i], val, bar_h, cm, cf, alpha=0.95)
+        # 描边
+        bdr = mpatches.FancyBboxPatch((0, y[i]-bar_h/2), val, bar_h,
+                                      boxstyle="round,pad=0.005",
+                                      facecolor="none",
+                                      edgecolor=cm, linewidth=0.5, alpha=0.6)
+        ax.add_patch(bdr)
 
-    # 用 y 轴副标签替代浮动文字
-    # ax2 = ax.secondary_yaxis("right")
-    # ax2.set_yticks(y)
-    # ax2.set_yticklabels(
-    #     sublbls,
-    #     fontsize=FS_ANNOT, color=C_NEUTRAL,
-    #                     style="italic")
-    # ax2.tick_params(length=0)
-    # for spine in ax2.spines.values():
-    #     spine.set_visible(False)
+        # 数值标签（条内右侧）
+        ax.text(val - 2, y[i], f"{val:.1f}%",
+                ha="right", va="center",
+                fontsize=FS_MAIN+0.5, fontweight="bold", color="white",
+                path_effects=[pe.withStroke(linewidth=1.5, foreground=cm)])
+
+        # 轴标签（左侧）
+        ax.text(-1.5, y[i], lbl,
+                ha="right", va="center", fontsize=FS_ANNOT,
+                color=C_NAVY, fontweight="bold",
+                multialignment="right")
+
+    # OA 文字摘要
+    ax.text(50, 0.04,
+            f"Overall Accuracy = {OA:.1f}%",
+            ha="center", va="bottom", fontsize=FS_ANNOT,
+            color=C_NEUTRAL, style="italic")
+
+    ax.set_xlim(-0.5, 106)
+    ax.set_ylim(0, 1)
+    ax.set_xlabel("Rate (%)", fontsize=FS_MAIN, labelpad=4)
+    ax.set_yticks([])
+    ax.spines["left"].set_visible(False)
+    for sp in ["top", "right"]:
+        ax.spines[sp].set_visible(False)
 
 
 def _draw_cm(ax):
-    """
-    b: 混淆矩阵热力图
-    修改：
-    - 删除脱出轴范围的角标文字（TP/FP/FN/TN）
-    - 改为在单元格内叠加小字说明，颜色与热力图协调
-    - tick 字号统一
-    """
+    """b: 混淆矩阵 — 精心配色 + 清晰单元格"""
     cm_pct = CM / CM.sum() * 100
-    ax.imshow(cm_pct, cmap="Blues", vmin=0, vmax=55, aspect="auto")
 
-    cell_labels = [["Hit (TP)", "False Alarm (FP)"],
-                   ["Miss (FN)", "Correct Rej. (TN)"]]
-    cell_colors = [[C_GREEN, C_RED],
-                   [C_ORANGE, C_TEAL]]
+    # 自定义 colormap：白→浅蓝→深蓝
+    cmap = LinearSegmentedColormap.from_list(
+        "naval", ["#FFFFFF", "#C8DDEF", "#2166AC"], N=256)
+
+    im = ax.imshow(cm_pct, cmap=cmap, vmin=0, vmax=60, aspect="auto")
+
+    # 单元格内容
+    cell_info = [
+        [("Hit", "TP", C_TEAL),    ("False Alarm", "FP", C_CORAL)],
+        [("Miss",  "FN", C_AMBER), ("Correct Rej.", "TN", C_BLUE)],
+    ]
 
     for i in range(2):
         for j in range(2):
-            text_color = "white" if cm_pct[i, j] > 30 else "black"
-            # 主数值
-            ax.text(j, i - 0.12, f"{CM[i, j]:,}",
+            bg_dark = cm_pct[i, j] > 28
+            txt_c = "white" if bg_dark else "#222222"
+            lbl, tag, accent = cell_info[i][j]
+
+            # 圆角标签徽章
+            badge_c = "rgba(255,255,255,0.25)" if bg_dark else accent
+            badge_fc = (1,1,1,0.25) if bg_dark else (*mpl.colors.to_rgb(accent), 0.12)
+
+            # 主数字
+            ax.text(j, i - 0.15, f"{CM[i,j]:,}",
                     ha="center", va="center",
-                    fontsize=FS_MAIN, color=text_color, fontweight="bold")
+                    fontsize=FS_MAIN+0.5, fontweight="bold", color=txt_c)
             # 百分比
-            ax.text(j, i + 0.18, f"({cm_pct[i, j]:.1f}%)",
+            ax.text(j, i + 0.15, f"({cm_pct[i,j]:.1f}%)",
                     ha="center", va="center",
-                    fontsize=FS_ANNOT, color=text_color)
-            # 单元格类型标签（替代原角标）
-            lbl_color = "white" if cm_pct[i, j] > 30 else cell_colors[i][j]
-            ax.text(j, i + 0.42, cell_labels[i][j],
+                    fontsize=FS_ANNOT, color=txt_c, alpha=0.85)
+            # 类型标签
+            lbl_c = "white" if bg_dark else accent
+            ax.text(j, i + 0.42, f"{lbl}  [{tag}]",
                     ha="center", va="center",
-                    fontsize=FS_SMALL, color=lbl_color, style="italic")
+                    fontsize=FS_SMALL, color=lbl_c,
+                    style="italic", alpha=0.9)
+
+    # Colorbar
+    cb = ax.figure.colorbar(im, ax=ax, fraction=0.042, pad=0.03,
+                             orientation="vertical")
+    cb.set_label("Proportion (%)", fontsize=FS_SMALL, labelpad=3)
+    cb.ax.tick_params(labelsize=FS_SMALL, length=2)
+    cb.outline.set_linewidth(0.4)
 
     ax.set_xticks([0, 1])
-    ax.set_xticklabels(["MODIS Cloud", "MODIS Clear"], fontsize=FS_ANNOT)
+    ax.set_xticklabels(["MODIS Cloud", "MODIS Clear"],
+                       fontsize=FS_ANNOT, color="#444")
     ax.set_yticks([0, 1])
-    ax.set_yticklabels(["L2 Cloud", "L2 Clear"], fontsize=FS_ANNOT)
+    ax.set_yticklabels(["L2 Cloud", "L2 Clear"],
+                       fontsize=FS_ANNOT, color="#444")
     ax.tick_params(length=0)
+    for sp in ax.spines.values():
+        sp.set_linewidth(0)
+
+    # 轴标题
+    # ax.set_xlabel("MODIS Reference", fontsize=FS_ANNOT, labelpad=6, color="#555")
+    # ax.set_ylabel("AGRI L2 Prediction", fontsize=FS_ANNOT, labelpad=6, color="#555")
 
 
 def _draw_stratified_oa(ax):
-    """
-    c: 分层 Pooled OA 柱状图
-    修改：
-    - 删除双向箭头与 Δ bbox，改用简洁文字 caption
-    - 删除 axhline(50) 参考线
-    - 统一字号
-    """
+    """c: 分层 OA 柱状图 — 渐变柱 + 精致标注"""
+    ax.set_facecolor("white")
+
     strata = [
-        ("Overall", OA, C_BLUE),
-        ("MODIS CF\n> 60%", OA_HIGH, C_TEAL),
-        ("MODIS CF\n≤ 60%", OA_LOW, C_ORANGE),
+        ("Overall", OA, C_BLUE, "#92BFE0"),
+        ("High CF\n(MODIS > 60%)", OA_HIGH, C_TEAL, "#90D4C8"),
+        ("Low CF\n(MODIS ≤ 60%)", OA_LOW, C_AMBER, "#F0CF90"),
     ]
-    x      = np.arange(len(strata))
-    vals   = [v for _, v, _ in strata]
-    colors = [c for _, _, c in strata]
-    labels = [l for l, _, _ in strata]
+    x = np.arange(len(strata))
 
-    bars = ax.bar(x, vals, color=colors, width=0.48, edgecolor="none")
+    # 水平参考网格（极淡）
+    for yg in [20, 40, 60, 80, 100]:
+        ax.axhline(yg, color="#EEEEEE", lw=0.6, zorder=0)
 
-    for bar, val in zip(bars, vals):
-        ax.text(bar.get_x() + bar.get_width() / 2, val + 1.2,
-                f"{val:.1f}%", ha="center", fontsize=FS_MAIN, fontweight="bold")
+    bar_w = 0.46
+    for xi, (lbl, val, c_top, c_bot) in enumerate(strata):
+        # 渐变柱（用 imshow 模拟）
+        n_grad = 100
+        grad_data = np.linspace(0, 1, n_grad).reshape(n_grad, 1)
+        grad_cmap = LinearSegmentedColormap.from_list("g", [c_top, c_bot])
+        ax.imshow(grad_data, cmap=grad_cmap, aspect="auto",
+                  extent=[xi - bar_w/2, xi + bar_w/2, 0, val],
+                  origin="lower", zorder=2, alpha=0.92)
+        # 边框
+        rect = mpatches.FancyBboxPatch(
+            (xi - bar_w/2, 0), bar_w, val,
+            boxstyle="square,pad=0",
+            facecolor="none", edgecolor=c_top, linewidth=0.7, zorder=3)
+        ax.add_patch(rect)
 
-    # 场景数标注
-    # ax.text(1, OA_HIGH + 6.5,
-    #         # f"n={len(HIGH_CF)}",
-    #         ha="center", fontsize=FS_ANNOT, color=C_TEAL)
-    # ax.text(2, OA_LOW + 6.5,
-    #         # f"n={len(LOW_CF)}",
-    #         ha="center", fontsize=FS_ANNOT, color=C_ORANGE)
+        # 数值标签
+        ax.text(xi, val + 2.2, f"{val:.1f}%",
+                ha="center", fontsize=FS_MAIN, fontweight="bold",
+                color=c_top, zorder=4)
 
-    ax.set_xticks(x)
-    ax.set_xticklabels(labels, fontsize=FS_ANNOT)
-    ax.set_ylabel("Pooled OA (%)", fontsize=FS_MAIN)
+        # x 轴标签
+        ax.text(xi, -8, lbl, ha="center", va="top",
+                fontsize=FS_ANNOT, color="#444",
+                multialignment="center")
+
+    # 高/低CF之差标注
+    delta = OA_HIGH - OA_LOW
+    ax.annotate("", xy=(2, OA_LOW), xytext=(2, OA_HIGH),
+                arrowprops=dict(arrowstyle="<->", color=C_NEUTRAL,
+                                lw=0.8, mutation_scale=6))
+    ax.text(2.28, (OA_HIGH + OA_LOW)/2, f"Δ {delta:.1f} pp",
+            va="center", fontsize=FS_SMALL, color=C_NEUTRAL, style="italic")
+
+    ax.set_xlim(-0.6, 2.9)
     ax.set_ylim(0, 108)
-
-    # 用 ax.text caption 替代箭头+bbox
-    # delta = OA_HIGH - OA_LOW
-    # ax.text(0.97, 0.04,
-    #         f"Δ(high – low CF) = {delta:.1f} pp",
-    #         transform=ax.transAxes, ha="right", va="bottom",
-    #         fontsize=FS_ANNOT, color=C_NEUTRAL, style="italic")
+    ax.set_xticks([])
+    ax.set_ylabel("Pooled OA (%)", fontsize=FS_MAIN, labelpad=4)
+    ax.spines["bottom"].set_visible(False)
+    ax.tick_params(axis="y", labelsize=FS_ANNOT)
 
 
 def _draw_cf_scatter(ax):
-    """
-    d: L2 vs MODIS 云量散点图
-    修改：
-    - 删除星号 annotate（改用描边区分 high/low CF）
-    - 删除斜向浮动文字 "L2 over/under-estimates"
-    - colorbar 用 fraction/pad 替代 shrink，比例更协调
-    - 统一字号
-    """
+    """d: 云量散点图 — 精致配色 + 尺寸图例"""
+    ax.set_facecolor("#FAFBFC")
+
     l2_cf = [s["l2_cf"] for s in SCENES]
     cm_cf = [s["cm_cf"] for s in SCENES]
-    oa_v  = [s["oa"] for s in SCENES]
-    sizes = [max(30, s["n"] / 8000) for s in SCENES]
+    oa_v  = [s["oa"]    for s in SCENES]
+    ns    = [s["n"]     for s in SCENES]
 
-    # high/low CF 用描边粗细区分
-    edge_lw = [1.2 if s["cm_cf"] > 60 else 0.4 for s in SCENES]
-    edge_c  = [C_TEAL if s["cm_cf"] > 60 else "white" for s in SCENES]
+    # 尺寸映射（更显眼）
+    sizes = [max(45, s["n"] / 6500) for s in SCENES]
+    edge_lw = [1.5 if s["cm_cf"] > 60 else 0.5 for s in SCENES]
+    edge_c  = [C_TEAL if s["cm_cf"] > 60 else "#BBBBBB" for s in SCENES]
 
     # y=x 参考线
-    ax.plot([35, 100], [35, 100], ls="--", color=C_LIGHT, lw=0.7, zorder=0)
+    ax.plot([38, 98], [38, 98], ls="--", color="#CCCCCC", lw=0.8,
+            zorder=0, label="1:1 line")
+    ax.fill_between([38, 98], [38, 98], [98, 98],
+                    color="#EBF4F0", alpha=0.35, zorder=0)
+    ax.fill_between([38, 98], [38, 38], [38, 98],
+                    color="#F5EBE8", alpha=0.35, zorder=0)
+    ax.text(90, 92, "L2 < MODIS", fontsize=FS_SMALL, color="#8BC4B0",
+            ha="center", style="italic", va="center")
+    ax.text(90, 48, "L2 > MODIS", fontsize=FS_SMALL, color="#E0A898",
+            ha="center", style="italic", va="center")
 
-    sc = ax.scatter(l2_cf, cm_cf, c=oa_v, cmap="RdYlGn", vmin=35, vmax=95,
-                    s=sizes, edgecolors=edge_c, linewidths=edge_lw, zorder=2)
+    # 自定义配色 cmap
+    cmap_sc = LinearSegmentedColormap.from_list(
+        "oa", ["#D62728", "#FF9500", "#FEDC5A", "#66C55C", "#1A7030"], N=256)
 
+    sc = ax.scatter(l2_cf, cm_cf, c=oa_v, cmap=cmap_sc, vmin=38, vmax=92,
+                    s=sizes, edgecolors=edge_c, linewidths=edge_lw,
+                    zorder=3, alpha=0.92)
+
+    # 时间标签
     # for s in SCENES:
     #     ax.annotate(s["ts"], (s["l2_cf"], s["cm_cf"]),
     #                 textcoords="offset points", xytext=(5, 3),
-    #                 fontsize=FS_ANNOT, color=C_NEUTRAL)
+    #                 fontsize=4.5, color="#666666")
 
-    ax.set_xlabel("AGRI L2 Cloud Fraction (%)", fontsize=FS_MAIN)
-    ax.set_ylabel("MODIS CM Cloud Fraction (%)", fontsize=FS_MAIN)
+    # colorbar
+    cb = ax.figure.colorbar(sc, ax=ax, fraction=0.046, pad=0.04)
+    cb.set_label("OA (%)", fontsize=FS_ANNOT, labelpad=3)
+    cb.ax.tick_params(labelsize=FS_SMALL, length=2)
+    cb.outline.set_linewidth(0.4)
+
+    # 尺寸图例（代表像素数）
+    # for n_ref, lbl in [(100000, "100k"), (400000, "400k")]:
+    #     s_ref = max(45, n_ref / 6500)
+    #     ax.scatter([], [], s=s_ref, c="#AAAAAA", alpha=0.7,
+    #                edgecolors="#888", linewidths=0.5, label=f"n = {lbl}")
+    # ax.legend(fontsize=FS_SMALL, loc="lower right",
+    #           handletextpad=0.4, labelspacing=0.5,
+    #           borderpad=0.6, frameon=True,
+    #           framealpha=0.85, edgecolor="#DDDDDD", fancybox=True)
+
+    ax.set_xlabel("AGRI L2 Cloud Fraction (%)", fontsize=FS_MAIN, labelpad=4)
+    ax.set_ylabel("MODIS CM Cloud Fraction (%)", fontsize=FS_MAIN, labelpad=4)
     ax.set_xlim(40, 96)
     ax.set_ylim(40, 96)
     ax.set_aspect("equal")
-
-    # colorbar：fraction/pad 方案，避免 shrink 导致比例不协调
-    cb = ax.figure.colorbar(sc, ax=ax, fraction=0.046, pad=0.04)
-    cb.set_label("OA (%)", fontsize=FS_ANNOT)
-    cb.ax.tick_params(labelsize=FS_SMALL)
-
-    # 图例：描边说明 high/low CF
-    # from matplotlib.lines import Line2D
-    # legend_elements = [
-    #     Line2D([0], [0], marker="o", color="none",
-    #            markerfacecolor=C_NEUTRAL, markeredgecolor=C_TEAL,
-    #            markeredgewidth=1.2, markersize=5,
-    #            label="MODIS CF > 60%"),
-    #     Line2D([0], [0], marker="o", color="none",
-    #            markerfacecolor=C_NEUTRAL, markeredgecolor="white",
-    #            markeredgewidth=0.4, markersize=5,
-    #            label="MODIS CF ≤ 60%"),
-    # ]
-    # ax.legend(handles=legend_elements, fontsize=FS_ANNOT,
-    #           loc="lower right", handletextpad=0.5, borderpad=0.6)
+    ax.tick_params(labelsize=FS_ANNOT)
 
 
 if __name__ == "__main__":
