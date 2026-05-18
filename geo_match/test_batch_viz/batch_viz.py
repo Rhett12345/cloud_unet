@@ -289,6 +289,91 @@ def read_fdi_rgb(fdi_path: str,
 
 
 # ═══════════════════════════════════════════════════════════════════
+# AGRI 像素 → 规则经纬度网格重采样（参照 agri_viz.py pipeline）
+# ═══════════════════════════════════════════════════════════════════
+
+def _agri_pixels_to_scatter(data: np.ndarray,
+                            subsample: int = 4
+                            ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """AGRI 2748×2748 像素 → (lon, lat, val) 散点，NaN 已剔除。"""
+    sl = slice(None, None, subsample)
+    rows = np.arange(data.shape[0])[sl]
+    cols = np.arange(data.shape[1])[sl]
+    c2d, r2d = np.meshgrid(cols, rows)
+    lon, lat = linecolumn_to_lonlat(r2d, c2d, resolution=4000)
+    d_sub = data[sl, :][:, sl]
+    valid = np.isfinite(lon) & np.isfinite(lat) & np.isfinite(d_sub)
+    return lon[valid], lat[valid], d_sub[valid]
+
+
+def _scatter_to_grid(lon_pts: np.ndarray, lat_pts: np.ndarray,
+                     val_pts: np.ndarray,
+                     lon_range: Tuple[float, float],
+                     lat_range: Tuple[float, float],
+                     nx: int = 600, ny: int = 600,
+                     method: str = 'linear'
+                     ) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """散点 (lon, lat, val) → griddata 插值到规则网格。"""
+    lon_grid = np.linspace(lon_range[0], lon_range[1], nx)
+    lat_grid = np.linspace(lat_range[0], lat_range[1], ny)
+    lon2d, lat2d = np.meshgrid(lon_grid, lat_grid)
+    val2d = griddata(
+        np.column_stack([lon_pts, lat_pts]), val_pts,
+        (lon2d, lat2d), method=method,
+    )
+    return lon2d, lat2d, val2d
+
+
+def _agri_rgb_resample(
+    r: np.ndarray, g: np.ndarray, b: np.ndarray,
+    subsample: int = 4, nx: int = 600, ny: int = 600,
+    extent: Optional[List[float]] = None,
+) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray, List[float]]:
+    """
+    AGRI 三通道 2748×2748 数据 → 规则 PlateCarree 网格 RGB。
+
+    Returns
+    -------
+    lon2d, lat2d : 规则网格坐标
+    R, G, B      : 规则网格上的三通道值，shape=(ny, nx)，[0,1]
+    extent       : 实际使用的 [lon_min, lon_max, lat_min, lat_max]
+    """
+    print(f"    重采样 AGRI → 规则网格 (subsample={subsample}, {nx}×{ny})...")
+    lon_r, lat_r, val_r = _agri_pixels_to_scatter(r, subsample)
+    lon_g, lat_g, val_g = _agri_pixels_to_scatter(g, subsample)
+    lon_b, lat_b, val_b = _agri_pixels_to_scatter(b, subsample)
+
+    # ★ 从 linecolumn_to_lonlat 散点计算 Earth disk 范围（不是模型预计算的全球范围）
+    if extent is None:
+        extent = [float(np.nanmin(lon_r)), float(np.nanmax(lon_r)),
+                  float(np.nanmin(lat_r)), float(np.nanmax(lat_r))]
+    print(f"    Earth disk extent: lon=[{extent[0]:.2f}, {extent[1]:.2f}]  "
+          f"lat=[{extent[2]:.2f}, {extent[3]:.2f}]")
+    lon_range = (extent[0], extent[1])
+    lat_range = (extent[2], extent[3])
+
+    # 裁剪到 extent
+    def _clip(lon, lat, val):
+        mask = ((lon >= lon_range[0]) & (lon <= lon_range[1]) &
+                (lat >= lat_range[0]) & (lat <= lat_range[1]))
+        return lon[mask], lat[mask], val[mask]
+
+    lon_r, lat_r, val_r = _clip(lon_r, lat_r, val_r)
+    lon_g, lat_g, val_g = _clip(lon_g, lat_g, val_g)
+    lon_b, lat_b, val_b = _clip(lon_b, lat_b, val_b)
+
+    _, _, R = _scatter_to_grid(lon_r, lat_r, val_r, lon_range, lat_range, nx, ny)
+    _, _, G = _scatter_to_grid(lon_g, lat_g, val_g, lon_range, lat_range, nx, ny)
+    lon2d, lat2d, B = _scatter_to_grid(lon_b, lat_b, val_b, lon_range, lat_range, nx, ny)
+
+    R = np.nan_to_num(R, nan=0.0).clip(0, 1)
+    G = np.nan_to_num(G, nan=0.0).clip(0, 1)
+    B = np.nan_to_num(B, nan=0.0).clip(0, 1)
+
+    return lon2d, lat2d, R, G, B, list(extent)
+
+
+# ═══════════════════════════════════════════════════════════════════
 # MODIS 落入 AGRI 圆盘检测
 # ═══════════════════════════════════════════════════════════════════
 
@@ -846,48 +931,32 @@ def plot_rgb_with_modis(rgb_r: np.ndarray, rgb_g: np.ndarray, rgb_b: np.ndarray,
     """
     AGRI FDI RGB 真彩色图 + MODIS 条带范围叠加。
 
-    在 AGRI 全圆盘 RGB 底图上，用红色半透明填充标示 MODIS 条带覆盖范围。
-
-    Parameters
-    ----------
-    rgb_r, rgb_g, rgb_b : (2748, 2748) 三通道 float32，值域 [0, 1]
-    agri_lon, agri_lat  : (2748, 2748) AGRI 全圆盘经纬度
-    modis_lon, modis_lat: (406, 270) MODIS 5km 经纬度
+    先将 AGRI 像素重采样到规则 PlateCarree 网格（参照 agri_viz.py pipeline），
+    确保 RGB 与 cartopy 底图陆地对齐。再用红色半透明标示 MODIS 条带范围。
     """
-    rgb = np.stack([
-        np.nan_to_num(rgb_r, nan=0.0),
-        np.nan_to_num(rgb_g, nan=0.0),
-        np.nan_to_num(rgb_b, nan=0.0),
-    ], axis=-1)
-
-    # 全圆盘经纬度范围
-    agri_valid = np.isfinite(agri_lon) & np.isfinite(agri_lat)
-    lon_min = float(np.nanmin(agri_lon[agri_valid]))
-    lon_max = float(np.nanmax(agri_lon[agri_valid]))
-    lat_min = float(np.nanmin(agri_lat[agri_valid]))
-    lat_max = float(np.nanmax(agri_lat[agri_valid]))
-    extent = [lon_min, lon_max, lat_min, lat_max]
+    # ★ 关键：重采样到规则经纬度网格（全盘，降采样加速）
+    _, _, R, G, B, extent = _agri_rgb_resample(
+        rgb_r, rgb_g, rgb_b, subsample=4, nx=700, ny=700)
+    rgb = np.stack([R, G, B], axis=-1)
 
     fig = plt.figure(figsize=(14, 10), dpi=110)
     ax = _make_ax(fig, 111, extent, map_res=MAP_RES,
                   land_color='none', ocean_color='none')
 
-    # RGB 底图：用 imshow 在 PlateCarree 投影
+    # 重采样后的 RGB 在规则网格上，imshow 可与海岸线对齐
     ax.imshow(rgb,
               origin='lower',
-              extent=[lon_min, lon_max, lat_min, lat_max],
+              extent=extent,
               transform=_PC,
               interpolation='bilinear',
               zorder=1, alpha=0.95)
 
-    # MODIS 条带范围：画有效像素的凸包轮廓
+    # MODIS 条带凸包
     m_valid = np.isfinite(modis_lon) & np.isfinite(modis_lat)
     if m_valid.any():
-        mlon = modis_lon[m_valid]
-        mlat = modis_lat[m_valid]
-        # 降采样边缘点用于绘制轮廓
         from scipy.spatial import ConvexHull
-        pts = np.column_stack([mlon.ravel()[::5], mlat.ravel()[::5]])
+        pts = np.column_stack([modis_lon[m_valid].ravel()[::5],
+                               modis_lat[m_valid].ravel()[::5]])
         pts = pts[np.isfinite(pts).all(axis=1)]
         if len(pts) > 3:
             try:
@@ -901,7 +970,7 @@ def plot_rgb_with_modis(rgb_r: np.ndarray, rgb_g: np.ndarray, rgb_b: np.ndarray,
             except Exception:
                 pass
 
-    # 重绘海岸线使其在 MODIS 覆盖层之上可见
+    # 海岸线 / 国界在 MODIS 层之上
     ax.add_feature(cfeature.COASTLINE.with_scale(MAP_RES),
                    linewidth=0.7, edgecolor='black', zorder=11)
     ax.add_feature(cfeature.BORDERS.with_scale(MAP_RES),
@@ -912,13 +981,94 @@ def plot_rgb_with_modis(rgb_r: np.ndarray, rgb_g: np.ndarray, rgb_b: np.ndarray,
                  fontsize=12, fontweight='bold', pad=10)
 
     plt.tight_layout()
-    for fmt in ['png',
-                # 'svg',
-                # 'pdf'
-                ]:
+    for fmt in ['png']:
         save_path = save_dir / f"rgb_modis_overlap.{fmt}"
         fig.savefig(str(save_path), bbox_inches='tight', dpi=150)
-    print(f"  [saved] rgb_modis_overlap.{{png,svg,pdf}}")
+    print(f"  [saved] rgb_modis_overlap.{{png}}")
+    plt.close(fig)
+
+
+def plot_rgb_clp_overlap(rgb_r: np.ndarray, rgb_g: np.ndarray, rgb_b: np.ndarray,
+                         agri_lon: np.ndarray, agri_lat: np.ndarray,
+                         modis_lon: np.ndarray, modis_lat: np.ndarray,
+                         modis_clp: np.ndarray,
+                         time_diff_min: float, scene_id: str,
+                         save_dir: Path):
+    """
+    重合区域 RGB + MODIS CLP 并排对比。
+
+    左侧：AGRI RGB 重采样到规则网格后裁剪到 MODIS 条带范围
+    右侧：MODIS CLP 相态分类（同区域）
+    """
+    # MODIS 条带有效范围
+    m_valid = np.isfinite(modis_lon) & np.isfinite(modis_lat)
+    if not m_valid.any():
+        print("  [warn] MODIS 无有效坐标，跳过 RGB+CLP 重合图")
+        return
+
+    pad = 0.5
+    m_lon_min = float(np.nanmin(modis_lon[m_valid])) - pad
+    m_lon_max = float(np.nanmax(modis_lon[m_valid])) + pad
+    m_lat_min = float(np.nanmin(modis_lat[m_valid])) - pad
+    m_lat_max = float(np.nanmax(modis_lat[m_valid])) + pad
+    overlap_extent = [m_lon_min, m_lon_max, m_lat_min, m_lat_max]
+
+    # ★ 重采样：指定 extent 为 MODIS 范围，减少无效区域插值
+    nx = max(400, int((m_lon_max - m_lon_min) / 0.04))
+    ny = max(300, int((m_lat_max - m_lat_min) / 0.04))
+    _, _, R, G, B, _ = _agri_rgb_resample(
+        rgb_r, rgb_g, rgb_b,
+        subsample=2, nx=nx, ny=ny, extent=overlap_extent)
+    rgb = np.stack([R, G, B], axis=-1)
+
+    # ── MODIS CLP → 简化 3 类 ──
+    clp_simple = np.full_like(modis_clp, np.nan, dtype=np.float32)
+    clp_simple[modis_clp == 0] = 0
+    clp_simple[modis_clp == 1] = 1
+    clp_simple[modis_clp == 2] = 2
+    clp_simple[modis_clp == 3] = 2
+
+    phase_colors = {0: '#A8D5BA', 1: '#5B9BD5', 2: '#C4A0E8'}
+    phase_labels = {0: 'Clear', 1: 'Water', 2: 'Ice/Mixed'}
+    cmap_phase = mcolors.ListedColormap(
+        ['#A8D5BA', '#5B9BD5', '#C4A0E8'])
+    norm_phase = mcolors.BoundaryNorm([0, 1, 2, 3], 3)
+
+    fig = plt.figure(figsize=(18, 8), dpi=110)
+
+    # ── 左：重采样后的 RGB（已在 overlap_extent 范围内）──
+    ax1 = _make_ax(fig, 121, overlap_extent, map_res=MAP_RES,
+                   land_color='none', ocean_color='none')
+    ax1.imshow(rgb,
+               origin='lower',
+               extent=overlap_extent,
+               transform=_PC,
+               interpolation='bilinear',
+               zorder=1, alpha=0.95)
+    ax1.set_title(f"AGRI RGB — overlap region\n{scene_id}  Δt={time_diff_min:.1f}min",
+                  fontsize=11, fontweight='bold')
+
+    # ── 右：MODIS CLP ──
+    ax2 = _make_ax(fig, 122, overlap_extent, map_res=MAP_RES)
+    ax2.pcolormesh(modis_lon, modis_lat, clp_simple,
+                   cmap=cmap_phase, norm=norm_phase,
+                   transform=_PC, shading='auto', zorder=1, alpha=0.92)
+    ax2.set_title("MODIS MYD06 CLP (IR)",
+                  fontsize=11, fontweight='bold')
+
+    patches = [mpatches.Patch(color=phase_colors[k], label=phase_labels[k])
+               for k in [0, 1, 2]]
+    fig.legend(handles=patches, loc='lower center', ncol=3,
+               fontsize=10, bbox_to_anchor=(0.5, -0.05))
+
+    fig.suptitle(f"RGB vs MODIS CLP — overlap region  ({scene_id})",
+                 fontsize=14, fontweight='bold', y=1.02)
+    plt.tight_layout()
+
+    for fmt in ['png']:
+        save_path = save_dir / f"rgb_clp_overlap.{fmt}"
+        fig.savefig(str(save_path), bbox_inches='tight', dpi=150)
+    print(f"  [saved] rgb_clp_overlap.{{png}}")
     plt.close(fig)
 
 
@@ -984,7 +1134,7 @@ def process_one_scene(
     except Exception as e:
         print(f"  [warn] 总览图失败: {e}")
 
-    # ── 3.5 RGB + MODIS 叠加 ──
+    # ── 3.5 RGB + MODIS 叠加 （全盘 + 重合区域） ──
     print("--- RGB + MODIS 叠加 ---")
     try:
         fdi_name = Path(retrieval_path).name.replace('_retrieval.npz', '.HDF')
@@ -995,6 +1145,11 @@ def process_one_scene(
                                 agri_lon, agri_lat,
                                 modis['lon'], modis['lat'],
                                 time_diff_min, scene_id, save_dir)
+            plot_rgb_clp_overlap(r, g, b,
+                                 agri_lon, agri_lat,
+                                 modis['lon'], modis['lat'],
+                                 modis['clp'],
+                                 time_diff_min, scene_id, save_dir)
         else:
             print(f"  [warn] FDI 文件不存在: {fdi_name}")
     except Exception as e:
