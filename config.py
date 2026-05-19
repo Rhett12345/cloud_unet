@@ -85,10 +85,11 @@ RETRIEVAL_DIR = ROOT / "retrieval"
 # AGRI FDI – selected channel indices to use (0-based in the sorted list)
 # 当前输入为：ch2(0.65µm) + ch5(1.61µm) + ch8-14(IR)
 # 保留变量名 AGRI_BT_CHANNEL_INDICES 以兼容现有训练/推理代码。
-AGRI_BT_CHANNEL_INDICES = [
-    # 1, 4,
-    8, 9, 10, 11, 12, 13
-]   # ch2(0.65µm) + ch5(1.61µm) + ch9-14(IR) = 8 channels
+# FY-4A: 14通道，索引 8-13 = Ch9(6.25)-Ch14(13.5)
+# FY-4B: 15通道，B11(7.42)无A星对应 → 跳过B11，索引 [8,9,11,12,13,14]
+_AGRI_BT_CHANNEL_INDICES_A = [8, 9, 10, 11, 12, 13]
+_AGRI_BT_CHANNEL_INDICES_B = [8, 9, 11, 12, 13, 14]
+AGRI_BT_CHANNEL_INDICES = _AGRI_BT_CHANNEL_INDICES_A  # 默认A星，运行时自动检测
 
 # AGRI pixel size in degrees (approx) for spatial matching
 AGRI_PIXEL_DEG = 0.04

@@ -33,24 +33,72 @@ from scipy.interpolate import griddata
 from scipy.spatial import cKDTree
 
 # ─────────────────────────────────────────────────────────────────
+# ═══════════════════════════════════════════════════════════════════
+# 卫星配置
+# ═══════════════════════════════════════════════════════════════════
+# 切换卫星：改 SAT 变量即可。'A' = FY-4A (104.7°E), 'B' = FY-4B (133.0°E)
+SAT = 'A'
+# SAT = 'B'
+
+# FY-4A / FY-4B 共用地球 + 轨道参数
+_EA    = 6378.137
+_EB    = 6356.7523
+_H     = 42164.0
+
+_SAT_INFO = {
+    'A': {
+        'name': 'FY4A',
+        'lam_d': 104.7,
+        'disk_id': '1047E',
+        'fdi_structure': 'flat',       # NOMChannelXX 在根路径
+        'num_channels': 14,
+    },
+    'B': {
+        'name': 'FY4B',
+        'lam_d': 133.0,
+        'disk_id': '1330E',
+        'fdi_structure': 'nested',     # Data/NOMChannelXX, Calibration/CALChannelXX
+        'num_channels': 15,
+    },
+}
+
+# ─────────────────────────────────────────────────────────────────
 # 路径配置
 # ─────────────────────────────────────────────────────────────────
-L2_CTH_DIR = Path("/data/Data_yuq/FY4A_L2/CTH/20190505")
-L2_CLP_DIR = Path("/data/Data_yuq/FY4A_L2/CLP/20190505")
-MYD06_DIR  = Path("/data/Data_yuq/MYD06/20190505")
-MYD03_DIR  = Path("/data/Data_yuq/MYD03/20190505")
-RETRIEVAL_DIR = Path("/data/Data_yuq/unet_workdir/retrieval")
-FDI_DIR = Path("/data/Data_yuq/FY4A/20190505")
+# 按卫星自动选择路径
+_DAY_A = "20190505"
+_DAY_B = "20230501"
+
+if SAT == 'A':
+    L2_CTH_DIR = Path(f"/data/Data_yuq/FY4A_L2/CTH/{_DAY_A}")
+    L2_CLP_DIR = Path(f"/data/Data_yuq/FY4A_L2/CLP/{_DAY_A}")
+    MYD06_DIR  = Path(f"/data/Data_yuq/MYD06/{_DAY_A}")
+    MYD03_DIR  = Path(f"/data/Data_yuq/MYD03/{_DAY_A}")
+    RETRIEVAL_DIR = Path("/data/Data_yuq/unet_workdir/retrieval")
+    FDI_DIR = Path(f"/data/Data_yuq/FY4A/{_DAY_A}")
+    DAY = _DAY_A
+else:
+    L2_CTH_DIR = Path(f"/data/Data_yuq/FY4B/CTH/{_DAY_B}")
+    L2_CLP_DIR = Path(f"/data/Data_yuq/FY4B/CLP/{_DAY_B}")
+    MYD06_DIR  = Path(f"/data/Data_yuq/MYD2023/MYD06_L2/{_DAY_B}")
+    MYD03_DIR  = Path(f"/data/Data_yuq/MYD2023/MYD03/{_DAY_B}")
+    RETRIEVAL_DIR = Path("/data/Data_yuq/unet_workdir/retrieval")
+    FDI_DIR = Path(f"/data/Data_yuq/FY4B/FDI/{_DAY_B}")
+    DAY = _DAY_B
+
 OUTPUT_DIR = Path(__file__).resolve().parent / "output"
 
-DAY = "20190505"
-TIME_MAX_MIN = 5.0          # 最大时间差（分钟）
-GRID_RES_DEG = 0.05         # ≈ 5 km，与 MODIS 5km 匹配
-MIN_DISK_DIST_KM = 10.0     # MODIS 边缘到 AGRI 有效像元最远距离
+TIME_MAX_MIN = 5.0
+GRID_RES_DEG = 0.05
+MIN_DISK_DIST_KM = 10.0
 MAP_RES = "50m"
 
+# 提取当前卫星参数
+_LAM_D = _SAT_INFO[SAT]['lam_d']
+_FDI_STRUCTURE = _SAT_INFO[SAT]['fdi_structure']
+
 # ─────────────────────────────────────────────────────────────────
-# FY4A 坐标转换常量
+# FY4A/B 坐标转换常量（4000m 两星相同）
 # ─────────────────────────────────────────────────────────────────
 _RES_PARAMS = {
     500:   dict(COFF=10991.5, CFAC=81865099, LOFF=10991.5, LFAC=81865099),
@@ -58,10 +106,6 @@ _RES_PARAMS = {
     2000:  dict(COFF=2747.5,  CFAC=20466274, LOFF=2747.5,  LFAC=20466274),
     4000:  dict(COFF=1373.5,  CFAC=10233137, LOFF=1373.5,  LFAC=10233137),
 }
-_EA    = 6378.137
-_EB    = 6356.7523
-_H     = 42164.0
-_LAM_D = 104.7
 
 # cartopy 投影（延迟导入避免无 cartopy 时崩溃）
 try:
@@ -250,17 +294,20 @@ def read_fdi_rgb(fdi_path: str,
     读取 FDI L1 HDF5 文件的三通道，做定标 + 百分位拉伸 + gamma 校正，
     返回 (R, G, B) 三通道 float32 数组，shape 均为 (2748, 2748)，值域 [0, 1]。
 
-    Parameters
-    ----------
-    fdi_path   : FDI HDF5 文件路径
-    r_ch/g_ch/b_ch : R/G/B 通道号 (默认 2/3/1 = 近似真彩色)
-    gamma      : gamma 校正系数 (>1 增亮暗部)
-    percentile : 拉伸百分位 (lo, hi)
+    兼容 FY-4A (flat 结构) 与 FY-4B (nested 结构: Data/NOMChannelXX,
+    Calibration/CALChannelXX)。
     """
+    nested = (_FDI_STRUCTURE == 'nested')
+
     def _load_channel(ch: int) -> np.ndarray:
-        ch_name = f"NOMChannel{ch:02d}"
-        cal_name = f"CALChannel{ch:02d}"
         with h5py.File(fdi_path, 'r') as f:
+            if nested:
+                ch_name = f"Data/NOMChannel{ch:02d}"
+                cal_name = f"Calibration/CALChannel{ch:02d}"
+            else:
+                ch_name = f"NOMChannel{ch:02d}"
+                cal_name = f"CALChannel{ch:02d}"
+
             raw = f[ch_name][:]
             fill = int(f[ch_name].attrs.get('FillValue', [65535])[0])
             if cal_name in f:
@@ -272,12 +319,11 @@ def read_fdi_rgb(fdi_path: str,
         data[raw == fill] = np.nan
         return data
 
-    print(f"  [read] FDI RGB: {Path(fdi_path).name}")
+    print(f"  [read] FDI RGB: {Path(fdi_path).name}  (sat={SAT})")
     data_r = _load_channel(r_ch)
     data_g = _load_channel(g_ch)
     data_b = _load_channel(b_ch)
 
-    # 逐通道百分位拉伸 + gamma
     for data in [data_r, data_g, data_b]:
         valid = data[np.isfinite(data)]
         if valid.size == 0:
@@ -431,12 +477,16 @@ def extract_fy4a_time(filename: str) -> datetime:
     raise ValueError(f"Cannot parse time from {filename}")
 
 def extract_modis_time(filename: str) -> datetime:
-    """从 MODIS 文件名中提取时间 (HHMM UTC)。"""
+    """从 MODIS 文件名中提取时间。A{year}{doy}.{HHMM}. → datetime"""
     name = Path(filename).name
-    m = re.search(r'A\d{7}\.(\d{4})\.', name)
+    m = re.search(r'A(\d{4})(\d{3})\.(\d{4})\.', name)
     if m:
-        hhmm = m.group(1)
-        return datetime.strptime(f"20190505{hhmm}00", '%Y%m%d%H%M%S')
+        year = int(m.group(1))
+        doy  = int(m.group(2))
+        hhmm = m.group(3)
+        from datetime import timedelta
+        dt = datetime(year, 1, 1) + timedelta(days=doy - 1)
+        return datetime.strptime(f"{dt.strftime('%Y%m%d')}{hhmm}00", '%Y%m%d%H%M%S')
     raise ValueError(f"Cannot parse time from {filename}")
 
 def extract_retrieval_time(filename: str) -> datetime:
@@ -1082,34 +1132,33 @@ def process_one_scene(
     l2_clp_path: str,
     myd06_path: str,
     myd03_path: str,
-    retrieval_path: str,
+    retrieval_path: Optional[str],
     l2_time: datetime,
     modis_time: datetime,
 ) -> bool:
-    """处理单个匹配场景，生成所有对比图。"""
+    """处理单个匹配场景，生成所有对比图。retrieval_path=None 时跳过模型对比。"""
+    sat_name = _SAT_INFO[SAT]['name']
     time_diff_min = abs((l2_time - modis_time).total_seconds()) / 60.0
-    # save_dir = OUTPUT_DIR / scene_id
-    # save_dir.mkdir(parents=True, exist_ok=True)
 
     print(f"\n{'='*60}")
-    print(f"Scene: {scene_id}  Δt={time_diff_min:.2f} min")
+    print(f"Scene: {scene_id}  Δt={time_diff_min:.2f} min  Sat={SAT}")
     print(f"  L2 CTH:  {Path(l2_cth_path).name}")
     print(f"  L2 CLP:  {Path(l2_clp_path).name}")
     print(f"  MYD06:   {Path(myd06_path).name}")
     print(f"  MYD03:   {Path(myd03_path).name}")
-    print(f"  Model:   {Path(retrieval_path).name}")
+    print(f"  Model:   {Path(retrieval_path).name if retrieval_path else 'N/A'}")
 
     # ── 1. 读取数据 ──
     print("--- 读取数据 ---")
     l2_cth = read_fy4a_l2_nc(l2_cth_path, 'CTH')
     l2_clp = read_fy4a_l2_nc(l2_clp_path, 'CLP')
     modis  = read_modis_myd06(myd06_path, myd03_path)
-    model  = read_model_retrieval(retrieval_path)
+    model  = read_model_retrieval(retrieval_path) if retrieval_path else None
 
-    # ── 2. MODIS 落入 AGRI 检查 ──
+    # ── 2. MODIS 落入 AGRI 检查（用 L2 经纬度作为 AGRI 圆盘参考）──
     print("--- MODIS-in-AGRI 检查 ---")
-    agri_lat = model['lat']   # 全圆盘经纬度 (2748,2748)
-    agri_lon = model['lon']
+    agri_lat = l2_cth['lat']
+    agri_lon = l2_cth['lon']
     in_disk = check_modis_in_agri_disk(
         modis['lat'], modis['lon'], agri_lat, agri_lon, max_dist_km=MIN_DISK_DIST_KM)
     print(f"  MODIS in AGRI disk: {in_disk}")
@@ -1125,8 +1174,9 @@ def process_one_scene(
         plot_overlap_check(
             l2_cth['lon'], l2_cth['lat'],
             np.isfinite(l2_cth['data']),
-            model['lon'], model['lat'],
-            np.isfinite(model['data_cth']),
+            model['lon'] if model else l2_cth['lon'],
+            model['lat'] if model else l2_cth['lat'],
+            np.isfinite(model['data_cth']) if model else np.isfinite(l2_cth['data']),
             modis['lon'], modis['lat'],
             np.isfinite(modis['cth']),
             time_diff_min, scene_id, save_dir,
@@ -1134,12 +1184,14 @@ def process_one_scene(
     except Exception as e:
         print(f"  [warn] 总览图失败: {e}")
 
-    # ── 3.5 RGB + MODIS 叠加 （全盘 + 重合区域） ──
+    # ── 3.5 RGB + MODIS 叠加 ──
     print("--- RGB + MODIS 叠加 ---")
     try:
-        fdi_name = Path(retrieval_path).name.replace('_retrieval.npz', '.HDF')
-        fdi_path = str(FDI_DIR / fdi_name)
-        if Path(fdi_path).exists():
+        # 从 L2 时间推导 FDI 文件名（兼容 A/B 星）
+        ts = l2_time.strftime('%Y%m%d%H%M%S')
+        fdi_files = sorted(glob.glob(str(FDI_DIR / f"*{ts}*.HDF")))
+        if fdi_files:
+            fdi_path = fdi_files[0]
             r, g, b = read_fdi_rgb(fdi_path)
             plot_rgb_with_modis(r, g, b,
                                 agri_lon, agri_lat,
@@ -1151,7 +1203,7 @@ def process_one_scene(
                                  modis['clp'],
                                  time_diff_min, scene_id, save_dir)
         else:
-            print(f"  [warn] FDI 文件不存在: {fdi_name}")
+            print(f"  [warn] FDI 文件不存在于 {FDI_DIR}  (ts={ts})")
     except Exception as e:
         print(f"  [warn] RGB + MODIS 图失败: {e}")
 
@@ -1163,11 +1215,11 @@ def process_one_scene(
             modis['lon'], modis['lat'], modis['cth'],
             grid_res_deg=GRID_RES_DEG, interp_method='nearest',
         )
-        plot_cth_comparison(match_l2_cth, "FY4A L2 CTH", "MODIS MYD06 CTH",
+        plot_cth_comparison(match_l2_cth, f"{sat_name} L2 CTH", "MODIS MYD06 CTH",
                             time_diff_min, scene_id, save_dir, "l2_vs_modis")
-        plot_cth_scatter(match_l2_cth, "FY4A L2",
+        plot_cth_scatter(match_l2_cth, f"{sat_name} L2",
                          time_diff_min, scene_id, save_dir, "l2_vs_modis")
-        plot_cth_histogram(match_l2_cth, "FY4A L2",
+        plot_cth_histogram(match_l2_cth, f"{sat_name} L2",
                            time_diff_min, scene_id, save_dir, "l2_vs_modis")
     except ValueError as e:
         print(f"  [warn] L2 vs MODIS CTH 匹配失败: {e}")
@@ -1180,55 +1232,56 @@ def process_one_scene(
             modis['lon'], modis['lat'], modis['clp'],
             grid_res_deg=GRID_RES_DEG, interp_method='nearest',
         )
-        plot_clp_comparison(match_l2_clp, "FY4A L2 CLP", "MODIS MYD06 CLP",
+        plot_clp_comparison(match_l2_clp, f"{sat_name} L2 CLP", "MODIS MYD06 CLP",
                             clp_from='l2',
                             time_diff_min=time_diff_min, scene_id=scene_id,
                             save_dir=save_dir, prefix="l2_vs_modis")
     except ValueError as e:
         print(f"  [warn] L2 vs MODIS CLP 匹配失败: {e}")
 
-    # ── 6. 模型 vs MODIS: CTH ──
-    print("--- Model vs MODIS CTH ---")
-    try:
-        match_model_cth = geo_match(
-            model['lon'], model['lat'], model['data_cth'],
-            modis['lon'], modis['lat'], modis['cth'],
-            grid_res_deg=GRID_RES_DEG, interp_method='nearest',
-        )
-        plot_cth_comparison(match_model_cth, "Model CTH", "MODIS MYD06 CTH",
-                            time_diff_min, scene_id, save_dir, "model_vs_modis")
-        plot_cth_scatter(match_model_cth, "Model",
-                         time_diff_min, scene_id, save_dir, "model_vs_modis")
-        plot_cth_histogram(match_model_cth, "Model",
-                           time_diff_min, scene_id, save_dir, "model_vs_modis")
-    except ValueError as e:
-        print(f"  [warn] Model vs MODIS CTH 匹配失败: {e}")
+    # ── 6. 模型 vs MODIS（仅当有模型数据时）──
+    if model is not None:
+        print("--- Model vs MODIS CTH ---")
+        try:
+            match_model_cth = geo_match(
+                model['lon'], model['lat'], model['data_cth'],
+                modis['lon'], modis['lat'], modis['cth'],
+                grid_res_deg=GRID_RES_DEG, interp_method='nearest',
+            )
+            plot_cth_comparison(match_model_cth, "Model CTH", "MODIS MYD06 CTH",
+                                time_diff_min, scene_id, save_dir, "model_vs_modis")
+            plot_cth_scatter(match_model_cth, "Model",
+                             time_diff_min, scene_id, save_dir, "model_vs_modis")
+            plot_cth_histogram(match_model_cth, "Model",
+                               time_diff_min, scene_id, save_dir, "model_vs_modis")
+        except ValueError as e:
+            print(f"  [warn] Model vs MODIS CTH 匹配失败: {e}")
 
-    # ── 7. 模型 vs MODIS: CLP ──
-    print("--- Model vs MODIS CLP ---")
-    try:
-        match_model_clp = geo_match(
-            model['lon'], model['lat'], model['data_clp'],
-            modis['lon'], modis['lat'], modis['clp'],
-            grid_res_deg=GRID_RES_DEG, interp_method='nearest',
-        )
-        plot_clp_comparison(match_model_clp, "Model CLP", "MODIS MYD06 CLP",
-                            clp_from='model',
-                            time_diff_min=time_diff_min, scene_id=scene_id,
-                            save_dir=save_dir, prefix="model_vs_modis")
-    except ValueError as e:
-        print(f"  [warn] Model vs MODIS CLP 匹配失败: {e}")
+        print("--- Model vs MODIS CLP ---")
+        try:
+            match_model_clp = geo_match(
+                model['lon'], model['lat'], model['data_clp'],
+                modis['lon'], modis['lat'], modis['clp'],
+                grid_res_deg=GRID_RES_DEG, interp_method='nearest',
+            )
+            plot_clp_comparison(match_model_clp, "Model CLP", "MODIS MYD06 CLP",
+                                clp_from='model',
+                                time_diff_min=time_diff_min, scene_id=scene_id,
+                                save_dir=save_dir, prefix="model_vs_modis")
+        except ValueError as e:
+            print(f"  [warn] Model vs MODIS CLP 匹配失败: {e}")
 
-    # ── 8. 写场景信息 ──
+    # ── 7. 写场景信息 ──
     info_path = save_dir / "scene_info.txt"
     with open(info_path, 'w') as f:
+        f.write(f"Satellite: {SAT} ({sat_name})\n")
         f.write(f"Scene: {scene_id}\n")
         f.write(f"Time diff: {time_diff_min:.2f} min\n")
         f.write(f"L2 CTH: {l2_cth_path}\n")
         f.write(f"L2 CLP: {l2_clp_path}\n")
         f.write(f"MYD06:  {myd06_path}\n")
         f.write(f"MYD03:  {myd03_path}\n")
-        f.write(f"Model:  {retrieval_path}\n")
+        f.write(f"Model:  {retrieval_path if retrieval_path else 'N/A'}\n")
 
     print(f"  [done] Scene {scene_id} 完成")
     return True
@@ -1239,19 +1292,20 @@ def process_one_scene(
 # ═══════════════════════════════════════════════════════════════════
 
 def find_matches() -> List[Dict]:
-    """查找 20190505 所有三源匹配的场景。"""
-    # 收集所有文件
+    """查找所有三源匹配的场景（模型检索可选）。"""
     l2_cth_files = sorted(glob.glob(str(L2_CTH_DIR / "*.NC")))
     l2_clp_files = sorted(glob.glob(str(L2_CLP_DIR / "*.NC")))
     myd06_files  = sorted(glob.glob(str(MYD06_DIR / "*.hdf")))
     myd03_files  = sorted(glob.glob(str(MYD03_DIR / "*.hdf")))
-    retrieval_files = sorted(glob.glob(str(RETRIEVAL_DIR / "*20190505*.npz")))
+    retrieval_files = sorted(glob.glob(str(RETRIEVAL_DIR / f"*{DAY}*.npz")))
 
+    print(f"Satellite: {SAT} ({_SAT_INFO[SAT]['name']})  λD={_LAM_D}°")
     print(f"L2 CTH files: {len(l2_cth_files)}")
     print(f"L2 CLP files: {len(l2_clp_files)}")
     print(f"MYD06 files:  {len(myd06_files)}")
     print(f"MYD03 files:  {len(myd03_files)}")
     print(f"Retrieval:    {len(retrieval_files)}")
+    print(f"FDI_DIR:      {FDI_DIR}")
 
     # 构建时间索引
     l2_cth_map = {}
@@ -1312,17 +1366,18 @@ def find_matches() -> List[Dict]:
         if best_modis_time is None:
             continue
 
-        # 找最近的模型检索结果
+        # 找最近的模型检索结果（可选）
+        retrieval_path = None
         best_retrieval_time = None
-        best_rdt = float('inf')
-        for ret_time in sorted(retrieval_map.keys()):
-            rdt = abs((l2_time - ret_time).total_seconds()) / 60.0
-            if rdt < best_rdt:
-                best_rdt = rdt
-                best_retrieval_time = ret_time
-
-        if best_retrieval_time is None:
-            continue
+        if retrieval_map:
+            best_rdt = float('inf')
+            for ret_time in sorted(retrieval_map.keys()):
+                rdt = abs((l2_time - ret_time).total_seconds()) / 60.0
+                if rdt < best_rdt:
+                    best_rdt = rdt
+                    best_retrieval_time = ret_time
+            if best_retrieval_time is not None:
+                retrieval_path = retrieval_map[best_retrieval_time]
 
         scene_id = f"{DAY}_{l2_time.strftime('%H%M%S')}"
 
@@ -1332,7 +1387,7 @@ def find_matches() -> List[Dict]:
             'l2_clp_path': l2_clp_map[l2_time],
             'myd06_path': myd06_map[best_modis_time],
             'myd03_path': myd03_map[best_modis_time],
-            'retrieval_path': retrieval_map[best_retrieval_time],
+            'retrieval_path': retrieval_path,
             'l2_time': l2_time,
             'modis_time': best_modis_time,
             'time_diff_min': best_dt,

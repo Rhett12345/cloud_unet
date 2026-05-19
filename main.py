@@ -132,7 +132,8 @@ def stage_infer(args):
         run_inference(Path(args.agri_file), stats, ckpt, out_d)
     elif getattr(args, "agri_dir", None):
         agri_dir = Path(args.agri_dir)
-        agri_files = sorted(agri_dir.rglob("*.HDF")) + sorted(agri_dir.rglob("*.hdf"))
+        agri_files = (sorted(agri_dir.rglob("*.HDF")) + sorted(agri_dir.rglob("*.hdf"))
+                      + sorted(agri_dir.rglob("*.npz")))
         log.info("Batch inference on %d files", len(agri_files))
         for f in agri_files:
             try:

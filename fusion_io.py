@@ -101,7 +101,18 @@ def find_matching_myd03(myd06_file: Path, myd03_files: list) -> Optional[Path]:
 # ---------------------------------------------------------------------------
 
 def _paired_geo_file(fdi: Path) -> Path:
-    return Path(str(fdi).replace("_FDI-_", "_GEO-_"))
+    """FDI 路径 → 对应 GEO 路径。兼容 FY-4A (同目录) 与 FY-4B (FDI/GEO 分目录)。"""
+    geo_name = fdi.name.replace("_FDI-_", "_GEO-_")
+    day_dir = fdi.parent  # e.g. .../FDI/20230501
+    # FY-4A: FDI 与 GEO 同目录；FY-4B: FDI/ 与 GEO/ 并列于根目录下
+    candidates = [
+        day_dir / geo_name,                                           # 同目录
+        day_dir.parent.parent / "GEO" / day_dir.name / geo_name,      # .../GEO/20230501/
+    ]
+    for p in candidates:
+        if p.exists():
+            return p
+    return candidates[0]
 
 
 def _h5_read_first(hf: h5py.File, candidates: Sequence[str]) -> np.ndarray:
@@ -157,8 +168,13 @@ def _wrap_lon(lon: np.ndarray) -> np.ndarray:
 
 def _derive_latlon(gf: h5py.File) -> Tuple[np.ndarray, np.ndarray]:
     """从 LineNumber / ColumnNumber + 卫星轨道参数反算经纬度（AGRI GEO 文件）。"""
-    line = _dataset_scaled(gf["LineNumber"])
-    col  = _dataset_scaled(gf["ColumnNumber"])
+    # 兼容 FY-4A (root) 和 FY-4B (Navigation/) 两种 GEO 结构
+    line_ds = gf.get("Navigation/LineNumber") or gf.get("LineNumber")
+    col_ds  = gf.get("Navigation/ColumnNumber") or gf.get("ColumnNumber")
+    if line_ds is None or col_ds is None:
+        raise KeyError("Missing LineNumber/ColumnNumber in GEO file")
+    line = _dataset_scaled(line_ds)
+    col  = _dataset_scaled(col_ds)
     lon0_deg = _attr_scalar(gf, "NOMCenterLon")
     sat_h    = _attr_scalar(gf, "NOMSatHeight")
     ea_attr  = _attr_scalar(gf, "dEA")
@@ -234,14 +250,17 @@ def _derive_latlon(gf: h5py.File) -> Tuple[np.ndarray, np.ndarray]:
 def _read_geo(geo_file: Path):
     with h5py.File(geo_file, "r") as gf:
         try:
-            lat = _h5_read_first(gf, ["Geolocation/NOMLatitude", "NOMLatitude", "Latitude"]).astype(np.float32)
+            lat = _h5_read_first(gf, ["Geolocation/NOMLatitude", "NOMLatitude",
+                                       "Navigation/NOMLatitude", "Latitude"]).astype(np.float32)
             lon = _h5_read_first(gf, ["Geolocation/NOMLongitude", "Geolocation/NOMlongitude",
-                                       "NOMLongitude", "Longitude"]).astype(np.float32)
+                                       "Navigation/NOMLongitude", "NOMLongitude", "Longitude"]).astype(np.float32)
         except KeyError:
             lat, lon = _derive_latlon(gf)
 
-        vza = _h5_read_first(gf, ["Geolocation/NOMSatelliteZenith", "NOMSatelliteZenith", "VZA"]).astype(np.float32)
-        sza = _h5_read_first(gf, ["Geolocation/NOMSunZenith", "NOMSunZenith", "SZA"]).astype(np.float32)
+        vza = _h5_read_first(gf, ["Geolocation/NOMSatelliteZenith", "NOMSatelliteZenith",
+                                   "Navigation/NOMSatelliteZenith", "VZA"]).astype(np.float32)
+        sza = _h5_read_first(gf, ["Geolocation/NOMSunZenith", "NOMSunZenith",
+                                   "Navigation/NOMSunZenith", "SZA"]).astype(np.float32)
 
     for arr in [lat, lon, vza, sza]:
         arr[(arr > 1e4) | (arr < -1e4)] = np.nan
@@ -254,6 +273,68 @@ def _read_geo(geo_file: Path):
     return lat, lon, vza, sza
 
 
+# ═══════════════════════════════════════════════════════════════════
+# FY-4B → FY-4A 通道转换（基于交叉定标系数）
+# ═══════════════════════════════════════════════════════════════════
+
+def _load_b2a_coeffs() -> dict:
+    """从 CSV 加载 FY-4B → FY-4A 转换系数，key = B_channel_number (int)。"""
+    import csv
+    csv_path = Path(__file__).resolve().parent / "transfer_coeff_fy4a_fy4b_v1.csv"
+    coeffs = {}
+    with open(csv_path) as f:
+        for row in csv.DictReader(f):
+            if row["Direction"] != "B2A":
+                continue
+            # 解析物理通道号：fy4b_ch01 → 1
+            src = row["Source_Ch"]     # fy4b_chXX
+            src_ch = int(src.split("ch")[1])
+            model_type = row.get("Model", "linear").strip()
+            c1 = float(row["Coeff_1"]) if row.get("Coeff_1", "").strip() else 0.0
+            c2 = float(row["Coeff_2"]) if row.get("Coeff_2", "").strip() else 0.0
+            intercept = float(row["Intercept"]) if row.get("Intercept", "").strip() else 0.0
+            coeffs[src_ch] = (model_type, c1, c2, intercept)
+    return coeffs
+
+
+# 模块级缓存
+_B2A_COEFFS = None
+
+
+def convert_bt_fy4b_to_fy4a(bt: np.ndarray, channel_indices_b: list) -> np.ndarray:
+    """
+    将 FY-4B BT (H, W, 6) 转换为 FY-4A 等效 BT。
+
+    Parameters
+    ----------
+    bt : (H, W, 6) FY-4B 通道 BT，顺序对应 channel_indices_b
+    channel_indices_b : 0-based 物理通道索引列表，如 [8,9,11,12,13,14]
+
+    Returns
+    -------
+    bt_a : (H, W, 6) FY-4A 等效 BT
+    """
+    global _B2A_COEFFS
+    if _B2A_COEFFS is None:
+        _B2A_COEFFS = _load_b2a_coeffs()
+
+    H, W, C = bt.shape
+    bt_a = np.full_like(bt, np.nan)
+    for ci, idx_b in enumerate(channel_indices_b):
+        ch_b = idx_b + 1  # 物理通道号
+        if ch_b not in _B2A_COEFFS:
+            log.warning("No B2A coeff for B%02d, pass-through", ch_b)
+            bt_a[:, :, ci] = bt[:, :, ci]
+            continue
+        model_type, c1, c2, intercept = _B2A_COEFFS[ch_b]
+        val = bt[:, :, ci]
+        if model_type == "linear":
+            bt_a[:, :, ci] = c1 * val + intercept
+        else:  # poly (quadratic)
+            bt_a[:, :, ci] = c2 * val**2 + c1 * val + intercept
+    return bt_a
+
+
 def read_agri_scene(agri_file: Path) -> Optional[dict]:
     """读取 AGRI FDI + GEO 文件，返回 dict(lat, lon, VZA, SZA, BT)。"""
     try:
@@ -264,11 +345,18 @@ def read_agri_scene(agri_file: Path) -> Optional[dict]:
             log.warning("GEO file missing for %s", agri_file.name)
             return None
 
+        # ★ 自动检测卫星：FY-4A vs FY-4B，选择对应通道索引
+        fname = agri_file.name
+        if "FY4B" in fname:
+            channel_indices = cfg._AGRI_BT_CHANNEL_INDICES_B
+        else:
+            channel_indices = cfg._AGRI_BT_CHANNEL_INDICES_A
+
         lat, lon, vza, sza = _read_geo(geo_file)
 
         bt_list = []
         with h5py.File(agri_file, "r") as ff:
-            for idx in cfg.AGRI_BT_CHANNEL_INDICES:
+            for idx in channel_indices:
                 ch = idx + 1
                 raw = _h5_read_first(ff, [f"NOMChannel{ch:02d}",
                                           f"Data/NOMChannelBT{ch:02d}",

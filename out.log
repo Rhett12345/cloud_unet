@@ -5160,3 +5160,1243 @@ nohup: ignoring input
 2026-05-15 07:12:09 [INFO] fontTools.subset - GSUB pruned
 2026-05-15 07:12:09 [INFO] fontTools.subset - name pruned
 2026-05-15 07:12:09 [INFO] test - Saved → /data/Data_yuq/unet_workdir/eval/confusion_matrix.{svg,pdf,png}
+nohup: ignoring input
+2026-05-18 21:50:15 [INFO] __main__ - ============================================================
+2026-05-18 21:50:15 [INFO] __main__ - Pipeline stages: infer
+2026-05-18 21:50:15 [INFO] __main__ - ============================================================
+2026-05-18 21:50:15 [INFO] __main__ - Stage: INFER
+2026-05-18 21:50:17 [INFO] __main__ - Batch inference on 94 files
+2026-05-18 21:50:20 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:50:31 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501001500_20230501002959_4000M_V0001_retrieval.npz
+2026-05-18 21:50:31 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:50:41 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501003000_20230501004459_4000M_V0001_retrieval.npz
+2026-05-18 21:50:42 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:50:52 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501004500_20230501005959_4000M_V0001_retrieval.npz
+2026-05-18 21:50:52 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:51:03 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501010000_20230501011459_4000M_V0001_retrieval.npz
+2026-05-18 21:51:03 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:51:14 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501011500_20230501012959_4000M_V0001_retrieval.npz
+2026-05-18 21:51:14 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:51:24 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501013000_20230501014459_4000M_V0001_retrieval.npz
+2026-05-18 21:51:25 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:51:35 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501014500_20230501015959_4000M_V0001_retrieval.npz
+2026-05-18 21:51:35 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:51:46 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501020000_20230501021459_4000M_V0001_retrieval.npz
+2026-05-18 21:51:46 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:51:57 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501021500_20230501022959_4000M_V0001_retrieval.npz
+2026-05-18 21:51:57 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:52:07 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501023000_20230501024459_4000M_V0001_retrieval.npz
+2026-05-18 21:52:08 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:52:18 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501024500_20230501025959_4000M_V0001_retrieval.npz
+2026-05-18 21:52:18 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:52:29 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501030000_20230501031459_4000M_V0001_retrieval.npz
+2026-05-18 21:52:29 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:52:40 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501031500_20230501032959_4000M_V0001_retrieval.npz
+2026-05-18 21:52:40 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:52:51 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501033000_20230501034459_4000M_V0001_retrieval.npz
+2026-05-18 21:52:51 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:53:01 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501034500_20230501035959_4000M_V0001_retrieval.npz
+2026-05-18 21:53:01 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:53:12 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501040000_20230501041459_4000M_V0001_retrieval.npz
+2026-05-18 21:53:12 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:53:23 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501041500_20230501042959_4000M_V0001_retrieval.npz
+2026-05-18 21:53:23 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:53:34 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501043000_20230501044459_4000M_V0001_retrieval.npz
+2026-05-18 21:53:34 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:53:44 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501044500_20230501045959_4000M_V0001_retrieval.npz
+2026-05-18 21:53:44 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:53:55 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501050000_20230501051459_4000M_V0001_retrieval.npz
+2026-05-18 21:53:55 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:54:06 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501051500_20230501052959_4000M_V0001_retrieval.npz
+2026-05-18 21:54:06 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:54:17 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501053000_20230501054459_4000M_V0001_retrieval.npz
+2026-05-18 21:54:17 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:54:27 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501054500_20230501055959_4000M_V0001_retrieval.npz
+2026-05-18 21:54:28 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:54:38 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501060000_20230501061459_4000M_V0001_retrieval.npz
+2026-05-18 21:54:38 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:54:49 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501061500_20230501062959_4000M_V0001_retrieval.npz
+2026-05-18 21:54:49 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:54:59 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501063000_20230501064459_4000M_V0001_retrieval.npz
+2026-05-18 21:55:00 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:55:10 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501064500_20230501065959_4000M_V0001_retrieval.npz
+2026-05-18 21:55:11 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:55:21 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501070000_20230501071459_4000M_V0001_retrieval.npz
+2026-05-18 21:55:21 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:55:31 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501071500_20230501072959_4000M_V0001_retrieval.npz
+2026-05-18 21:55:32 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:55:42 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501073000_20230501074459_4000M_V0001_retrieval.npz
+2026-05-18 21:55:42 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:55:53 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501074500_20230501075959_4000M_V0001_retrieval.npz
+2026-05-18 21:55:53 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:56:03 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501080000_20230501081459_4000M_V0001_retrieval.npz
+2026-05-18 21:56:04 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:56:14 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501081500_20230501082959_4000M_V0001_retrieval.npz
+2026-05-18 21:56:14 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:56:25 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501083000_20230501084459_4000M_V0001_retrieval.npz
+2026-05-18 21:56:25 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:56:36 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501084500_20230501085959_4000M_V0001_retrieval.npz
+2026-05-18 21:56:36 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:56:46 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501090000_20230501091459_4000M_V0001_retrieval.npz
+2026-05-18 21:56:47 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:56:57 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501091500_20230501092959_4000M_V0001_retrieval.npz
+2026-05-18 21:56:57 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:57:08 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501093000_20230501094459_4000M_V0001_retrieval.npz
+2026-05-18 21:57:08 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:57:19 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501094500_20230501095959_4000M_V0001_retrieval.npz
+2026-05-18 21:57:19 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:57:29 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501100000_20230501101459_4000M_V0001_retrieval.npz
+2026-05-18 21:57:30 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:57:40 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501101500_20230501102959_4000M_V0001_retrieval.npz
+2026-05-18 21:57:40 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:57:51 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501103000_20230501104459_4000M_V0001_retrieval.npz
+2026-05-18 21:57:51 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:58:02 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501104500_20230501105959_4000M_V0001_retrieval.npz
+2026-05-18 21:58:02 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:58:12 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501110000_20230501111459_4000M_V0001_retrieval.npz
+2026-05-18 21:58:12 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:58:23 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501111500_20230501112959_4000M_V0001_retrieval.npz
+2026-05-18 21:58:23 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:58:33 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501113000_20230501114459_4000M_V0001_retrieval.npz
+2026-05-18 21:58:34 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:58:44 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501114500_20230501115959_4000M_V0001_retrieval.npz
+2026-05-18 21:58:44 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:58:55 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501120000_20230501121459_4000M_V0001_retrieval.npz
+2026-05-18 21:58:55 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:59:05 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501121500_20230501122959_4000M_V0001_retrieval.npz
+2026-05-18 21:59:06 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:59:16 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501123000_20230501124459_4000M_V0001_retrieval.npz
+2026-05-18 21:59:16 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:59:27 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501124500_20230501125959_4000M_V0001_retrieval.npz
+2026-05-18 21:59:27 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:59:37 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501130000_20230501131459_4000M_V0001_retrieval.npz
+2026-05-18 21:59:38 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:59:48 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501131500_20230501132959_4000M_V0001_retrieval.npz
+2026-05-18 21:59:48 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 21:59:59 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501133000_20230501134459_4000M_V0001_retrieval.npz
+2026-05-18 21:59:59 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:00:09 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501134500_20230501135959_4000M_V0001_retrieval.npz
+2026-05-18 22:00:09 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:00:20 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501140000_20230501141459_4000M_V0001_retrieval.npz
+2026-05-18 22:00:20 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:00:31 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501143000_20230501144459_4000M_V0001_retrieval.npz
+2026-05-18 22:00:31 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:00:42 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501144500_20230501145959_4000M_V0001_retrieval.npz
+2026-05-18 22:00:42 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:00:52 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501150000_20230501151459_4000M_V0001_retrieval.npz
+2026-05-18 22:00:53 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:01:03 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501151500_20230501152959_4000M_V0001_retrieval.npz
+2026-05-18 22:01:03 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:01:14 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501153000_20230501154459_4000M_V0001_retrieval.npz
+2026-05-18 22:01:14 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:01:25 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501154500_20230501155959_4000M_V0001_retrieval.npz
+2026-05-18 22:01:25 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:01:35 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501160000_20230501161459_4000M_V0001_retrieval.npz
+2026-05-18 22:01:36 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:01:46 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501161500_20230501162959_4000M_V0001_retrieval.npz
+2026-05-18 22:01:46 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:01:57 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501163000_20230501164459_4000M_V0001_retrieval.npz
+2026-05-18 22:01:57 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:02:08 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501164500_20230501165959_4000M_V0001_retrieval.npz
+2026-05-18 22:02:08 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:02:18 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501170000_20230501171459_4000M_V0001_retrieval.npz
+2026-05-18 22:02:18 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:02:29 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501171500_20230501172959_4000M_V0001_retrieval.npz
+2026-05-18 22:02:29 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:02:40 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501173000_20230501174459_4000M_V0001_retrieval.npz
+2026-05-18 22:02:40 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:02:51 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501174500_20230501175959_4000M_V0001_retrieval.npz
+2026-05-18 22:02:51 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:03:02 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501180000_20230501181459_4000M_V0001_retrieval.npz
+2026-05-18 22:03:02 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:03:12 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501181500_20230501182959_4000M_V0001_retrieval.npz
+2026-05-18 22:03:13 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:03:23 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501183000_20230501184459_4000M_V0001_retrieval.npz
+2026-05-18 22:03:23 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:03:34 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501184500_20230501185959_4000M_V0001_retrieval.npz
+2026-05-18 22:03:34 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:03:44 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501190000_20230501191459_4000M_V0001_retrieval.npz
+2026-05-18 22:03:45 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:03:55 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501191500_20230501192959_4000M_V0001_retrieval.npz
+2026-05-18 22:03:55 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:04:06 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501193000_20230501194459_4000M_V0001_retrieval.npz
+2026-05-18 22:04:06 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:04:17 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501194500_20230501195959_4000M_V0001_retrieval.npz
+2026-05-18 22:04:17 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:04:27 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501200000_20230501201459_4000M_V0001_retrieval.npz
+2026-05-18 22:04:28 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:04:38 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501201500_20230501202959_4000M_V0001_retrieval.npz
+2026-05-18 22:04:38 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:04:49 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501203000_20230501204459_4000M_V0001_retrieval.npz
+2026-05-18 22:04:49 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:04:59 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501204500_20230501205959_4000M_V0001_retrieval.npz
+2026-05-18 22:05:00 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:05:10 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501210000_20230501211459_4000M_V0001_retrieval.npz
+2026-05-18 22:05:10 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:05:21 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501211500_20230501212959_4000M_V0001_retrieval.npz
+2026-05-18 22:05:21 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:05:31 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501213000_20230501214459_4000M_V0001_retrieval.npz
+2026-05-18 22:05:31 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:05:42 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501214500_20230501215959_4000M_V0001_retrieval.npz
+2026-05-18 22:05:42 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:05:53 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501220000_20230501221459_4000M_V0001_retrieval.npz
+2026-05-18 22:05:53 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:06:03 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501221500_20230501222959_4000M_V0001_retrieval.npz
+2026-05-18 22:06:03 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:06:14 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501223000_20230501224459_4000M_V0001_retrieval.npz
+2026-05-18 22:06:14 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:06:24 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501224500_20230501225959_4000M_V0001_retrieval.npz
+2026-05-18 22:06:25 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:06:35 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501230000_20230501231459_4000M_V0001_retrieval.npz
+2026-05-18 22:06:35 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:06:46 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501231500_20230501232959_4000M_V0001_retrieval.npz
+2026-05-18 22:06:46 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:06:57 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501233000_20230501234459_4000M_V0001_retrieval.npz
+2026-05-18 22:06:57 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 22:07:07 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501234500_20230501235959_4000M_V0001_retrieval.npz
+2026-05-18 22:07:07 [INFO] __main__ - Stage INFER complete
+2026-05-18 22:07:07 [INFO] __main__ - All stages finished.
+nohup: ignoring input
+2026-05-18 22:23:20,730 [INFO] Loaded 13 B2A coefficients from /home/yuq/cloudmask/unet/transfer_coeff_fy4a_fy4b_v1.csv
+2026-05-18 22:23:20,731 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501001500_20230501002959_4000M_V0001.HDF
+2026-05-18 22:23:23,041 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:23:23,340 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:23:23,640 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:23:23,939 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:23:24,238 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:23:24,538 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:23:40,360 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501001500_20230501002959_4000M_V0001_converted.npz
+2026-05-18 22:23:40,362 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501003000_20230501004459_4000M_V0001.HDF
+2026-05-18 22:23:42,652 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:23:42,941 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:23:43,230 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:23:43,519 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:23:43,809 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:23:44,098 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:23:59,907 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501003000_20230501004459_4000M_V0001_converted.npz
+2026-05-18 22:23:59,909 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501004500_20230501005959_4000M_V0001.HDF
+2026-05-18 22:24:02,201 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:24:02,489 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:24:02,778 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:24:03,067 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:24:03,356 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:24:03,645 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:24:19,470 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501004500_20230501005959_4000M_V0001_converted.npz
+2026-05-18 22:24:19,473 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501010000_20230501011459_4000M_V0001.HDF
+2026-05-18 22:24:21,763 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:24:22,051 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:24:22,340 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:24:22,628 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:24:22,916 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:24:23,204 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:24:39,078 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501010000_20230501011459_4000M_V0001_converted.npz
+2026-05-18 22:24:39,080 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501011500_20230501012959_4000M_V0001.HDF
+2026-05-18 22:24:41,362 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:24:41,650 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:24:41,938 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:24:42,226 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:24:42,514 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:24:42,801 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:24:58,675 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501011500_20230501012959_4000M_V0001_converted.npz
+2026-05-18 22:24:58,677 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501013000_20230501014459_4000M_V0001.HDF
+2026-05-18 22:25:00,964 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:25:01,252 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:25:01,539 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:25:01,827 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:25:02,114 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:25:02,402 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:25:18,286 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501013000_20230501014459_4000M_V0001_converted.npz
+2026-05-18 22:25:18,288 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501014500_20230501015959_4000M_V0001.HDF
+2026-05-18 22:25:20,573 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:25:20,860 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:25:21,147 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:25:21,434 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:25:21,721 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:25:22,008 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:25:37,902 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501014500_20230501015959_4000M_V0001_converted.npz
+2026-05-18 22:25:37,904 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501020000_20230501021459_4000M_V0001.HDF
+2026-05-18 22:25:40,190 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:25:40,478 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:25:40,765 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:25:41,052 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:25:41,339 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:25:41,627 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:25:57,533 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501020000_20230501021459_4000M_V0001_converted.npz
+2026-05-18 22:25:57,535 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501021500_20230501022959_4000M_V0001.HDF
+2026-05-18 22:25:59,818 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:26:00,106 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:26:00,393 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:26:00,680 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:26:00,967 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:26:01,253 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:26:17,183 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501021500_20230501022959_4000M_V0001_converted.npz
+2026-05-18 22:26:17,185 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501023000_20230501024459_4000M_V0001.HDF
+2026-05-18 22:26:19,468 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:26:19,755 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:26:20,044 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:26:20,331 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:26:20,619 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:26:20,906 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:26:36,852 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501023000_20230501024459_4000M_V0001_converted.npz
+2026-05-18 22:26:36,854 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501024500_20230501025959_4000M_V0001.HDF
+2026-05-18 22:26:39,138 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:26:39,425 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:26:39,712 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:26:40,000 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:26:40,287 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:26:40,574 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:26:56,516 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501024500_20230501025959_4000M_V0001_converted.npz
+2026-05-18 22:26:56,518 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501030000_20230501031459_4000M_V0001.HDF
+2026-05-18 22:26:58,802 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:26:59,089 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:26:59,377 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:26:59,664 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:26:59,953 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:27:00,240 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:27:16,193 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501030000_20230501031459_4000M_V0001_converted.npz
+2026-05-18 22:27:16,195 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501031500_20230501032959_4000M_V0001.HDF
+2026-05-18 22:27:18,478 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:27:18,766 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:27:19,054 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:27:19,341 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:27:19,629 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:27:19,917 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:27:35,878 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501031500_20230501032959_4000M_V0001_converted.npz
+2026-05-18 22:27:35,880 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501033000_20230501034459_4000M_V0001.HDF
+2026-05-18 22:27:38,164 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:27:38,452 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:27:38,739 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:27:39,026 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:27:39,314 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:27:39,601 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:27:55,576 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501033000_20230501034459_4000M_V0001_converted.npz
+2026-05-18 22:27:55,578 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501034500_20230501035959_4000M_V0001.HDF
+2026-05-18 22:27:57,861 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:27:58,148 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:27:58,435 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:27:58,722 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:27:59,009 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:27:59,296 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:28:15,252 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501034500_20230501035959_4000M_V0001_converted.npz
+2026-05-18 22:28:15,254 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501040000_20230501041459_4000M_V0001.HDF
+2026-05-18 22:28:17,538 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:28:17,825 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:28:18,113 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:28:18,400 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:28:18,687 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:28:18,975 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:28:34,912 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501040000_20230501041459_4000M_V0001_converted.npz
+2026-05-18 22:28:34,914 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501041500_20230501042959_4000M_V0001.HDF
+2026-05-18 22:28:37,199 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:28:37,487 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:28:37,775 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:28:38,063 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:28:38,352 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:28:38,639 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:28:54,566 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501041500_20230501042959_4000M_V0001_converted.npz
+2026-05-18 22:28:54,568 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501043000_20230501044459_4000M_V0001.HDF
+2026-05-18 22:28:56,853 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:28:57,141 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:28:57,429 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:28:57,718 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:28:58,006 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:28:58,294 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:29:14,234 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501043000_20230501044459_4000M_V0001_converted.npz
+2026-05-18 22:29:14,236 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501044500_20230501045959_4000M_V0001.HDF
+2026-05-18 22:29:16,520 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:29:16,807 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:29:17,094 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:29:17,383 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:29:17,670 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:29:17,957 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:29:33,883 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501044500_20230501045959_4000M_V0001_converted.npz
+2026-05-18 22:29:33,885 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501050000_20230501051459_4000M_V0001.HDF
+2026-05-18 22:29:36,168 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:29:36,455 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:29:36,743 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:29:37,030 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:29:37,318 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:29:37,606 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:29:53,532 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501050000_20230501051459_4000M_V0001_converted.npz
+2026-05-18 22:29:53,534 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501051500_20230501052959_4000M_V0001.HDF
+2026-05-18 22:29:55,818 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:29:56,107 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:29:56,395 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:29:56,683 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:29:56,971 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:29:57,259 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:30:13,145 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501051500_20230501052959_4000M_V0001_converted.npz
+2026-05-18 22:30:13,147 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501053000_20230501054459_4000M_V0001.HDF
+2026-05-18 22:30:15,432 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:30:15,719 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:30:16,007 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:30:16,294 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:30:16,582 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:30:16,869 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:30:32,744 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501053000_20230501054459_4000M_V0001_converted.npz
+2026-05-18 22:30:32,746 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501054500_20230501055959_4000M_V0001.HDF
+2026-05-18 22:30:35,028 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:30:35,316 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:30:35,604 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:30:35,891 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:30:36,178 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:30:36,466 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:30:52,315 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501054500_20230501055959_4000M_V0001_converted.npz
+2026-05-18 22:30:52,318 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501060000_20230501061459_4000M_V0001.HDF
+2026-05-18 22:30:54,598 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:30:54,885 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:30:55,173 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:30:55,461 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:30:55,749 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:30:56,037 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:31:11,870 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501060000_20230501061459_4000M_V0001_converted.npz
+2026-05-18 22:31:11,872 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501061500_20230501062959_4000M_V0001.HDF
+2026-05-18 22:31:14,152 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:31:14,440 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:31:14,727 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:31:15,015 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:31:15,302 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:31:15,589 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:31:31,398 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501061500_20230501062959_4000M_V0001_converted.npz
+2026-05-18 22:31:31,400 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501063000_20230501064459_4000M_V0001.HDF
+2026-05-18 22:31:33,677 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:31:33,964 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:31:34,252 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:31:34,540 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:31:34,828 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:31:35,115 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:31:50,934 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501063000_20230501064459_4000M_V0001_converted.npz
+2026-05-18 22:31:50,936 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501064500_20230501065959_4000M_V0001.HDF
+2026-05-18 22:31:53,211 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:31:53,498 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:31:53,785 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:31:54,072 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:31:54,359 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:31:54,647 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:32:10,440 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501064500_20230501065959_4000M_V0001_converted.npz
+2026-05-18 22:32:10,442 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501070000_20230501071459_4000M_V0001.HDF
+2026-05-18 22:32:12,717 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:32:13,005 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:32:13,293 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:32:13,581 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:32:13,869 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:32:14,157 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:32:29,902 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501070000_20230501071459_4000M_V0001_converted.npz
+2026-05-18 22:32:29,904 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501071500_20230501072959_4000M_V0001.HDF
+2026-05-18 22:32:32,183 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:32:32,470 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:32:32,758 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:32:33,046 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:32:33,334 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:32:33,621 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:32:49,361 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501071500_20230501072959_4000M_V0001_converted.npz
+2026-05-18 22:32:49,363 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501073000_20230501074459_4000M_V0001.HDF
+2026-05-18 22:32:51,638 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:32:51,926 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:32:52,213 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:32:52,501 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:32:52,788 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:32:53,076 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:33:08,838 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501073000_20230501074459_4000M_V0001_converted.npz
+2026-05-18 22:33:08,841 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501074500_20230501075959_4000M_V0001.HDF
+2026-05-18 22:33:11,116 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:33:11,404 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:33:11,692 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:33:11,980 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:33:12,268 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:33:12,556 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:33:28,265 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501074500_20230501075959_4000M_V0001_converted.npz
+2026-05-18 22:33:28,267 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501080000_20230501081459_4000M_V0001.HDF
+2026-05-18 22:33:30,542 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:33:30,829 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:33:31,116 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:33:31,403 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:33:31,690 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:33:31,977 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:33:47,679 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501080000_20230501081459_4000M_V0001_converted.npz
+2026-05-18 22:33:47,681 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501081500_20230501082959_4000M_V0001.HDF
+2026-05-18 22:33:49,956 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:33:50,244 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:33:50,532 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:33:50,819 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:33:51,106 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:33:51,394 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:34:07,052 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501081500_20230501082959_4000M_V0001_converted.npz
+2026-05-18 22:34:07,054 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501083000_20230501084459_4000M_V0001.HDF
+2026-05-18 22:34:09,328 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:34:09,615 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:34:09,903 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:34:10,191 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:34:10,479 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:34:10,767 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:34:26,420 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501083000_20230501084459_4000M_V0001_converted.npz
+2026-05-18 22:34:26,422 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501084500_20230501085959_4000M_V0001.HDF
+2026-05-18 22:34:28,697 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:34:28,984 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:34:29,272 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:34:29,559 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:34:29,847 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:34:30,134 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:34:45,800 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501084500_20230501085959_4000M_V0001_converted.npz
+2026-05-18 22:34:45,802 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501090000_20230501091459_4000M_V0001.HDF
+2026-05-18 22:34:48,078 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:34:48,366 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:34:48,653 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:34:48,940 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:34:49,228 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:34:49,515 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:35:05,149 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501090000_20230501091459_4000M_V0001_converted.npz
+2026-05-18 22:35:05,151 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501091500_20230501092959_4000M_V0001.HDF
+2026-05-18 22:35:07,428 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:35:07,716 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:35:08,003 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:35:08,292 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:35:08,579 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:35:08,866 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:35:24,519 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501091500_20230501092959_4000M_V0001_converted.npz
+2026-05-18 22:35:24,521 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501093000_20230501094459_4000M_V0001.HDF
+2026-05-18 22:35:26,797 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:35:27,085 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:35:27,372 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:35:27,660 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:35:27,947 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:35:28,235 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:35:43,907 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501093000_20230501094459_4000M_V0001_converted.npz
+2026-05-18 22:35:43,909 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501094500_20230501095959_4000M_V0001.HDF
+2026-05-18 22:35:46,187 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:35:46,474 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:35:46,762 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:35:47,050 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:35:47,337 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:35:47,625 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:36:03,264 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501094500_20230501095959_4000M_V0001_converted.npz
+2026-05-18 22:36:03,266 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501100000_20230501101459_4000M_V0001.HDF
+2026-05-18 22:36:05,544 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:36:05,832 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:36:06,119 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:36:06,407 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:36:06,694 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:36:06,981 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:36:22,614 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501100000_20230501101459_4000M_V0001_converted.npz
+2026-05-18 22:36:22,616 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501101500_20230501102959_4000M_V0001.HDF
+2026-05-18 22:36:24,898 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:36:25,186 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:36:25,474 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:36:25,761 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:36:26,049 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:36:26,337 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:36:41,969 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501101500_20230501102959_4000M_V0001_converted.npz
+2026-05-18 22:36:41,971 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501103000_20230501104459_4000M_V0001.HDF
+2026-05-18 22:36:44,250 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:36:44,538 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:36:44,825 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:36:45,113 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:36:45,400 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:36:45,688 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:37:01,296 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501103000_20230501104459_4000M_V0001_converted.npz
+2026-05-18 22:37:01,298 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501104500_20230501105959_4000M_V0001.HDF
+2026-05-18 22:37:03,577 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:37:03,864 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:37:04,152 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:37:04,439 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:37:04,727 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:37:05,014 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:37:20,625 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501104500_20230501105959_4000M_V0001_converted.npz
+2026-05-18 22:37:20,627 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501110000_20230501111459_4000M_V0001.HDF
+2026-05-18 22:37:22,907 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:37:23,195 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:37:23,483 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:37:23,771 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:37:24,059 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:37:24,347 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:37:39,972 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501110000_20230501111459_4000M_V0001_converted.npz
+2026-05-18 22:37:39,974 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501111500_20230501112959_4000M_V0001.HDF
+2026-05-18 22:37:42,255 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:37:42,543 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:37:42,831 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:37:43,118 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:37:43,407 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:37:43,694 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:37:59,356 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501111500_20230501112959_4000M_V0001_converted.npz
+2026-05-18 22:37:59,358 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501113000_20230501114459_4000M_V0001.HDF
+2026-05-18 22:38:01,636 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:38:01,923 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:38:02,211 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:38:02,499 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:38:02,786 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:38:03,073 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:38:18,668 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501113000_20230501114459_4000M_V0001_converted.npz
+2026-05-18 22:38:18,670 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501114500_20230501115959_4000M_V0001.HDF
+2026-05-18 22:38:20,949 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:38:21,237 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:38:21,525 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:38:21,813 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:38:22,101 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:38:22,389 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:38:37,994 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501114500_20230501115959_4000M_V0001_converted.npz
+2026-05-18 22:38:37,996 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501120000_20230501121459_4000M_V0001.HDF
+2026-05-18 22:38:40,276 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:38:40,563 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:38:40,850 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:38:41,137 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:38:41,424 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:38:41,711 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:38:57,325 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501120000_20230501121459_4000M_V0001_converted.npz
+2026-05-18 22:38:57,327 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501121500_20230501122959_4000M_V0001.HDF
+2026-05-18 22:38:59,606 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:38:59,894 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:39:00,182 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:39:00,469 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:39:00,757 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:39:01,044 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:39:16,612 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501121500_20230501122959_4000M_V0001_converted.npz
+2026-05-18 22:39:16,614 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501123000_20230501124459_4000M_V0001.HDF
+2026-05-18 22:39:18,891 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:39:19,179 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:39:19,467 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:39:19,755 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:39:20,042 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:39:20,330 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:39:35,916 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501123000_20230501124459_4000M_V0001_converted.npz
+2026-05-18 22:39:35,918 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501124500_20230501125959_4000M_V0001.HDF
+2026-05-18 22:39:38,196 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:39:38,483 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:39:38,771 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:39:39,059 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:39:39,347 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:39:39,635 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:39:55,197 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501124500_20230501125959_4000M_V0001_converted.npz
+2026-05-18 22:39:55,199 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501130000_20230501131459_4000M_V0001.HDF
+2026-05-18 22:39:57,478 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:39:57,766 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:39:58,054 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:39:58,342 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:39:58,630 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:39:58,918 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:40:14,478 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501130000_20230501131459_4000M_V0001_converted.npz
+2026-05-18 22:40:14,480 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501131500_20230501132959_4000M_V0001.HDF
+2026-05-18 22:40:16,757 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:40:17,044 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:40:17,332 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:40:17,619 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:40:17,907 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:40:18,194 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:40:33,723 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501131500_20230501132959_4000M_V0001_converted.npz
+2026-05-18 22:40:33,725 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501133000_20230501134459_4000M_V0001.HDF
+2026-05-18 22:40:36,007 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:40:36,295 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:40:36,583 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:40:36,871 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:40:37,159 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:40:37,447 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:40:52,983 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501133000_20230501134459_4000M_V0001_converted.npz
+2026-05-18 22:40:52,985 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501134500_20230501135959_4000M_V0001.HDF
+2026-05-18 22:40:55,264 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:40:55,550 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:40:55,838 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:40:56,126 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:40:56,413 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:40:56,700 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:41:12,249 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501134500_20230501135959_4000M_V0001_converted.npz
+2026-05-18 22:41:12,251 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501140000_20230501141459_4000M_V0001.HDF
+2026-05-18 22:41:14,528 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:41:14,815 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:41:15,103 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:41:15,390 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:41:15,677 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:41:15,964 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:41:31,504 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501140000_20230501141459_4000M_V0001_converted.npz
+2026-05-18 22:41:31,506 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501143000_20230501144459_4000M_V0001.HDF
+2026-05-18 22:41:33,782 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:41:34,069 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:41:34,357 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:41:34,644 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:41:34,931 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:41:35,219 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:41:50,760 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501143000_20230501144459_4000M_V0001_converted.npz
+2026-05-18 22:41:50,762 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501144500_20230501145959_4000M_V0001.HDF
+2026-05-18 22:41:53,036 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:41:53,325 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:41:53,613 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:41:53,900 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:41:54,188 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:41:54,475 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:42:10,020 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501144500_20230501145959_4000M_V0001_converted.npz
+2026-05-18 22:42:10,021 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501150000_20230501151459_4000M_V0001.HDF
+2026-05-18 22:42:12,294 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:42:12,581 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:42:12,868 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:42:13,155 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:42:13,442 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:42:13,729 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:42:29,253 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501150000_20230501151459_4000M_V0001_converted.npz
+2026-05-18 22:42:29,254 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501151500_20230501152959_4000M_V0001.HDF
+2026-05-18 22:42:31,529 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:42:31,816 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:42:32,104 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:42:32,392 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:42:32,679 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:42:32,967 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:42:48,498 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501151500_20230501152959_4000M_V0001_converted.npz
+2026-05-18 22:42:48,500 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501153000_20230501154459_4000M_V0001.HDF
+2026-05-18 22:42:50,773 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:42:51,059 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:42:51,347 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:42:51,635 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:42:51,922 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:42:52,209 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:43:07,731 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501153000_20230501154459_4000M_V0001_converted.npz
+2026-05-18 22:43:07,733 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501154500_20230501155959_4000M_V0001.HDF
+2026-05-18 22:43:10,004 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:43:10,291 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:43:10,578 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:43:10,866 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:43:11,152 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:43:11,439 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:43:26,955 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501154500_20230501155959_4000M_V0001_converted.npz
+2026-05-18 22:43:26,957 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501160000_20230501161459_4000M_V0001.HDF
+2026-05-18 22:43:29,233 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:43:29,521 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:43:29,808 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:43:30,096 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:43:30,384 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:43:30,671 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:43:46,210 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501160000_20230501161459_4000M_V0001_converted.npz
+2026-05-18 22:43:46,212 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501161500_20230501162959_4000M_V0001.HDF
+2026-05-18 22:43:48,486 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:43:48,773 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:43:49,060 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:43:49,347 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:43:49,634 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:43:49,921 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:44:05,456 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501161500_20230501162959_4000M_V0001_converted.npz
+2026-05-18 22:44:05,458 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501163000_20230501164459_4000M_V0001.HDF
+2026-05-18 22:44:07,731 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:44:08,018 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:44:08,305 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:44:08,592 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:44:08,878 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:44:09,165 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:44:24,698 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501163000_20230501164459_4000M_V0001_converted.npz
+2026-05-18 22:44:24,700 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501164500_20230501165959_4000M_V0001.HDF
+2026-05-18 22:44:26,973 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:44:27,260 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:44:27,547 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:44:27,834 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:44:28,121 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:44:28,408 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:44:43,949 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501164500_20230501165959_4000M_V0001_converted.npz
+2026-05-18 22:44:43,951 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501170000_20230501171459_4000M_V0001.HDF
+2026-05-18 22:44:46,223 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:44:46,510 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:44:46,798 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:44:47,085 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:44:47,372 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:44:47,659 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:45:03,192 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501170000_20230501171459_4000M_V0001_converted.npz
+2026-05-18 22:45:03,194 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501171500_20230501172959_4000M_V0001.HDF
+2026-05-18 22:45:05,468 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:45:05,755 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:45:06,041 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:45:06,328 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:45:06,616 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:45:06,903 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:45:22,449 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501171500_20230501172959_4000M_V0001_converted.npz
+2026-05-18 22:45:22,451 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501173000_20230501174459_4000M_V0001.HDF
+2026-05-18 22:45:24,725 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:45:25,012 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:45:25,300 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:45:25,588 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:45:25,876 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:45:26,164 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:45:41,703 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501173000_20230501174459_4000M_V0001_converted.npz
+2026-05-18 22:45:41,705 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501174500_20230501175959_4000M_V0001.HDF
+2026-05-18 22:45:43,981 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:45:44,268 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:45:44,555 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:45:44,843 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:45:45,131 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:45:45,418 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:46:00,950 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501174500_20230501175959_4000M_V0001_converted.npz
+2026-05-18 22:46:00,952 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501180000_20230501181459_4000M_V0001.HDF
+2026-05-18 22:46:03,227 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:46:03,513 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:46:03,800 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:46:04,087 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:46:04,374 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:46:04,662 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:46:20,205 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501180000_20230501181459_4000M_V0001_converted.npz
+2026-05-18 22:46:20,207 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501181500_20230501182959_4000M_V0001.HDF
+2026-05-18 22:46:22,481 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:46:22,768 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:46:23,055 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:46:23,342 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:46:23,629 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:46:23,916 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:46:39,461 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501181500_20230501182959_4000M_V0001_converted.npz
+2026-05-18 22:46:39,463 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501183000_20230501184459_4000M_V0001.HDF
+2026-05-18 22:46:41,736 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:46:42,023 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:46:42,310 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:46:42,598 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:46:42,886 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:46:43,173 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:46:58,714 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501183000_20230501184459_4000M_V0001_converted.npz
+2026-05-18 22:46:58,716 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501184500_20230501185959_4000M_V0001.HDF
+2026-05-18 22:47:00,993 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:47:01,280 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:47:01,568 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:47:01,855 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:47:02,143 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:47:02,431 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:47:18,004 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501184500_20230501185959_4000M_V0001_converted.npz
+2026-05-18 22:47:18,006 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501190000_20230501191459_4000M_V0001.HDF
+2026-05-18 22:47:20,283 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:47:20,570 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:47:20,858 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:47:21,145 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:47:21,432 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:47:21,719 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:47:37,256 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501190000_20230501191459_4000M_V0001_converted.npz
+2026-05-18 22:47:37,258 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501191500_20230501192959_4000M_V0001.HDF
+2026-05-18 22:47:39,536 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:47:39,824 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:47:40,111 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:47:40,399 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:47:40,686 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:47:40,973 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:47:56,512 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501191500_20230501192959_4000M_V0001_converted.npz
+2026-05-18 22:47:56,514 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501193000_20230501194459_4000M_V0001.HDF
+2026-05-18 22:47:58,803 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:47:59,090 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:47:59,378 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:47:59,665 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:47:59,953 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:48:00,240 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:48:15,784 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501193000_20230501194459_4000M_V0001_converted.npz
+2026-05-18 22:48:15,786 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501194500_20230501195959_4000M_V0001.HDF
+2026-05-18 22:48:18,130 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:48:18,423 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:48:18,716 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:48:19,009 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:48:19,302 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:48:19,595 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:48:35,156 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501194500_20230501195959_4000M_V0001_converted.npz
+2026-05-18 22:48:35,158 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501200000_20230501201459_4000M_V0001.HDF
+2026-05-18 22:48:37,546 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:48:37,846 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:48:38,146 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:48:38,446 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:48:38,746 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:48:39,046 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:48:54,618 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501200000_20230501201459_4000M_V0001_converted.npz
+2026-05-18 22:48:54,620 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501201500_20230501202959_4000M_V0001.HDF
+2026-05-18 22:48:57,042 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:48:57,383 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:48:57,724 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:48:58,065 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:48:58,405 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:48:58,746 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:49:14,374 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501201500_20230501202959_4000M_V0001_converted.npz
+2026-05-18 22:49:14,376 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501203000_20230501204459_4000M_V0001.HDF
+2026-05-18 22:49:16,797 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:49:17,138 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:49:17,478 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:49:17,819 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:49:18,160 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:49:18,501 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:49:34,132 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501203000_20230501204459_4000M_V0001_converted.npz
+2026-05-18 22:49:34,134 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501204500_20230501205959_4000M_V0001.HDF
+2026-05-18 22:49:36,558 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:49:36,899 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:49:37,240 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:49:37,582 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:49:37,923 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:49:38,264 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:49:53,901 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501204500_20230501205959_4000M_V0001_converted.npz
+2026-05-18 22:49:53,904 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501210000_20230501211459_4000M_V0001.HDF
+2026-05-18 22:49:56,327 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:49:56,668 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:49:57,009 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:49:57,350 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:49:57,692 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:49:58,033 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:50:13,684 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501210000_20230501211459_4000M_V0001_converted.npz
+2026-05-18 22:50:13,686 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501211500_20230501212959_4000M_V0001.HDF
+2026-05-18 22:50:16,109 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:50:16,450 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:50:16,791 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:50:17,132 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:50:17,474 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:50:17,815 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:50:33,466 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501211500_20230501212959_4000M_V0001_converted.npz
+2026-05-18 22:50:33,468 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501213000_20230501214459_4000M_V0001.HDF
+2026-05-18 22:50:35,889 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:50:36,230 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:50:36,571 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:50:36,912 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:50:37,253 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:50:37,594 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:50:53,252 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501213000_20230501214459_4000M_V0001_converted.npz
+2026-05-18 22:50:53,254 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501214500_20230501215959_4000M_V0001.HDF
+2026-05-18 22:50:55,673 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:50:56,014 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:50:56,356 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:50:56,697 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:50:57,038 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:50:57,379 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:51:13,056 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501214500_20230501215959_4000M_V0001_converted.npz
+2026-05-18 22:51:13,058 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501220000_20230501221459_4000M_V0001.HDF
+2026-05-18 22:51:15,483 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:51:15,826 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:51:16,169 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:51:16,512 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:51:16,855 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:51:17,197 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:51:32,881 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501220000_20230501221459_4000M_V0001_converted.npz
+2026-05-18 22:51:32,883 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501221500_20230501222959_4000M_V0001.HDF
+2026-05-18 22:51:35,305 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:51:35,646 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:51:35,988 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:51:36,329 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:51:36,671 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:51:37,013 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:51:52,730 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501221500_20230501222959_4000M_V0001_converted.npz
+2026-05-18 22:51:52,732 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501223000_20230501224459_4000M_V0001.HDF
+2026-05-18 22:51:55,152 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:51:55,493 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:51:55,836 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:51:56,178 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:51:56,519 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:51:56,860 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:52:12,597 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501223000_20230501224459_4000M_V0001_converted.npz
+2026-05-18 22:52:12,599 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501224500_20230501225959_4000M_V0001.HDF
+2026-05-18 22:52:15,042 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:52:15,384 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:52:15,727 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:52:16,069 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:52:16,412 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:52:16,754 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:52:32,515 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501224500_20230501225959_4000M_V0001_converted.npz
+2026-05-18 22:52:32,517 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501230000_20230501231459_4000M_V0001.HDF
+2026-05-18 22:52:34,962 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:52:35,306 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:52:35,651 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:52:35,996 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:52:36,340 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:52:36,685 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:52:52,444 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501230000_20230501231459_4000M_V0001_converted.npz
+2026-05-18 22:52:52,446 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501231500_20230501232959_4000M_V0001.HDF
+2026-05-18 22:52:54,886 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:52:55,230 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:52:55,575 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:52:55,920 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:52:56,264 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:52:56,608 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:53:12,389 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501231500_20230501232959_4000M_V0001_converted.npz
+2026-05-18 22:53:12,392 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501233000_20230501234459_4000M_V0001.HDF
+2026-05-18 22:53:14,836 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:53:15,180 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:53:15,525 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:53:15,869 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:53:16,213 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:53:16,558 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:53:32,348 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501233000_20230501234459_4000M_V0001_converted.npz
+2026-05-18 22:53:32,350 [INFO] Reading: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501234500_20230501235959_4000M_V0001.HDF
+2026-05-18 22:53:34,790 [INFO]   B09(6.25μm) → A09(6.25μm)
+2026-05-18 22:53:35,134 [INFO]   B10(6.95μm) → A10(7.10μm)
+2026-05-18 22:53:35,479 [INFO]   B12(8.55μm) → A11(8.50μm)
+2026-05-18 22:53:35,824 [INFO]   B13(10.80μm) → A12(10.70μm)
+2026-05-18 22:53:36,169 [INFO]   B14(12.00μm) → A13(12.00μm)
+2026-05-18 22:53:36,514 [INFO]   B15(13.30μm) → A14(13.50μm)
+2026-05-18 22:53:52,326 [INFO] Saved: /data/Data_yuq/FY4B/FDI_converted/20230501/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501234500_20230501235959_4000M_V0001_converted.npz
+2026-05-18 22:53:52,328 [INFO] Done: 94/94 convertednohup: ignoring input
+2026-05-18 23:09:14 [INFO] __main__ - ============================================================
+2026-05-18 23:09:14 [INFO] __main__ - Pipeline stages: infer
+2026-05-18 23:09:14 [INFO] __main__ - ============================================================
+2026-05-18 23:09:14 [INFO] __main__ - Stage: INFER
+2026-05-18 23:09:15 [INFO] __main__ - Batch inference on 94 files
+2026-05-18 23:09:18 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:09:18 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501001500_20230501002959_4000M_V0001_converted.npz
+2026-05-18 23:09:28 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501001500_20230501002959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:09:28 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:09:28 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501003000_20230501004459_4000M_V0001_converted.npz
+2026-05-18 23:09:37 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501003000_20230501004459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:09:38 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:09:38 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501004500_20230501005959_4000M_V0001_converted.npz
+2026-05-18 23:09:47 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501004500_20230501005959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:09:47 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:09:47 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501010000_20230501011459_4000M_V0001_converted.npz
+2026-05-18 23:09:57 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501010000_20230501011459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:09:57 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:09:57 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501011500_20230501012959_4000M_V0001_converted.npz
+2026-05-18 23:10:07 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501011500_20230501012959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:10:07 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:10:07 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501013000_20230501014459_4000M_V0001_converted.npz
+2026-05-18 23:10:17 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501013000_20230501014459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:10:17 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:10:17 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501014500_20230501015959_4000M_V0001_converted.npz
+2026-05-18 23:10:26 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501014500_20230501015959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:10:27 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:10:27 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501020000_20230501021459_4000M_V0001_converted.npz
+2026-05-18 23:10:36 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501020000_20230501021459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:10:36 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:10:36 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501021500_20230501022959_4000M_V0001_converted.npz
+2026-05-18 23:10:46 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501021500_20230501022959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:10:46 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:10:46 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501023000_20230501024459_4000M_V0001_converted.npz
+2026-05-18 23:10:56 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501023000_20230501024459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:10:56 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:10:56 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501024500_20230501025959_4000M_V0001_converted.npz
+2026-05-18 23:11:06 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501024500_20230501025959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:11:06 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:11:06 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501030000_20230501031459_4000M_V0001_converted.npz
+2026-05-18 23:11:15 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501030000_20230501031459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:11:16 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:11:16 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501031500_20230501032959_4000M_V0001_converted.npz
+2026-05-18 23:11:25 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501031500_20230501032959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:11:25 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:11:25 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501033000_20230501034459_4000M_V0001_converted.npz
+2026-05-18 23:11:35 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501033000_20230501034459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:11:35 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:11:35 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501034500_20230501035959_4000M_V0001_converted.npz
+2026-05-18 23:11:45 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501034500_20230501035959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:11:45 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:11:45 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501040000_20230501041459_4000M_V0001_converted.npz
+2026-05-18 23:11:55 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501040000_20230501041459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:11:55 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:11:55 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501041500_20230501042959_4000M_V0001_converted.npz
+2026-05-18 23:12:04 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501041500_20230501042959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:12:05 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:12:05 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501043000_20230501044459_4000M_V0001_converted.npz
+2026-05-18 23:12:14 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501043000_20230501044459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:12:14 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:12:14 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501044500_20230501045959_4000M_V0001_converted.npz
+2026-05-18 23:12:24 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501044500_20230501045959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:12:24 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:12:24 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501050000_20230501051459_4000M_V0001_converted.npz
+2026-05-18 23:12:34 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501050000_20230501051459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:12:34 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:12:34 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501051500_20230501052959_4000M_V0001_converted.npz
+2026-05-18 23:12:44 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501051500_20230501052959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:12:44 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:12:44 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501053000_20230501054459_4000M_V0001_converted.npz
+2026-05-18 23:12:53 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501053000_20230501054459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:12:54 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:12:54 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501054500_20230501055959_4000M_V0001_converted.npz
+2026-05-18 23:13:03 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501054500_20230501055959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:13:03 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:13:03 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501060000_20230501061459_4000M_V0001_converted.npz
+2026-05-18 23:13:13 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501060000_20230501061459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:13:13 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:13:13 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501061500_20230501062959_4000M_V0001_converted.npz
+2026-05-18 23:13:23 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501061500_20230501062959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:13:23 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:13:23 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501063000_20230501064459_4000M_V0001_converted.npz
+2026-05-18 23:13:33 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501063000_20230501064459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:13:33 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:13:33 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501064500_20230501065959_4000M_V0001_converted.npz
+2026-05-18 23:13:43 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501064500_20230501065959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:13:43 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:13:43 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501070000_20230501071459_4000M_V0001_converted.npz
+2026-05-18 23:13:53 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501070000_20230501071459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:13:53 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:13:53 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501071500_20230501072959_4000M_V0001_converted.npz
+2026-05-18 23:14:02 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501071500_20230501072959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:14:03 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:14:03 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501073000_20230501074459_4000M_V0001_converted.npz
+2026-05-18 23:14:12 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501073000_20230501074459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:14:12 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:14:12 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501074500_20230501075959_4000M_V0001_converted.npz
+2026-05-18 23:14:22 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501074500_20230501075959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:14:22 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:14:22 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501080000_20230501081459_4000M_V0001_converted.npz
+2026-05-18 23:14:32 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501080000_20230501081459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:14:32 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:14:32 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501081500_20230501082959_4000M_V0001_converted.npz
+2026-05-18 23:14:41 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501081500_20230501082959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:14:42 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:14:42 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501083000_20230501084459_4000M_V0001_converted.npz
+2026-05-18 23:14:51 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501083000_20230501084459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:14:52 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:14:52 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501084500_20230501085959_4000M_V0001_converted.npz
+2026-05-18 23:15:01 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501084500_20230501085959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:15:01 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:15:01 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501090000_20230501091459_4000M_V0001_converted.npz
+2026-05-18 23:15:11 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501090000_20230501091459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:15:11 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:15:11 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501091500_20230501092959_4000M_V0001_converted.npz
+2026-05-18 23:15:21 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501091500_20230501092959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:15:21 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:15:21 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501093000_20230501094459_4000M_V0001_converted.npz
+2026-05-18 23:15:30 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501093000_20230501094459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:15:30 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:15:30 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501094500_20230501095959_4000M_V0001_converted.npz
+2026-05-18 23:15:40 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501094500_20230501095959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:15:40 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:15:40 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501100000_20230501101459_4000M_V0001_converted.npz
+2026-05-18 23:15:50 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501100000_20230501101459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:15:50 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:15:50 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501101500_20230501102959_4000M_V0001_converted.npz
+2026-05-18 23:15:59 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501101500_20230501102959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:16:00 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:16:00 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501103000_20230501104459_4000M_V0001_converted.npz
+2026-05-18 23:16:09 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501103000_20230501104459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:16:09 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:16:09 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501104500_20230501105959_4000M_V0001_converted.npz
+2026-05-18 23:16:19 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501104500_20230501105959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:16:19 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:16:19 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501110000_20230501111459_4000M_V0001_converted.npz
+2026-05-18 23:16:28 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501110000_20230501111459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:16:29 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:16:29 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501111500_20230501112959_4000M_V0001_converted.npz
+2026-05-18 23:16:38 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501111500_20230501112959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:16:38 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:16:38 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501113000_20230501114459_4000M_V0001_converted.npz
+2026-05-18 23:16:48 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501113000_20230501114459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:16:48 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:16:48 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501114500_20230501115959_4000M_V0001_converted.npz
+2026-05-18 23:16:57 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501114500_20230501115959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:16:57 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:16:57 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501120000_20230501121459_4000M_V0001_converted.npz
+2026-05-18 23:17:07 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501120000_20230501121459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:17:07 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:17:07 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501121500_20230501122959_4000M_V0001_converted.npz
+2026-05-18 23:17:16 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501121500_20230501122959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:17:16 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:17:16 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501123000_20230501124459_4000M_V0001_converted.npz
+2026-05-18 23:17:26 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501123000_20230501124459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:17:26 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:17:26 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501124500_20230501125959_4000M_V0001_converted.npz
+2026-05-18 23:17:35 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501124500_20230501125959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:17:35 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:17:35 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501130000_20230501131459_4000M_V0001_converted.npz
+2026-05-18 23:17:45 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501130000_20230501131459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:17:45 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:17:45 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501131500_20230501132959_4000M_V0001_converted.npz
+2026-05-18 23:17:54 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501131500_20230501132959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:17:54 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:17:54 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501133000_20230501134459_4000M_V0001_converted.npz
+2026-05-18 23:18:03 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501133000_20230501134459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:18:04 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:18:04 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501134500_20230501135959_4000M_V0001_converted.npz
+2026-05-18 23:18:13 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501134500_20230501135959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:18:13 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:18:13 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501140000_20230501141459_4000M_V0001_converted.npz
+2026-05-18 23:18:22 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501140000_20230501141459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:18:22 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:18:22 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501143000_20230501144459_4000M_V0001_converted.npz
+2026-05-18 23:18:32 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501143000_20230501144459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:18:32 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:18:32 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501144500_20230501145959_4000M_V0001_converted.npz
+2026-05-18 23:18:41 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501144500_20230501145959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:18:41 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:18:41 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501150000_20230501151459_4000M_V0001_converted.npz
+2026-05-18 23:18:51 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501150000_20230501151459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:18:51 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:18:51 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501151500_20230501152959_4000M_V0001_converted.npz
+2026-05-18 23:19:00 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501151500_20230501152959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:19:00 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:19:00 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501153000_20230501154459_4000M_V0001_converted.npz
+2026-05-18 23:19:09 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501153000_20230501154459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:19:10 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:19:10 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501154500_20230501155959_4000M_V0001_converted.npz
+2026-05-18 23:19:19 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501154500_20230501155959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:19:19 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:19:19 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501160000_20230501161459_4000M_V0001_converted.npz
+2026-05-18 23:19:28 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501160000_20230501161459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:19:28 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:19:28 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501161500_20230501162959_4000M_V0001_converted.npz
+2026-05-18 23:19:38 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501161500_20230501162959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:19:38 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:19:38 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501163000_20230501164459_4000M_V0001_converted.npz
+2026-05-18 23:19:47 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501163000_20230501164459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:19:47 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:19:47 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501164500_20230501165959_4000M_V0001_converted.npz
+2026-05-18 23:19:57 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501164500_20230501165959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:19:57 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:19:57 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501170000_20230501171459_4000M_V0001_converted.npz
+2026-05-18 23:20:06 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501170000_20230501171459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:20:06 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:20:06 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501171500_20230501172959_4000M_V0001_converted.npz
+2026-05-18 23:20:16 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501171500_20230501172959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:20:16 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:20:16 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501173000_20230501174459_4000M_V0001_converted.npz
+2026-05-18 23:20:25 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501173000_20230501174459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:20:25 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:20:25 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501174500_20230501175959_4000M_V0001_converted.npz
+2026-05-18 23:20:35 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501174500_20230501175959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:20:35 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:20:35 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501180000_20230501181459_4000M_V0001_converted.npz
+2026-05-18 23:20:44 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501180000_20230501181459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:20:44 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:20:44 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501181500_20230501182959_4000M_V0001_converted.npz
+2026-05-18 23:20:54 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501181500_20230501182959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:20:54 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:20:54 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501183000_20230501184459_4000M_V0001_converted.npz
+2026-05-18 23:21:03 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501183000_20230501184459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:21:03 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:21:03 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501184500_20230501185959_4000M_V0001_converted.npz
+2026-05-18 23:21:12 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501184500_20230501185959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:21:13 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:21:13 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501190000_20230501191459_4000M_V0001_converted.npz
+2026-05-18 23:21:22 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501190000_20230501191459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:21:22 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:21:22 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501191500_20230501192959_4000M_V0001_converted.npz
+2026-05-18 23:21:32 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501191500_20230501192959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:21:32 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:21:32 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501193000_20230501194459_4000M_V0001_converted.npz
+2026-05-18 23:21:41 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501193000_20230501194459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:21:41 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:21:41 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501194500_20230501195959_4000M_V0001_converted.npz
+2026-05-18 23:21:51 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501194500_20230501195959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:21:51 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:21:51 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501200000_20230501201459_4000M_V0001_converted.npz
+2026-05-18 23:22:00 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501200000_20230501201459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:22:00 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:22:00 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501201500_20230501202959_4000M_V0001_converted.npz
+2026-05-18 23:22:10 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501201500_20230501202959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:22:10 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:22:10 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501203000_20230501204459_4000M_V0001_converted.npz
+2026-05-18 23:22:19 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501203000_20230501204459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:22:19 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:22:19 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501204500_20230501205959_4000M_V0001_converted.npz
+2026-05-18 23:22:28 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501204500_20230501205959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:22:29 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:22:29 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501210000_20230501211459_4000M_V0001_converted.npz
+2026-05-18 23:22:38 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501210000_20230501211459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:22:38 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:22:38 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501211500_20230501212959_4000M_V0001_converted.npz
+2026-05-18 23:22:47 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501211500_20230501212959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:22:48 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:22:48 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501213000_20230501214459_4000M_V0001_converted.npz
+2026-05-18 23:22:57 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501213000_20230501214459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:22:57 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:22:57 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501214500_20230501215959_4000M_V0001_converted.npz
+2026-05-18 23:23:07 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501214500_20230501215959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:23:07 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:23:07 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501220000_20230501221459_4000M_V0001_converted.npz
+2026-05-18 23:23:16 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501220000_20230501221459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:23:16 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:23:16 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501221500_20230501222959_4000M_V0001_converted.npz
+2026-05-18 23:23:26 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501221500_20230501222959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:23:26 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:23:26 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501223000_20230501224459_4000M_V0001_converted.npz
+2026-05-18 23:23:37 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501223000_20230501224459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:23:37 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:23:37 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501224500_20230501225959_4000M_V0001_converted.npz
+2026-05-18 23:23:48 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501224500_20230501225959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:23:49 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:23:49 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501230000_20230501231459_4000M_V0001_converted.npz
+2026-05-18 23:24:00 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501230000_20230501231459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:24:00 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:24:00 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501231500_20230501232959_4000M_V0001_converted.npz
+2026-05-18 23:24:12 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501231500_20230501232959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:24:12 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:24:12 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501233000_20230501234459_4000M_V0001_converted.npz
+2026-05-18 23:24:23 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501233000_20230501234459_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:24:24 [INFO] inference - Loaded model from /data/Data_yuq/unet_workdir/model/HIR_COMP_UNet_AGRIonly_best.pth
+2026-05-18 23:24:24 [INFO] inference - Loading converted .npz: FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501234500_20230501235959_4000M_V0001_converted.npz
+2026-05-18 23:24:35 [INFO] inference - Saved retrieval → /data/Data_yuq/unet_workdir/retrieval_fy4b_b2a/FY4B-_AGRI--_N_DISK_1330E_L1-_FDI-_MULT_NOM_20230501234500_20230501235959_4000M_V0001_converted_retrieval.npz
+2026-05-18 23:24:35 [INFO] __main__ - Stage INFER complete
+2026-05-18 23:24:35 [INFO] __main__ - All stages finished.

@@ -88,16 +88,24 @@ def run_inference(agri_file: Path,
     model.eval()
     log.info("Loaded model from %s", checkpoint)
 
-    # ── Read AGRI ─────────────────────────────────────────────────────────
-    agri = read_agri_scene(agri_file)
-    if agri is None:
-        raise RuntimeError(f"Failed to read {agri_file}")
-
-    BT  = agri["BT"]          # (H, W, 6)
-    lat = agri["lat"]         # (H, W)
-    lon = agri["lon"]         # (H, W)
-    vza = agri.get("VZA")    # (H, W), may be None for old GEO files
-    sza = agri.get("SZA")    # (H, W)
+    # ── Read AGRI (支持原始 FDI HDF5 和转换后的 .npz) ──────────────────
+    if agri_file.suffix.lower() in (".npz",):
+        # 转换后的 FY-4B→FY-4A 数据
+        log.info("Loading converted .npz: %s", agri_file.name)
+        d = np.load(agri_file, allow_pickle=True)
+        BT  = d["BT_converted"] if "BT_converted" in d else d["BT"]
+        lat = d["latitude"]; lon = d["longitude"]
+        vza = d.get("VZA", np.zeros_like(lat))
+        sza = d.get("SZA", np.zeros_like(lat))
+    else:
+        agri = read_agri_scene(agri_file)
+        if agri is None:
+            raise RuntimeError(f"Failed to read {agri_file}")
+        BT  = agri["BT"]
+        lat = agri["lat"]
+        lon = agri["lon"]
+        vza = agri.get("VZA")
+        sza = agri.get("SZA")
     H, W = BT.shape[:2]
 
     if vza is None or sza is None:
