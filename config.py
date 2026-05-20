@@ -52,7 +52,7 @@ GPM_ROOT     = Path("/data/Data_yuq/GPM_2019/")    # GPM IMERG V07B day-folders
 # ─────────────────────────────────────────────────────────────────────────────
 # 2.  Paired HDF output (produced by data_fusion.py)
 # ─────────────────────────────────────────────────────────────────────────────
-PAIRED_ROOT      = ROOT / "paired_gpm"
+PAIRED_ROOT      = ROOT / "paired"
 PAIRED_TRAIN_DIR = PAIRED_ROOT / "train"
 PAIRED_VAL_DIR   = PAIRED_ROOT / "val"
 PAIRED_TEST_DIR  = PAIRED_ROOT / "test"
@@ -60,19 +60,19 @@ PAIRED_TEST_DIR  = PAIRED_ROOT / "test"
 # ─────────────────────────────────────────────────────────────────────────────
 # 3.  Normalisation statistics cache
 # ─────────────────────────────────────────────────────────────────────────────
-STATS_DIR  = ROOT / "stats_gpm"
+STATS_DIR  = ROOT / "stats"
 STATS_FILE = STATS_DIR / "norm_stats.npz"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 4.  Model checkpoints and logs
 # ─────────────────────────────────────────────────────────────────────────────
-MODEL_DIR = ROOT / "model_gpm"
-LOG_DIR   = ROOT / "logs_gpm"
+MODEL_DIR = ROOT / "model"
+LOG_DIR   = ROOT / "logs"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 5.  Inference output
 # ─────────────────────────────────────────────────────────────────────────────
-RETRIEVAL_DIR = ROOT / "retrieval_gpm"
+RETRIEVAL_DIR = ROOT / "retrieval"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 6.  AGRI channel selection (0-based physical channel indices)
