@@ -39,14 +39,14 @@ import numpy as np
 
 import config as cfg
 import fusion_config as fc
-from fusion_core import compute_tight_disk_mask, match_agri_to_gpm
+from fusion_core import compute_tight_disk_mask, extract_tiles_with_gpm
 from fusion_io import (
     find_day_folders,
     parse_agri_datetime,
     parse_gpm_datetime,
     read_agri_scene,
     read_gpm_file,
-    write_gpm_fused_samples,
+    write_gpm_fused_tiles,
 )
 
 log = logging.getLogger(__name__)
@@ -97,7 +97,7 @@ def _pair_one_scene(
     mode: str,
 ) -> Tuple[bool, str, str]:
     """
-    子进程任务：将单个 AGRI 景匹配到单个 GPM 文件。
+    子进程任务：将单个 AGRI 景匹配到单个 GPM 文件，提取 tile。
     返回 (ok, out_path, msg)。
     """
     try:
@@ -133,7 +133,6 @@ def _pair_one_scene(
         lon_min = float(getattr(fc, "REGION_LON_MIN", -180))
         lon_max = float(getattr(fc, "REGION_LON_MAX", 180))
         if lat_min > -89 or lat_max < 89 or lon_min > -179 or lon_max < 179:
-            # 找 region 在 GPM lat/lon 数组中的索引范围
             lat_idx = np.searchsorted(gpm["lat"], [lat_min, lat_max])
             lon_idx = np.searchsorted(gpm["lon"], [lon_min, lon_max])
             lat_slice = slice(max(0, lat_idx[0]), min(len(gpm["lat"]), lat_idx[1]))
@@ -156,34 +155,33 @@ def _pair_one_scene(
             mask_3d = np.broadcast_to(tight_mask[..., np.newaxis], bt.shape)
             agri["BT"] = np.where(mask_3d, bt, np.nan)
 
-        # ── AGRI → GPM 空间匹配 ──
-        step = int(getattr(fc, "GPM_SAMPLE_STEP", 1))
-        max_s = int(getattr(fc, "MAX_SAMPLES_PER_SCENE", 0))
-        min_q = float(getattr(fc, "MIN_PRECIP_QUALITY", 0.0))
-        quality = gpm.get("quality")
-
-        samples = match_agri_to_gpm(
+        # ── 提取 tile ──
+        samples = extract_tiles_with_gpm(
             agri=agri,
             gpm_precip=gpm["precip"],
             gpm_lat=gpm["lat"],
             gpm_lon=gpm["lon"],
-            gpm_quality=quality,
-            dt_min=dt_min,
-            step=step,
-            max_samples=max_s,
-            min_precip_quality=min_q,
-            region_lat_min=float(getattr(fc, "REGION_LAT_MIN", -90)),
-            region_lat_max=float(getattr(fc, "REGION_LAT_MAX", 90)),
-            region_lon_min=float(getattr(fc, "REGION_LON_MIN", -180)),
-            region_lon_max=float(getattr(fc, "REGION_LON_MAX", 180)),
+            tile_size=cfg.TILE_SIZE,
+            stride=cfg.TILE_STRIDE[0],
+            region_lat_min=float(getattr(fc, "REGION_LAT_MIN", -10)),
+            region_lat_max=float(getattr(fc, "REGION_LAT_MAX", 20)),
+            region_lon_min=float(getattr(fc, "REGION_LON_MIN", 100)),
+            region_lon_max=float(getattr(fc, "REGION_LON_MAX", 130)),
         )
 
         if not samples:
-            return False, out_path, f"No valid GPM samples (dt={dt_min:.1f}min)"
+            return False, out_path, f"No valid GPM tiles (dt={dt_min:.1f}min)"
+
+        # ── 每景随机上限：超过则随机子采样 ──
+        max_s = int(getattr(fc, "MAX_SAMPLES_PER_SCENE", 0))
+        if max_s > 0 and len(samples) > max_s:
+            rng = np.random.RandomState(hash(gpm_file) % (2**31 - 1))
+            indices = rng.choice(len(samples), size=max_s, replace=False)
+            samples = [samples[i] for i in sorted(indices)]
 
         # ── 写出 ──
-        n = write_gpm_fused_samples(out, samples, agri_dt, gpm_dt, mode)
-        return True, out_path, f"OK samples={n} dt={dt_min:.1f}min"
+        n = write_gpm_fused_tiles(out, samples, agri_dt, gpm_dt, mode)
+        return True, out_path, f"OK tiles={n} dt={dt_min:.1f}min"
 
     except Exception:
         return False, out_path, f"Exception:\n{traceback.format_exc()}"

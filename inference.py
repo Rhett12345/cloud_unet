@@ -1,19 +1,19 @@
 """
 inference.py
 ============
-Full-disk inference for precipitation classification.
+Full-disk inference for precipitation regression (tile-based).
 
 For each AGRI scene file:
-  1. Reads raw AGRI BT + geolocation (lat, lon, VZA, SZA).
-  2. Slices into overlapping patches (cfg.PATCH_SIZE, cfg.PATCH_OVERLAP).
-  3. Runs model in batch mode.
-  4. Reassembles predictions via Gaussian-weighted averaging.
+  1. Reads raw AGRI BT + geolocation (lat, lon).
+  2. Slices into 128×128 tiles with stride 64.
+  3. Runs U-Net in batch mode.
+  4. Reassembles predictions via Gaussian-weighted blending.
   5. Saves outputs as a compressed .npz file.
 
 Output .npz keys:
     latitude, longitude
-    precip_class  : integer class map (H, W)   0-3
-    precip_prob   : (H, W, 4)     softmax probabilities
+    precip_pred  : (H, W)     predicted precipitation (mm/h)
+    precip_prob  : (H, W)     rain probability
 """
 
 import argparse
@@ -23,7 +23,6 @@ from typing import Optional
 
 import numpy as np
 import torch
-import torch.nn.functional as F
 
 import config as cfg
 from fusion_io import read_agri_scene
@@ -34,10 +33,7 @@ log = logging.getLogger(__name__)
 
 
 def _build_region_mask(lat: np.ndarray, lon: np.ndarray) -> np.ndarray:
-    """
-    构建区域 mask（True=在训练区域内）。
-    读取 fusion_config 中的 REGION_LAT/LON 参数。
-    """
+    """构建区域 mask（True=在训练区域内）。"""
     try:
         import fusion_config as fc
         lat_min = float(getattr(fc, "REGION_LAT_MIN", -90))
@@ -47,44 +43,41 @@ def _build_region_mask(lat: np.ndarray, lon: np.ndarray) -> np.ndarray:
     except ImportError:
         return np.ones(lat.shape, dtype=bool)
 
-    # If any bound is at the global extreme, treat as no region filter
     if lat_min <= -89 and lat_max >= 89 and lon_min <= -179 and lon_max >= 179:
         return np.ones(lat.shape, dtype=bool)
 
-    log.info("Inference region: lat=[%.1f, %.1f] lon=[%.1f, %.1f]", lat_min, lat_max, lon_min, lon_max)
+    log.info("Inference region: lat=[%.1f, %.1f] lon=[%.1f, %.1f]",
+             lat_min, lat_max, lon_min, lon_max)
     mask = (np.isfinite(lat) & np.isfinite(lon)
             & (lat >= lat_min) & (lat <= lat_max)
             & (lon >= lon_min) & (lon <= lon_max))
     return mask
 
 
-def _gaussian_weight_map(ph: int, pw: int) -> np.ndarray:
-    sigma_h, sigma_w = ph / 4.0, pw / 4.0
-    yy = np.arange(ph) - ph / 2.0
-    xx = np.arange(pw) - pw / 2.0
+def _gaussian_weight_map(th: int, tw: int) -> np.ndarray:
+    """2D Gaussian weight map for tile blending."""
+    sigma_h, sigma_w = th / 4.0, tw / 4.0
+    yy = np.arange(th) - th / 2.0
+    xx = np.arange(tw) - tw / 2.0
     xx, yy = np.meshgrid(xx, yy)
     w = np.exp(-(xx ** 2 / (2 * sigma_w ** 2) + yy ** 2 / (2 * sigma_h ** 2)))
     return w.astype(np.float32)
 
 
-def _extract_patches(arr: np.ndarray, ph: int, pw: int, stride_h: int, stride_w: int):
+def _extract_tiles(arr: np.ndarray, th: int, tw: int, stride: int):
+    """Generator yielding (tile, row, col) for sliding window."""
     H, W = arr.shape[:2]
-    for i in range(0, H - ph + 1, stride_h):
-        for j in range(0, W - pw + 1, stride_w):
-            yield arr[i:i + ph, j:j + pw, :], i, j
-
-
-def _stitch(pred_sum: np.ndarray, weight_sum: np.ndarray) -> np.ndarray:
-    wt = weight_sum[..., np.newaxis] if pred_sum.ndim == 3 else weight_sum
-    return np.where(wt > 0, pred_sum / np.maximum(wt, 1e-8), np.nan)
+    for i in range(0, H - th + 1, stride):
+        for j in range(0, W - tw + 1, stride):
+            yield arr[i:i + th, j:j + tw, ...], i, j
 
 
 def run_inference(agri_file: Path,
                   stats: NormStats,
                   checkpoint: Optional[Path] = None,
                   out_dir: Optional[Path] = None,
-                  batch_size: int = 64) -> Path:
-    """Produce full-disk precipitation classification for one AGRI scene."""
+                  batch_size: int = 32) -> Path:
+    """Produce full-disk precipitation map for one AGRI scene."""
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     checkpoint = checkpoint or cfg.CHECKPOINT_BEST
     out_dir = out_dir or cfg.RETRIEVAL_DIR
@@ -98,39 +91,42 @@ def run_inference(agri_file: Path,
     # ── Read AGRI ──
     if agri_file.suffix.lower() in (".npz",):
         d = np.load(agri_file, allow_pickle=True)
-        BT  = d["BT_converted"] if "BT_converted" in d else d["BT"]
+        BT = d["BT_converted"] if "BT_converted" in d else d["BT"]
         lat = d["latitude"]; lon = d["longitude"]
     else:
         agri = read_agri_scene(agri_file)
         if agri is None:
             raise RuntimeError(f"Failed to read {agri_file}")
-        BT  = agri["BT"]
+        BT = agri["BT"]
         lat = agri["lat"]
         lon = agri["lon"]
 
     H, W = BT.shape[:2]
+    n_agri = cfg.AGRI_CHANNELS  # 7
 
-    # ── Normalise BT ──
+    # ── Normalise BT (first 7 channels) ──
     BT_norm = (BT - stats.agri_mean) / (stats.agri_std + 1e-8)
+    BT_norm = np.nan_to_num(BT_norm, nan=0.0).astype(np.float32)
 
-    # ── Geo: only lat, lon (2 channels) ──
-    geo_full = np.stack([lat / 90.0, lon / 180.0], axis=-1).astype(np.float32)
-    geo_full = np.nan_to_num(geo_full, nan=0.0)
+    # ── Geo channels: lat/90, lon/180 ──
+    geo_full = np.stack([
+        np.nan_to_num(lat, nan=0.0) / 90.0,
+        np.nan_to_num(lon, nan=0.0) / 180.0,
+    ], axis=-1).astype(np.float32)
+
+    # ── Combined feature array (H, W, 9) ──
+    features = np.concatenate([BT_norm, geo_full], axis=-1)
 
     # ── Region mask ──
     region_mask = _build_region_mask(lat, lon)
-    region_active = not bool(np.all(region_mask))
 
-    # ── Patch geometry ──
-    ph, pw   = cfg.PATCH_SIZE
-    overlap_h, overlap_w = cfg.PATCH_OVERLAP
-    stride_h = max(1, ph - overlap_h)
-    stride_w = max(1, pw - overlap_w)
-    wmap     = _gaussian_weight_map(ph, pw)   # (ph, pw)
+    # ── Tile geometry ──
+    th, tw = cfg.TILE_SIZE
+    stride = cfg.INFERENCE_STRIDE
+    wmap = _gaussian_weight_map(th, tw)
 
     # ── Accumulation buffers ──
-    C = cfg.NUM_CLASSES
-    prob_sum    = np.zeros((H, W, C), dtype=np.float32)
+    precip_sum  = np.zeros((H, W), dtype=np.float32)
     weight_sum  = np.zeros((H, W), dtype=np.float32)
 
     x_buf, positions_buf = [], []
@@ -138,51 +134,41 @@ def run_inference(agri_file: Path,
     def _flush():
         if not x_buf:
             return
-        x = torch.from_numpy(np.stack(x_buf, axis=0)).to(device)  # (B, C+2, ph, pw)
+        x = torch.from_numpy(np.stack(x_buf, axis=0)).to(device)  # (B, 9, th, tw)
 
         with torch.no_grad():
             with torch.amp.autocast(device.type, enabled=(device.type == "cuda")):
-                logits = model(x)                                    # (B, 4)
+                logits, rain = model(x)
 
-        probs = F.softmax(logits, dim=1).cpu().numpy()               # (B, 4)
+        prob = torch.sigmoid(logits)
+        pred = (prob * rain).cpu().numpy()  # (B, 1, th, tw)
 
-        for b, (si, sj) in enumerate(positions_buf):
-            # Broadcast patch-level prediction to whole patch with Gaussian weight
-            for c in range(C):
-                prob_sum[si:si+ph, sj:sj+pw, c] += probs[b, c] * wmap
-            weight_sum[si:si+ph, sj:sj+pw] += wmap
+        for bi, (si, sj) in enumerate(positions_buf):
+            precip_sum[si:si+th, sj:sj+tw] += pred[bi, 0] * wmap
+            weight_sum[si:si+th, sj:sj+tw] += wmap
 
         x_buf.clear()
         positions_buf.clear()
 
-    for bt_patch, si, sj in _extract_patches(BT_norm, ph, pw, stride_h, stride_w):
-        nan_ratio = np.isnan(bt_patch).mean()
+    for tile, si, sj in _extract_tiles(features, th, tw, stride):
+        nan_ratio = np.isnan(tile).mean()
         if nan_ratio > 0.8:
             continue
-        if region_active:
-            if not region_mask[si:si+ph, sj:sj+pw].any():
-                continue
-        geo_patch = geo_full[si:si+ph, sj:sj+pw, :]
-        bt_filled = np.where(np.isnan(bt_patch), 0.0, bt_patch)
-        # Concat BT + geo → (ph, pw, C+2) → (C+2, ph, pw)
-        x_patch = np.concatenate([bt_filled, geo_patch], axis=-1).transpose(2, 0, 1)
-        x_patch = np.ascontiguousarray(x_patch)
+        if not region_mask[si:si+th, sj:sj+tw].any():
+            continue
+
+        tile_filled = np.nan_to_num(tile, nan=0.0)
+        x_patch = np.ascontiguousarray(tile_filled.transpose(2, 0, 1))
         x_buf.append(x_patch)
         positions_buf.append((si, sj))
+
         if len(x_buf) >= batch_size:
             _flush()
     _flush()
 
     # ── Stitch ──
-    prob_map = _stitch(prob_sum, weight_sum)   # (H, W, C)
-
-    if region_active:
-        prob_map[~region_mask] = np.nan
-
-    class_map = np.full(prob_map.shape[:2], -1, dtype=np.int16)
-    valid_mask = np.isfinite(prob_map).any(axis=-1)
-    if valid_mask.any():
-        class_map[valid_mask] = np.nanargmax(prob_map[valid_mask], axis=-1).astype(np.int16)
+    precip_map = np.where(weight_sum > 0, precip_sum / np.maximum(weight_sum, 1e-8), np.nan)
+    precip_map[~np.isfinite(lat)] = np.nan
 
     # ── Save ──
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -193,10 +179,12 @@ def run_inference(agri_file: Path,
         out_path,
         latitude=lat,
         longitude=lon,
-        precip_class=class_map,
-        precip_prob=prob_map.astype(np.float32),
+        precip_pred=precip_map.astype(np.float32),
     )
     log.info("Saved retrieval → %s", out_path)
+    log.info("Precip range: [%.2f, %.2f] mm/h, rain fraction: %.2f%%",
+             np.nanmin(precip_map), np.nanmax(precip_map),
+             np.nanmean(precip_map > cfg.RAIN_THRESHOLD) * 100)
     return out_path
 
 
@@ -205,12 +193,12 @@ def main():
         level=getattr(logging, cfg.LOG_LEVEL),
         format="%(asctime)s [%(levelname)s] %(name)s - %(message)s",
     )
-    parser = argparse.ArgumentParser(description="Full-disk AGRI precipitation classification")
+    parser = argparse.ArgumentParser(description="Full-disk AGRI precipitation inference")
     parser.add_argument("--agri_file", default=None)
     parser.add_argument("--agri_dir",  default=None)
     parser.add_argument("--checkpoint", default=None)
     parser.add_argument("--out_dir",    default=None)
-    parser.add_argument("--batch_size", type=int, default=64)
+    parser.add_argument("--batch_size", type=int, default=32)
     args = parser.parse_args()
 
     stats = NormStats.load(cfg.STATS_FILE)
@@ -230,7 +218,8 @@ def main():
             except Exception as exc:
                 log.error("Failed for %s: %s", f.name, exc)
     elif args.agri_file:
-        run_inference(Path(args.agri_file), stats=stats, checkpoint=ckpt, out_dir=out_d)
+        run_inference(Path(args.agri_file), stats=stats, checkpoint=ckpt,
+                      out_dir=out_d, batch_size=args.batch_size)
     else:
         parser.error("Either --agri_file or --agri_dir required")
 

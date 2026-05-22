@@ -1,64 +1,1783 @@
 nohup: ignoring input
-2026-05-21 07:06:27 [INFO] __main__ - ============================================================
-2026-05-21 07:06:27 [INFO] __main__ - Pipeline stages: fuse
-2026-05-21 07:06:27 [INFO] __main__ - ============================================================
-2026-05-21 07:06:27 [INFO] __main__ - Stage: FUSE
-2026-05-21 07:06:27 [INFO] data_fusion - Day 20190101 | AGRI=40 GPM=48 | workers=8 dt_max=10min
-2026-05-21 07:06:27 [INFO] data_fusion - Day 20190101 | tasks=16 skipped(no_agri_match)=32
-2026-05-21 07:07:51 [INFO] fusion_io - Finalised GPM_AGRI_20190101_114500_114459.h5 (62500 samples)
-2026-05-21 07:08:05 [INFO] fusion_io - Finalised GPM_AGRI_20190101_001500_001459.h5 (62500 samples)
-2026-05-21 07:08:05 [INFO] fusion_io - Finalised GPM_AGRI_20190101_091500_091459.h5 (62500 samples)
-2026-05-21 07:08:06 [INFO] fusion_io - Finalised GPM_AGRI_20190101_084500_084459.h5 (62500 samples)
-2026-05-21 07:08:07 [INFO] fusion_io - Finalised GPM_AGRI_20190101_054500_054459.h5 (62500 samples)
-2026-05-21 07:08:07 [INFO] fusion_io - Finalised GPM_AGRI_20190101_024500_024459.h5 (62500 samples)
-2026-05-21 07:08:07 [INFO] fusion_io - Finalised GPM_AGRI_20190101_061500_061459.h5 (62500 samples)
-2026-05-21 07:08:08 [INFO] fusion_io - Finalised GPM_AGRI_20190101_031500_031459.h5 (62500 samples)
-2026-05-21 07:09:13 [INFO] fusion_io - Finalised GPM_AGRI_20190101_121500_121459.h5 (62500 samples)
-2026-05-21 07:09:27 [INFO] fusion_io - Finalised GPM_AGRI_20190101_144500_144459.h5 (62500 samples)
-2026-05-21 07:09:27 [INFO] fusion_io - Finalised GPM_AGRI_20190101_151500_151459.h5 (62500 samples)
-2026-05-21 07:09:28 [INFO] fusion_io - Finalised GPM_AGRI_20190101_174500_174459.h5 (62500 samples)
-2026-05-21 07:09:29 [INFO] fusion_io - Finalised GPM_AGRI_20190101_204500_204459.h5 (62500 samples)
-2026-05-21 07:09:29 [INFO] fusion_io - Finalised GPM_AGRI_20190101_181500_181459.h5 (62500 samples)
-2026-05-21 07:09:29 [INFO] fusion_io - Finalised GPM_AGRI_20190101_211500_211459.h5 (62500 samples)
-2026-05-21 07:09:42 [INFO] fusion_io - Finalised GPM_AGRI_20190101_234500_234459.h5 (62500 samples)
-2026-05-21 07:09:43 [INFO] data_fusion - Day 20190101 - 16/16 ok
-2026-05-21 07:09:43 [INFO] data_fusion - Day 20190102 | AGRI=40 GPM=48 | workers=8 dt_max=10min
-2026-05-21 07:09:43 [INFO] data_fusion - Day 20190102 | tasks=16 skipped(no_agri_match)=32
-2026-05-21 07:11:08 [INFO] fusion_io - Finalised GPM_AGRI_20190102_114500_114459.h5 (62500 samples)
-2026-05-21 07:11:20 [INFO] fusion_io - Finalised GPM_AGRI_20190102_001500_001459.h5 (62500 samples)
-2026-05-21 07:11:21 [INFO] fusion_io - Finalised GPM_AGRI_20190102_091500_091459.h5 (62500 samples)
-2026-05-21 07:11:21 [INFO] fusion_io - Finalised GPM_AGRI_20190102_024500_024459.h5 (62500 samples)
-2026-05-21 07:11:23 [INFO] fusion_io - Finalised GPM_AGRI_20190102_084500_084459.h5 (62500 samples)
-2026-05-21 07:11:23 [INFO] fusion_io - Finalised GPM_AGRI_20190102_061500_061459.h5 (62500 samples)
-2026-05-21 07:11:23 [INFO] fusion_io - Finalised GPM_AGRI_20190102_054500_054459.h5 (62500 samples)
-2026-05-21 07:11:24 [INFO] fusion_io - Finalised GPM_AGRI_20190102_031500_031459.h5 (62500 samples)
-2026-05-21 07:12:31 [INFO] fusion_io - Finalised GPM_AGRI_20190102_121500_121459.h5 (62500 samples)
-2026-05-21 07:12:42 [INFO] fusion_io - Finalised GPM_AGRI_20190102_144500_144459.h5 (62500 samples)
-2026-05-21 07:12:43 [INFO] fusion_io - Finalised GPM_AGRI_20190102_151500_151459.h5 (62500 samples)
-2026-05-21 07:12:44 [INFO] fusion_io - Finalised GPM_AGRI_20190102_174500_174459.h5 (62500 samples)
-2026-05-21 07:12:47 [INFO] fusion_io - Finalised GPM_AGRI_20190102_181500_181459.h5 (62500 samples)
-2026-05-21 07:12:47 [INFO] fusion_io - Finalised GPM_AGRI_20190102_204500_204459.h5 (62500 samples)
-2026-05-21 07:12:48 [INFO] fusion_io - Finalised GPM_AGRI_20190102_211500_211459.h5 (62500 samples)
-2026-05-21 07:13:00 [INFO] fusion_io - Finalised GPM_AGRI_20190102_234500_234459.h5 (62500 samples)
-2026-05-21 07:13:01 [INFO] data_fusion - Day 20190102 - 16/16 ok
-2026-05-21 07:13:01 [INFO] data_fusion - Day 20190103 | AGRI=40 GPM=48 | workers=8 dt_max=10min
-2026-05-21 07:13:01 [INFO] data_fusion - Day 20190103 | tasks=16 skipped(no_agri_match)=32
-2026-05-21 07:14:27 [INFO] fusion_io - Finalised GPM_AGRI_20190103_114500_114459.h5 (62500 samples)
-2026-05-21 07:14:38 [INFO] fusion_io - Finalised GPM_AGRI_20190103_091500_091459.h5 (62500 samples)
-2026-05-21 07:14:39 [INFO] fusion_io - Finalised GPM_AGRI_20190103_084500_084459.h5 (62500 samples)
-2026-05-21 07:14:39 [INFO] fusion_io - Finalised GPM_AGRI_20190103_001500_001459.h5 (62500 samples)
-2026-05-21 07:14:40 [INFO] fusion_io - Finalised GPM_AGRI_20190103_054500_054459.h5 (62500 samples)
-2026-05-21 07:14:40 [INFO] fusion_io - Finalised GPM_AGRI_20190103_031500_031459.h5 (62500 samples)
-2026-05-21 07:14:40 [INFO] fusion_io - Finalised GPM_AGRI_20190103_024500_024459.h5 (62500 samples)
-2026-05-21 07:14:41 [INFO] fusion_io - Finalised GPM_AGRI_20190103_061500_061459.h5 (62500 samples)
-2026-05-21 07:15:49 [INFO] fusion_io - Finalised GPM_AGRI_20190103_121500_121459.h5 (62500 samples)
-2026-05-21 07:15:59 [INFO] fusion_io - Finalised GPM_AGRI_20190103_144500_144459.h5 (62500 samples)
-2026-05-21 07:16:00 [INFO] fusion_io - Finalised GPM_AGRI_20190103_151500_151459.h5 (62500 samples)
-2026-05-21 07:16:00 [INFO] fusion_io - Finalised GPM_AGRI_20190103_174500_174459.h5 (62500 samples)
-2026-05-21 07:16:02 [INFO] fusion_io - Finalised GPM_AGRI_20190103_181500_181459.h5 (62500 samples)
-2026-05-21 07:16:02 [INFO] fusion_io - Finalised GPM_AGRI_20190103_211500_211459.h5 (62500 samples)
-2026-05-21 07:16:02 [INFO] fusion_io - Finalised GPM_AGRI_20190103_204500_204459.h5 (62500 samples)
-2026-05-21 07:16:14 [INFO] fusion_io - Finalised GPM_AGRI_20190103_234500_234459.h5 (62500 samples)
-2026-05-21 07:16:14 [INFO] data_fusion - Day 20190103 - 16/16 ok
-2026-05-21 07:16:14 [INFO] data_fusion - Day 20190104 | AGRI=40 GPM=48 | workers=8 dt_max=10min
-2026-05-21 07:16:14 [INFO] data_fusion - Day 20190104 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:19:40 [INFO] __main__ - ============================================================
+2026-05-22 05:19:40 [INFO] __main__ - Pipeline stages: fuse
+2026-05-22 05:19:40 [INFO] __main__ - ============================================================
+2026-05-22 05:19:40 [INFO] __main__ - Stage: FUSE
+2026-05-22 05:19:40 [INFO] data_fusion - Day 20190101 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:19:40 [INFO] data_fusion - Day 20190101 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:19:45 [INFO] fusion_io - Finalised GPM_AGRI_20190101_024500_024459.h5 (36 tiles)
+2026-05-22 05:19:45 [INFO] fusion_io - Finalised GPM_AGRI_20190101_114500_114459.h5 (36 tiles)
+2026-05-22 05:19:45 [INFO] fusion_io - Finalised GPM_AGRI_20190101_031500_031459.h5 (36 tiles)
+2026-05-22 05:19:45 [INFO] fusion_io - Finalised GPM_AGRI_20190101_084500_084459.h5 (36 tiles)
+2026-05-22 05:19:45 [INFO] fusion_io - Finalised GPM_AGRI_20190101_001500_001459.h5 (36 tiles)
+2026-05-22 05:19:45 [INFO] fusion_io - Finalised GPM_AGRI_20190101_091500_091459.h5 (36 tiles)
+2026-05-22 05:19:46 [INFO] fusion_io - Finalised GPM_AGRI_20190101_061500_061459.h5 (36 tiles)
+2026-05-22 05:19:46 [INFO] fusion_io - Finalised GPM_AGRI_20190101_054500_054459.h5 (36 tiles)
+2026-05-22 05:19:50 [INFO] fusion_io - Finalised GPM_AGRI_20190101_144500_144459.h5 (36 tiles)
+2026-05-22 05:19:50 [INFO] fusion_io - Finalised GPM_AGRI_20190101_121500_121459.h5 (36 tiles)
+2026-05-22 05:19:50 [INFO] fusion_io - Finalised GPM_AGRI_20190101_151500_151459.h5 (36 tiles)
+2026-05-22 05:19:50 [INFO] fusion_io - Finalised GPM_AGRI_20190101_174500_174459.h5 (36 tiles)
+2026-05-22 05:19:50 [INFO] fusion_io - Finalised GPM_AGRI_20190101_181500_181459.h5 (36 tiles)
+2026-05-22 05:19:50 [INFO] fusion_io - Finalised GPM_AGRI_20190101_204500_204459.h5 (36 tiles)
+2026-05-22 05:19:50 [INFO] fusion_io - Finalised GPM_AGRI_20190101_211500_211459.h5 (36 tiles)
+2026-05-22 05:19:50 [INFO] fusion_io - Finalised GPM_AGRI_20190101_234500_234459.h5 (36 tiles)
+2026-05-22 05:19:50 [INFO] data_fusion - Day 20190101 - 16/16 ok
+2026-05-22 05:19:50 [INFO] data_fusion - Day 20190102 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:19:51 [INFO] data_fusion - Day 20190102 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:19:56 [INFO] fusion_io - Finalised GPM_AGRI_20190102_084500_084459.h5 (36 tiles)
+2026-05-22 05:19:56 [INFO] fusion_io - Finalised GPM_AGRI_20190102_054500_054459.h5 (36 tiles)
+2026-05-22 05:19:56 [INFO] fusion_io - Finalised GPM_AGRI_20190102_114500_114459.h5 (36 tiles)
+2026-05-22 05:19:56 [INFO] fusion_io - Finalised GPM_AGRI_20190102_061500_061459.h5 (36 tiles)
+2026-05-22 05:19:56 [INFO] fusion_io - Finalised GPM_AGRI_20190102_091500_091459.h5 (36 tiles)
+2026-05-22 05:19:56 [INFO] fusion_io - Finalised GPM_AGRI_20190102_031500_031459.h5 (36 tiles)
+2026-05-22 05:19:56 [INFO] fusion_io - Finalised GPM_AGRI_20190102_024500_024459.h5 (36 tiles)
+2026-05-22 05:19:56 [INFO] fusion_io - Finalised GPM_AGRI_20190102_001500_001459.h5 (36 tiles)
+2026-05-22 05:20:00 [INFO] fusion_io - Finalised GPM_AGRI_20190102_144500_144459.h5 (36 tiles)
+2026-05-22 05:20:00 [INFO] fusion_io - Finalised GPM_AGRI_20190102_121500_121459.h5 (36 tiles)
+2026-05-22 05:20:00 [INFO] fusion_io - Finalised GPM_AGRI_20190102_151500_151459.h5 (36 tiles)
+2026-05-22 05:20:00 [INFO] fusion_io - Finalised GPM_AGRI_20190102_174500_174459.h5 (36 tiles)
+2026-05-22 05:20:01 [INFO] fusion_io - Finalised GPM_AGRI_20190102_204500_204459.h5 (36 tiles)
+2026-05-22 05:20:01 [INFO] fusion_io - Finalised GPM_AGRI_20190102_181500_181459.h5 (36 tiles)
+2026-05-22 05:20:01 [INFO] fusion_io - Finalised GPM_AGRI_20190102_211500_211459.h5 (36 tiles)
+2026-05-22 05:20:01 [INFO] fusion_io - Finalised GPM_AGRI_20190102_234500_234459.h5 (36 tiles)
+2026-05-22 05:20:01 [INFO] data_fusion - Day 20190102 - 16/16 ok
+2026-05-22 05:20:01 [INFO] data_fusion - Day 20190103 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:20:01 [INFO] data_fusion - Day 20190103 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:20:06 [INFO] fusion_io - Finalised GPM_AGRI_20190103_001500_001459.h5 (36 tiles)
+2026-05-22 05:20:06 [INFO] fusion_io - Finalised GPM_AGRI_20190103_114500_114459.h5 (36 tiles)
+2026-05-22 05:20:06 [INFO] fusion_io - Finalised GPM_AGRI_20190103_054500_054459.h5 (36 tiles)
+2026-05-22 05:20:06 [INFO] fusion_io - Finalised GPM_AGRI_20190103_031500_031459.h5 (36 tiles)
+2026-05-22 05:20:06 [INFO] fusion_io - Finalised GPM_AGRI_20190103_091500_091459.h5 (36 tiles)
+2026-05-22 05:20:06 [INFO] fusion_io - Finalised GPM_AGRI_20190103_084500_084459.h5 (36 tiles)
+2026-05-22 05:20:06 [INFO] fusion_io - Finalised GPM_AGRI_20190103_024500_024459.h5 (36 tiles)
+2026-05-22 05:20:06 [INFO] fusion_io - Finalised GPM_AGRI_20190103_061500_061459.h5 (36 tiles)
+2026-05-22 05:20:10 [INFO] fusion_io - Finalised GPM_AGRI_20190103_121500_121459.h5 (36 tiles)
+2026-05-22 05:20:11 [INFO] fusion_io - Finalised GPM_AGRI_20190103_144500_144459.h5 (36 tiles)
+2026-05-22 05:20:11 [INFO] fusion_io - Finalised GPM_AGRI_20190103_151500_151459.h5 (36 tiles)
+2026-05-22 05:20:11 [INFO] fusion_io - Finalised GPM_AGRI_20190103_174500_174459.h5 (36 tiles)
+2026-05-22 05:20:11 [INFO] fusion_io - Finalised GPM_AGRI_20190103_181500_181459.h5 (36 tiles)
+2026-05-22 05:20:11 [INFO] fusion_io - Finalised GPM_AGRI_20190103_204500_204459.h5 (36 tiles)
+2026-05-22 05:20:11 [INFO] fusion_io - Finalised GPM_AGRI_20190103_211500_211459.h5 (36 tiles)
+2026-05-22 05:20:11 [INFO] fusion_io - Finalised GPM_AGRI_20190103_234500_234459.h5 (36 tiles)
+2026-05-22 05:20:11 [INFO] data_fusion - Day 20190103 - 16/16 ok
+2026-05-22 05:20:11 [INFO] data_fusion - Day 20190104 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:20:11 [INFO] data_fusion - Day 20190104 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:20:16 [INFO] fusion_io - Finalised GPM_AGRI_20190104_031500_031459.h5 (36 tiles)
+2026-05-22 05:20:16 [INFO] fusion_io - Finalised GPM_AGRI_20190104_001500_001459.h5 (36 tiles)
+2026-05-22 05:20:17 [INFO] fusion_io - Finalised GPM_AGRI_20190104_114500_114459.h5 (36 tiles)
+2026-05-22 05:20:17 [INFO] fusion_io - Finalised GPM_AGRI_20190104_084500_084459.h5 (36 tiles)
+2026-05-22 05:20:17 [INFO] fusion_io - Finalised GPM_AGRI_20190104_091500_091459.h5 (36 tiles)
+2026-05-22 05:20:17 [INFO] fusion_io - Finalised GPM_AGRI_20190104_061500_061459.h5 (36 tiles)
+2026-05-22 05:20:17 [INFO] fusion_io - Finalised GPM_AGRI_20190104_024500_024459.h5 (36 tiles)
+2026-05-22 05:20:17 [INFO] fusion_io - Finalised GPM_AGRI_20190104_054500_054459.h5 (36 tiles)
+2026-05-22 05:20:21 [INFO] fusion_io - Finalised GPM_AGRI_20190104_121500_121459.h5 (36 tiles)
+2026-05-22 05:20:21 [INFO] fusion_io - Finalised GPM_AGRI_20190104_144500_144459.h5 (36 tiles)
+2026-05-22 05:20:21 [INFO] fusion_io - Finalised GPM_AGRI_20190104_151500_151459.h5 (36 tiles)
+2026-05-22 05:20:21 [INFO] fusion_io - Finalised GPM_AGRI_20190104_204500_204459.h5 (36 tiles)
+2026-05-22 05:20:21 [INFO] fusion_io - Finalised GPM_AGRI_20190104_174500_174459.h5 (36 tiles)
+2026-05-22 05:20:21 [INFO] fusion_io - Finalised GPM_AGRI_20190104_181500_181459.h5 (36 tiles)
+2026-05-22 05:20:21 [INFO] fusion_io - Finalised GPM_AGRI_20190104_211500_211459.h5 (36 tiles)
+2026-05-22 05:20:22 [INFO] fusion_io - Finalised GPM_AGRI_20190104_234500_234459.h5 (36 tiles)
+2026-05-22 05:20:22 [INFO] data_fusion - Day 20190104 - 16/16 ok
+2026-05-22 05:20:22 [INFO] data_fusion - Day 20190105 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:20:22 [INFO] data_fusion - Day 20190105 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:20:27 [INFO] fusion_io - Finalised GPM_AGRI_20190105_031500_031459.h5 (36 tiles)
+2026-05-22 05:20:27 [INFO] fusion_io - Finalised GPM_AGRI_20190105_114500_114459.h5 (36 tiles)
+2026-05-22 05:20:27 [INFO] fusion_io - Finalised GPM_AGRI_20190105_024500_024459.h5 (36 tiles)
+2026-05-22 05:20:27 [INFO] fusion_io - Finalised GPM_AGRI_20190105_001500_001459.h5 (36 tiles)
+2026-05-22 05:20:27 [INFO] fusion_io - Finalised GPM_AGRI_20190105_091500_091459.h5 (36 tiles)
+2026-05-22 05:20:27 [INFO] fusion_io - Finalised GPM_AGRI_20190105_084500_084459.h5 (36 tiles)
+2026-05-22 05:20:27 [INFO] fusion_io - Finalised GPM_AGRI_20190105_061500_061459.h5 (36 tiles)
+2026-05-22 05:20:27 [INFO] fusion_io - Finalised GPM_AGRI_20190105_054500_054459.h5 (36 tiles)
+2026-05-22 05:20:31 [INFO] fusion_io - Finalised GPM_AGRI_20190105_121500_121459.h5 (36 tiles)
+2026-05-22 05:20:31 [INFO] fusion_io - Finalised GPM_AGRI_20190105_144500_144459.h5 (36 tiles)
+2026-05-22 05:20:31 [INFO] fusion_io - Finalised GPM_AGRI_20190105_151500_151459.h5 (36 tiles)
+2026-05-22 05:20:31 [INFO] fusion_io - Finalised GPM_AGRI_20190105_174500_174459.h5 (36 tiles)
+2026-05-22 05:20:31 [INFO] fusion_io - Finalised GPM_AGRI_20190105_181500_181459.h5 (36 tiles)
+2026-05-22 05:20:31 [INFO] fusion_io - Finalised GPM_AGRI_20190105_204500_204459.h5 (36 tiles)
+2026-05-22 05:20:32 [INFO] fusion_io - Finalised GPM_AGRI_20190105_211500_211459.h5 (36 tiles)
+2026-05-22 05:20:32 [INFO] fusion_io - Finalised GPM_AGRI_20190105_234500_234459.h5 (36 tiles)
+2026-05-22 05:20:32 [INFO] data_fusion - Day 20190105 - 16/16 ok
+2026-05-22 05:20:32 [INFO] data_fusion - Day 20190106 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:20:32 [INFO] data_fusion - Day 20190106 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:20:37 [INFO] fusion_io - Finalised GPM_AGRI_20190106_001500_001459.h5 (36 tiles)
+2026-05-22 05:20:37 [INFO] fusion_io - Finalised GPM_AGRI_20190106_114500_114459.h5 (36 tiles)
+2026-05-22 05:20:37 [INFO] fusion_io - Finalised GPM_AGRI_20190106_024500_024459.h5 (36 tiles)
+2026-05-22 05:20:37 [INFO] fusion_io - Finalised GPM_AGRI_20190106_091500_091459.h5 (36 tiles)
+2026-05-22 05:20:37 [INFO] fusion_io - Finalised GPM_AGRI_20190106_084500_084459.h5 (36 tiles)
+2026-05-22 05:20:37 [INFO] fusion_io - Finalised GPM_AGRI_20190106_031500_031459.h5 (36 tiles)
+2026-05-22 05:20:37 [INFO] fusion_io - Finalised GPM_AGRI_20190106_054500_054459.h5 (36 tiles)
+2026-05-22 05:20:37 [INFO] fusion_io - Finalised GPM_AGRI_20190106_061500_061459.h5 (36 tiles)
+2026-05-22 05:20:41 [INFO] fusion_io - Finalised GPM_AGRI_20190106_121500_121459.h5 (36 tiles)
+2026-05-22 05:20:42 [INFO] fusion_io - Finalised GPM_AGRI_20190106_151500_151459.h5 (36 tiles)
+2026-05-22 05:20:42 [INFO] fusion_io - Finalised GPM_AGRI_20190106_144500_144459.h5 (36 tiles)
+2026-05-22 05:20:42 [INFO] fusion_io - Finalised GPM_AGRI_20190106_174500_174459.h5 (36 tiles)
+2026-05-22 05:20:42 [INFO] fusion_io - Finalised GPM_AGRI_20190106_181500_181459.h5 (36 tiles)
+2026-05-22 05:20:42 [INFO] fusion_io - Finalised GPM_AGRI_20190106_204500_204459.h5 (36 tiles)
+2026-05-22 05:20:42 [INFO] fusion_io - Finalised GPM_AGRI_20190106_211500_211459.h5 (36 tiles)
+2026-05-22 05:20:42 [INFO] fusion_io - Finalised GPM_AGRI_20190106_234500_234459.h5 (36 tiles)
+2026-05-22 05:20:42 [INFO] data_fusion - Day 20190106 - 16/16 ok
+2026-05-22 05:20:42 [INFO] data_fusion - Day 20190107 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:20:42 [INFO] data_fusion - Day 20190107 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:20:47 [INFO] fusion_io - Finalised GPM_AGRI_20190107_001500_001459.h5 (36 tiles)
+2026-05-22 05:20:47 [INFO] fusion_io - Finalised GPM_AGRI_20190107_114500_114459.h5 (36 tiles)
+2026-05-22 05:20:47 [INFO] fusion_io - Finalised GPM_AGRI_20190107_024500_024459.h5 (36 tiles)
+2026-05-22 05:20:47 [INFO] fusion_io - Finalised GPM_AGRI_20190107_084500_084459.h5 (36 tiles)
+2026-05-22 05:20:47 [INFO] fusion_io - Finalised GPM_AGRI_20190107_031500_031459.h5 (36 tiles)
+2026-05-22 05:20:47 [INFO] fusion_io - Finalised GPM_AGRI_20190107_091500_091459.h5 (36 tiles)
+2026-05-22 05:20:47 [INFO] fusion_io - Finalised GPM_AGRI_20190107_061500_061459.h5 (36 tiles)
+2026-05-22 05:20:47 [INFO] fusion_io - Finalised GPM_AGRI_20190107_054500_054459.h5 (36 tiles)
+2026-05-22 05:20:52 [INFO] fusion_io - Finalised GPM_AGRI_20190107_121500_121459.h5 (36 tiles)
+2026-05-22 05:20:52 [INFO] fusion_io - Finalised GPM_AGRI_20190107_151500_151459.h5 (36 tiles)
+2026-05-22 05:20:52 [INFO] fusion_io - Finalised GPM_AGRI_20190107_144500_144459.h5 (36 tiles)
+2026-05-22 05:20:52 [INFO] fusion_io - Finalised GPM_AGRI_20190107_174500_174459.h5 (36 tiles)
+2026-05-22 05:20:52 [INFO] fusion_io - Finalised GPM_AGRI_20190107_181500_181459.h5 (36 tiles)
+2026-05-22 05:20:52 [INFO] fusion_io - Finalised GPM_AGRI_20190107_204500_204459.h5 (36 tiles)
+2026-05-22 05:20:52 [INFO] fusion_io - Finalised GPM_AGRI_20190107_211500_211459.h5 (36 tiles)
+2026-05-22 05:20:52 [INFO] fusion_io - Finalised GPM_AGRI_20190107_234500_234459.h5 (36 tiles)
+2026-05-22 05:20:52 [INFO] data_fusion - Day 20190107 - 16/16 ok
+2026-05-22 05:20:52 [INFO] data_fusion - Day 20190108 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:20:52 [INFO] data_fusion - Day 20190108 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:20:57 [INFO] fusion_io - Finalised GPM_AGRI_20190108_114500_114459.h5 (36 tiles)
+2026-05-22 05:20:57 [INFO] fusion_io - Finalised GPM_AGRI_20190108_091500_091459.h5 (36 tiles)
+2026-05-22 05:20:57 [INFO] fusion_io - Finalised GPM_AGRI_20190108_001500_001459.h5 (36 tiles)
+2026-05-22 05:20:58 [INFO] fusion_io - Finalised GPM_AGRI_20190108_084500_084459.h5 (36 tiles)
+2026-05-22 05:20:58 [INFO] fusion_io - Finalised GPM_AGRI_20190108_031500_031459.h5 (36 tiles)
+2026-05-22 05:20:58 [INFO] fusion_io - Finalised GPM_AGRI_20190108_024500_024459.h5 (36 tiles)
+2026-05-22 05:20:58 [INFO] fusion_io - Finalised GPM_AGRI_20190108_054500_054459.h5 (36 tiles)
+2026-05-22 05:20:58 [INFO] fusion_io - Finalised GPM_AGRI_20190108_061500_061459.h5 (36 tiles)
+2026-05-22 05:21:02 [INFO] fusion_io - Finalised GPM_AGRI_20190108_121500_121459.h5 (36 tiles)
+2026-05-22 05:21:02 [INFO] fusion_io - Finalised GPM_AGRI_20190108_144500_144459.h5 (36 tiles)
+2026-05-22 05:21:02 [INFO] fusion_io - Finalised GPM_AGRI_20190108_151500_151459.h5 (36 tiles)
+2026-05-22 05:21:02 [INFO] fusion_io - Finalised GPM_AGRI_20190108_174500_174459.h5 (36 tiles)
+2026-05-22 05:21:02 [INFO] fusion_io - Finalised GPM_AGRI_20190108_181500_181459.h5 (36 tiles)
+2026-05-22 05:21:02 [INFO] fusion_io - Finalised GPM_AGRI_20190108_204500_204459.h5 (36 tiles)
+2026-05-22 05:21:02 [INFO] fusion_io - Finalised GPM_AGRI_20190108_211500_211459.h5 (36 tiles)
+2026-05-22 05:21:02 [INFO] fusion_io - Finalised GPM_AGRI_20190108_234500_234459.h5 (36 tiles)
+2026-05-22 05:21:02 [INFO] data_fusion - Day 20190108 - 16/16 ok
+2026-05-22 05:21:02 [INFO] data_fusion - Day 20190109 | AGRI=39 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:21:02 [INFO] data_fusion - Day 20190109 | tasks=15 skipped(no_agri_match)=33
+2026-05-22 05:21:07 [INFO] fusion_io - Finalised GPM_AGRI_20190109_001500_001459.h5 (36 tiles)
+2026-05-22 05:21:07 [INFO] fusion_io - Finalised GPM_AGRI_20190109_024500_024459.h5 (36 tiles)
+2026-05-22 05:21:07 [INFO] fusion_io - Finalised GPM_AGRI_20190109_114500_114459.h5 (36 tiles)
+2026-05-22 05:21:08 [INFO] fusion_io - Finalised GPM_AGRI_20190109_121500_121459.h5 (36 tiles)
+2026-05-22 05:21:08 [INFO] fusion_io - Finalised GPM_AGRI_20190109_031500_031459.h5 (36 tiles)
+2026-05-22 05:21:08 [INFO] fusion_io - Finalised GPM_AGRI_20190109_084500_084459.h5 (36 tiles)
+2026-05-22 05:21:08 [INFO] fusion_io - Finalised GPM_AGRI_20190109_054500_054459.h5 (36 tiles)
+2026-05-22 05:21:08 [INFO] fusion_io - Finalised GPM_AGRI_20190109_061500_061459.h5 (36 tiles)
+2026-05-22 05:21:12 [INFO] fusion_io - Finalised GPM_AGRI_20190109_144500_144459.h5 (36 tiles)
+2026-05-22 05:21:12 [INFO] fusion_io - Finalised GPM_AGRI_20190109_151500_151459.h5 (36 tiles)
+2026-05-22 05:21:12 [INFO] fusion_io - Finalised GPM_AGRI_20190109_174500_174459.h5 (36 tiles)
+2026-05-22 05:21:12 [INFO] fusion_io - Finalised GPM_AGRI_20190109_181500_181459.h5 (36 tiles)
+2026-05-22 05:21:12 [INFO] fusion_io - Finalised GPM_AGRI_20190109_211500_211459.h5 (36 tiles)
+2026-05-22 05:21:12 [INFO] fusion_io - Finalised GPM_AGRI_20190109_204500_204459.h5 (36 tiles)
+2026-05-22 05:21:12 [INFO] fusion_io - Finalised GPM_AGRI_20190109_234500_234459.h5 (36 tiles)
+2026-05-22 05:21:12 [INFO] data_fusion - Day 20190109 - 15/15 ok
+2026-05-22 05:21:12 [INFO] data_fusion - Day 20190111 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:21:12 [INFO] data_fusion - Day 20190111 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:21:17 [INFO] fusion_io - Finalised GPM_AGRI_20190111_091500_091459.h5 (36 tiles)
+2026-05-22 05:21:17 [INFO] fusion_io - Finalised GPM_AGRI_20190111_114500_114459.h5 (36 tiles)
+2026-05-22 05:21:17 [INFO] fusion_io - Finalised GPM_AGRI_20190111_001500_001459.h5 (36 tiles)
+2026-05-22 05:21:17 [INFO] fusion_io - Finalised GPM_AGRI_20190111_084500_084459.h5 (36 tiles)
+2026-05-22 05:21:17 [INFO] fusion_io - Finalised GPM_AGRI_20190111_024500_024459.h5 (36 tiles)
+2026-05-22 05:21:17 [INFO] fusion_io - Finalised GPM_AGRI_20190111_031500_031459.h5 (36 tiles)
+2026-05-22 05:21:17 [INFO] fusion_io - Finalised GPM_AGRI_20190111_054500_054459.h5 (36 tiles)
+2026-05-22 05:21:18 [INFO] fusion_io - Finalised GPM_AGRI_20190111_061500_061459.h5 (36 tiles)
+2026-05-22 05:21:22 [INFO] fusion_io - Finalised GPM_AGRI_20190111_121500_121459.h5 (36 tiles)
+2026-05-22 05:21:22 [INFO] fusion_io - Finalised GPM_AGRI_20190111_151500_151459.h5 (36 tiles)
+2026-05-22 05:21:22 [INFO] fusion_io - Finalised GPM_AGRI_20190111_144500_144459.h5 (36 tiles)
+2026-05-22 05:21:22 [INFO] fusion_io - Finalised GPM_AGRI_20190111_174500_174459.h5 (36 tiles)
+2026-05-22 05:21:22 [INFO] fusion_io - Finalised GPM_AGRI_20190111_204500_204459.h5 (36 tiles)
+2026-05-22 05:21:22 [INFO] fusion_io - Finalised GPM_AGRI_20190111_181500_181459.h5 (36 tiles)
+2026-05-22 05:21:22 [INFO] fusion_io - Finalised GPM_AGRI_20190111_211500_211459.h5 (36 tiles)
+2026-05-22 05:21:22 [INFO] fusion_io - Finalised GPM_AGRI_20190111_234500_234459.h5 (36 tiles)
+2026-05-22 05:21:22 [INFO] data_fusion - Day 20190111 - 16/16 ok
+2026-05-22 05:21:22 [INFO] data_fusion - Day 20190113 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:21:22 [INFO] data_fusion - Day 20190113 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:21:28 [INFO] fusion_io - Finalised GPM_AGRI_20190113_001500_001459.h5 (36 tiles)
+2026-05-22 05:21:28 [INFO] fusion_io - Finalised GPM_AGRI_20190113_114500_114459.h5 (36 tiles)
+2026-05-22 05:21:28 [INFO] fusion_io - Finalised GPM_AGRI_20190113_061500_061459.h5 (36 tiles)
+2026-05-22 05:21:28 [INFO] fusion_io - Finalised GPM_AGRI_20190113_091500_091459.h5 (36 tiles)
+2026-05-22 05:21:28 [INFO] fusion_io - Finalised GPM_AGRI_20190113_054500_054459.h5 (36 tiles)
+2026-05-22 05:21:28 [INFO] fusion_io - Finalised GPM_AGRI_20190113_084500_084459.h5 (36 tiles)
+2026-05-22 05:21:28 [INFO] fusion_io - Finalised GPM_AGRI_20190113_031500_031459.h5 (36 tiles)
+2026-05-22 05:21:28 [INFO] fusion_io - Finalised GPM_AGRI_20190113_024500_024459.h5 (36 tiles)
+2026-05-22 05:21:32 [INFO] fusion_io - Finalised GPM_AGRI_20190113_121500_121459.h5 (36 tiles)
+2026-05-22 05:21:32 [INFO] fusion_io - Finalised GPM_AGRI_20190113_151500_151459.h5 (36 tiles)
+2026-05-22 05:21:32 [INFO] fusion_io - Finalised GPM_AGRI_20190113_144500_144459.h5 (36 tiles)
+2026-05-22 05:21:32 [INFO] fusion_io - Finalised GPM_AGRI_20190113_174500_174459.h5 (36 tiles)
+2026-05-22 05:21:32 [INFO] fusion_io - Finalised GPM_AGRI_20190113_181500_181459.h5 (36 tiles)
+2026-05-22 05:21:32 [INFO] fusion_io - Finalised GPM_AGRI_20190113_211500_211459.h5 (36 tiles)
+2026-05-22 05:21:32 [INFO] fusion_io - Finalised GPM_AGRI_20190113_204500_204459.h5 (36 tiles)
+2026-05-22 05:21:33 [INFO] fusion_io - Finalised GPM_AGRI_20190113_234500_234459.h5 (36 tiles)
+2026-05-22 05:21:33 [INFO] data_fusion - Day 20190113 - 16/16 ok
+2026-05-22 05:21:33 [INFO] data_fusion - Day 20190114 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:21:33 [INFO] data_fusion - Day 20190114 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:21:38 [INFO] fusion_io - Finalised GPM_AGRI_20190114_091500_091459.h5 (36 tiles)
+2026-05-22 05:21:38 [INFO] fusion_io - Finalised GPM_AGRI_20190114_114500_114459.h5 (36 tiles)
+2026-05-22 05:21:38 [INFO] fusion_io - Finalised GPM_AGRI_20190114_001500_001459.h5 (36 tiles)
+2026-05-22 05:21:38 [INFO] fusion_io - Finalised GPM_AGRI_20190114_084500_084459.h5 (36 tiles)
+2026-05-22 05:21:38 [INFO] fusion_io - Finalised GPM_AGRI_20190114_031500_031459.h5 (36 tiles)
+2026-05-22 05:21:38 [INFO] fusion_io - Finalised GPM_AGRI_20190114_054500_054459.h5 (36 tiles)
+2026-05-22 05:21:38 [INFO] fusion_io - Finalised GPM_AGRI_20190114_061500_061459.h5 (36 tiles)
+2026-05-22 05:21:38 [INFO] fusion_io - Finalised GPM_AGRI_20190114_024500_024459.h5 (36 tiles)
+2026-05-22 05:21:42 [INFO] fusion_io - Finalised GPM_AGRI_20190114_121500_121459.h5 (36 tiles)
+2026-05-22 05:21:42 [INFO] fusion_io - Finalised GPM_AGRI_20190114_144500_144459.h5 (36 tiles)
+2026-05-22 05:21:43 [INFO] fusion_io - Finalised GPM_AGRI_20190114_151500_151459.h5 (36 tiles)
+2026-05-22 05:21:43 [INFO] fusion_io - Finalised GPM_AGRI_20190114_174500_174459.h5 (36 tiles)
+2026-05-22 05:21:43 [INFO] fusion_io - Finalised GPM_AGRI_20190114_181500_181459.h5 (36 tiles)
+2026-05-22 05:21:43 [INFO] fusion_io - Finalised GPM_AGRI_20190114_204500_204459.h5 (36 tiles)
+2026-05-22 05:21:43 [INFO] fusion_io - Finalised GPM_AGRI_20190114_211500_211459.h5 (36 tiles)
+2026-05-22 05:21:43 [INFO] fusion_io - Finalised GPM_AGRI_20190114_234500_234459.h5 (36 tiles)
+2026-05-22 05:21:43 [INFO] data_fusion - Day 20190114 - 16/16 ok
+2026-05-22 05:21:43 [INFO] data_fusion - Day 20190115 | AGRI=39 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:21:43 [INFO] data_fusion - Day 20190115 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:21:48 [INFO] fusion_io - Finalised GPM_AGRI_20190115_001500_001459.h5 (36 tiles)
+2026-05-22 05:21:48 [INFO] fusion_io - Finalised GPM_AGRI_20190115_114500_114459.h5 (36 tiles)
+2026-05-22 05:21:48 [INFO] fusion_io - Finalised GPM_AGRI_20190115_024500_024459.h5 (36 tiles)
+2026-05-22 05:21:48 [INFO] fusion_io - Finalised GPM_AGRI_20190115_091500_091459.h5 (36 tiles)
+2026-05-22 05:21:48 [INFO] fusion_io - Finalised GPM_AGRI_20190115_084500_084459.h5 (36 tiles)
+2026-05-22 05:21:48 [INFO] fusion_io - Finalised GPM_AGRI_20190115_031500_031459.h5 (36 tiles)
+2026-05-22 05:21:48 [INFO] fusion_io - Finalised GPM_AGRI_20190115_061500_061459.h5 (36 tiles)
+2026-05-22 05:21:48 [INFO] fusion_io - Finalised GPM_AGRI_20190115_054500_054459.h5 (36 tiles)
+2026-05-22 05:21:53 [INFO] fusion_io - Finalised GPM_AGRI_20190115_121500_121459.h5 (36 tiles)
+2026-05-22 05:21:53 [INFO] fusion_io - Finalised GPM_AGRI_20190115_151500_151459.h5 (36 tiles)
+2026-05-22 05:21:53 [INFO] fusion_io - Finalised GPM_AGRI_20190115_144500_144459.h5 (36 tiles)
+2026-05-22 05:21:53 [INFO] fusion_io - Finalised GPM_AGRI_20190115_174500_174459.h5 (36 tiles)
+2026-05-22 05:21:53 [INFO] fusion_io - Finalised GPM_AGRI_20190115_181500_181459.h5 (36 tiles)
+2026-05-22 05:21:53 [INFO] fusion_io - Finalised GPM_AGRI_20190115_204500_204459.h5 (36 tiles)
+2026-05-22 05:21:53 [INFO] fusion_io - Finalised GPM_AGRI_20190115_211500_211459.h5 (36 tiles)
+2026-05-22 05:21:53 [INFO] fusion_io - Finalised GPM_AGRI_20190115_234500_234459.h5 (36 tiles)
+2026-05-22 05:21:53 [INFO] data_fusion - Day 20190115 - 16/16 ok
+2026-05-22 05:21:53 [INFO] data_fusion - Day 20190116 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:21:53 [INFO] data_fusion - Day 20190116 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:21:59 [INFO] fusion_io - Finalised GPM_AGRI_20190116_001500_001459.h5 (36 tiles)
+2026-05-22 05:21:59 [INFO] fusion_io - Finalised GPM_AGRI_20190116_024500_024459.h5 (36 tiles)
+2026-05-22 05:21:59 [INFO] fusion_io - Finalised GPM_AGRI_20190116_114500_114459.h5 (36 tiles)
+2026-05-22 05:21:59 [INFO] fusion_io - Finalised GPM_AGRI_20190116_054500_054459.h5 (36 tiles)
+2026-05-22 05:21:59 [INFO] fusion_io - Finalised GPM_AGRI_20190116_031500_031459.h5 (36 tiles)
+2026-05-22 05:21:59 [INFO] fusion_io - Finalised GPM_AGRI_20190116_091500_091459.h5 (36 tiles)
+2026-05-22 05:21:59 [INFO] fusion_io - Finalised GPM_AGRI_20190116_084500_084459.h5 (36 tiles)
+2026-05-22 05:21:59 [INFO] fusion_io - Finalised GPM_AGRI_20190116_061500_061459.h5 (36 tiles)
+2026-05-22 05:22:03 [INFO] fusion_io - Finalised GPM_AGRI_20190116_121500_121459.h5 (36 tiles)
+2026-05-22 05:22:03 [INFO] fusion_io - Finalised GPM_AGRI_20190116_144500_144459.h5 (36 tiles)
+2026-05-22 05:22:03 [INFO] fusion_io - Finalised GPM_AGRI_20190116_151500_151459.h5 (36 tiles)
+2026-05-22 05:22:03 [INFO] fusion_io - Finalised GPM_AGRI_20190116_174500_174459.h5 (36 tiles)
+2026-05-22 05:22:03 [INFO] fusion_io - Finalised GPM_AGRI_20190116_181500_181459.h5 (36 tiles)
+2026-05-22 05:22:03 [INFO] fusion_io - Finalised GPM_AGRI_20190116_211500_211459.h5 (36 tiles)
+2026-05-22 05:22:03 [INFO] fusion_io - Finalised GPM_AGRI_20190116_204500_204459.h5 (36 tiles)
+2026-05-22 05:22:04 [INFO] fusion_io - Finalised GPM_AGRI_20190116_234500_234459.h5 (36 tiles)
+2026-05-22 05:22:04 [INFO] data_fusion - Day 20190116 - 16/16 ok
+2026-05-22 05:22:04 [INFO] data_fusion - Day 20190118 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:22:04 [INFO] data_fusion - Day 20190118 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:22:09 [INFO] fusion_io - Finalised GPM_AGRI_20190118_114500_114459.h5 (36 tiles)
+2026-05-22 05:22:09 [INFO] fusion_io - Finalised GPM_AGRI_20190118_001500_001459.h5 (36 tiles)
+2026-05-22 05:22:09 [INFO] fusion_io - Finalised GPM_AGRI_20190118_024500_024459.h5 (36 tiles)
+2026-05-22 05:22:09 [INFO] fusion_io - Finalised GPM_AGRI_20190118_091500_091459.h5 (36 tiles)
+2026-05-22 05:22:09 [INFO] fusion_io - Finalised GPM_AGRI_20190118_031500_031459.h5 (36 tiles)
+2026-05-22 05:22:09 [INFO] fusion_io - Finalised GPM_AGRI_20190118_061500_061459.h5 (36 tiles)
+2026-05-22 05:22:09 [INFO] fusion_io - Finalised GPM_AGRI_20190118_054500_054459.h5 (36 tiles)
+2026-05-22 05:22:09 [INFO] fusion_io - Finalised GPM_AGRI_20190118_084500_084459.h5 (36 tiles)
+2026-05-22 05:22:13 [INFO] fusion_io - Finalised GPM_AGRI_20190118_121500_121459.h5 (36 tiles)
+2026-05-22 05:22:13 [INFO] fusion_io - Finalised GPM_AGRI_20190118_144500_144459.h5 (36 tiles)
+2026-05-22 05:22:13 [INFO] fusion_io - Finalised GPM_AGRI_20190118_151500_151459.h5 (36 tiles)
+2026-05-22 05:22:14 [INFO] fusion_io - Finalised GPM_AGRI_20190118_211500_211459.h5 (36 tiles)
+2026-05-22 05:22:14 [INFO] fusion_io - Finalised GPM_AGRI_20190118_174500_174459.h5 (36 tiles)
+2026-05-22 05:22:14 [INFO] fusion_io - Finalised GPM_AGRI_20190118_181500_181459.h5 (36 tiles)
+2026-05-22 05:22:14 [INFO] fusion_io - Finalised GPM_AGRI_20190118_204500_204459.h5 (36 tiles)
+2026-05-22 05:22:14 [INFO] fusion_io - Finalised GPM_AGRI_20190118_234500_234459.h5 (36 tiles)
+2026-05-22 05:22:14 [INFO] data_fusion - Day 20190118 - 16/16 ok
+2026-05-22 05:22:14 [INFO] data_fusion - Day 20190119 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:22:14 [INFO] data_fusion - Day 20190119 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:22:19 [INFO] fusion_io - Finalised GPM_AGRI_20190119_114500_114459.h5 (36 tiles)
+2026-05-22 05:22:19 [INFO] fusion_io - Finalised GPM_AGRI_20190119_024500_024459.h5 (36 tiles)
+2026-05-22 05:22:19 [INFO] fusion_io - Finalised GPM_AGRI_20190119_001500_001459.h5 (36 tiles)
+2026-05-22 05:22:19 [INFO] fusion_io - Finalised GPM_AGRI_20190119_084500_084459.h5 (36 tiles)
+2026-05-22 05:22:19 [INFO] fusion_io - Finalised GPM_AGRI_20190119_031500_031459.h5 (36 tiles)
+2026-05-22 05:22:19 [INFO] fusion_io - Finalised GPM_AGRI_20190119_061500_061459.h5 (36 tiles)
+2026-05-22 05:22:19 [INFO] fusion_io - Finalised GPM_AGRI_20190119_091500_091459.h5 (36 tiles)
+2026-05-22 05:22:19 [INFO] fusion_io - Finalised GPM_AGRI_20190119_054500_054459.h5 (36 tiles)
+2026-05-22 05:22:23 [INFO] fusion_io - Finalised GPM_AGRI_20190119_121500_121459.h5 (36 tiles)
+2026-05-22 05:22:24 [INFO] fusion_io - Finalised GPM_AGRI_20190119_144500_144459.h5 (36 tiles)
+2026-05-22 05:22:24 [INFO] fusion_io - Finalised GPM_AGRI_20190119_151500_151459.h5 (36 tiles)
+2026-05-22 05:22:24 [INFO] fusion_io - Finalised GPM_AGRI_20190119_174500_174459.h5 (36 tiles)
+2026-05-22 05:22:24 [INFO] fusion_io - Finalised GPM_AGRI_20190119_204500_204459.h5 (36 tiles)
+2026-05-22 05:22:24 [INFO] fusion_io - Finalised GPM_AGRI_20190119_181500_181459.h5 (36 tiles)
+2026-05-22 05:22:24 [INFO] fusion_io - Finalised GPM_AGRI_20190119_211500_211459.h5 (36 tiles)
+2026-05-22 05:22:24 [INFO] fusion_io - Finalised GPM_AGRI_20190119_234500_234459.h5 (36 tiles)
+2026-05-22 05:22:24 [INFO] data_fusion - Day 20190119 - 16/16 ok
+2026-05-22 05:22:24 [INFO] data_fusion - Day 20190122 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:22:24 [INFO] data_fusion - Day 20190122 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:22:29 [INFO] fusion_io - Finalised GPM_AGRI_20190122_031500_031459.h5 (36 tiles)
+2026-05-22 05:22:29 [INFO] fusion_io - Finalised GPM_AGRI_20190122_114500_114459.h5 (36 tiles)
+2026-05-22 05:22:29 [INFO] fusion_io - Finalised GPM_AGRI_20190122_001500_001459.h5 (36 tiles)
+2026-05-22 05:22:30 [INFO] fusion_io - Finalised GPM_AGRI_20190122_084500_084459.h5 (36 tiles)
+2026-05-22 05:22:30 [INFO] fusion_io - Finalised GPM_AGRI_20190122_054500_054459.h5 (36 tiles)
+2026-05-22 05:22:30 [INFO] fusion_io - Finalised GPM_AGRI_20190122_061500_061459.h5 (36 tiles)
+2026-05-22 05:22:30 [INFO] fusion_io - Finalised GPM_AGRI_20190122_024500_024459.h5 (36 tiles)
+2026-05-22 05:22:30 [INFO] fusion_io - Finalised GPM_AGRI_20190122_091500_091459.h5 (36 tiles)
+2026-05-22 05:22:34 [INFO] fusion_io - Finalised GPM_AGRI_20190122_151500_151459.h5 (36 tiles)
+2026-05-22 05:22:34 [INFO] fusion_io - Finalised GPM_AGRI_20190122_121500_121459.h5 (36 tiles)
+2026-05-22 05:22:34 [INFO] fusion_io - Finalised GPM_AGRI_20190122_144500_144459.h5 (36 tiles)
+2026-05-22 05:22:34 [INFO] fusion_io - Finalised GPM_AGRI_20190122_174500_174459.h5 (36 tiles)
+2026-05-22 05:22:34 [INFO] fusion_io - Finalised GPM_AGRI_20190122_211500_211459.h5 (36 tiles)
+2026-05-22 05:22:34 [INFO] fusion_io - Finalised GPM_AGRI_20190122_181500_181459.h5 (36 tiles)
+2026-05-22 05:22:34 [INFO] fusion_io - Finalised GPM_AGRI_20190122_204500_204459.h5 (36 tiles)
+2026-05-22 05:22:34 [INFO] fusion_io - Finalised GPM_AGRI_20190122_234500_234459.h5 (36 tiles)
+2026-05-22 05:22:35 [INFO] data_fusion - Day 20190122 - 16/16 ok
+2026-05-22 05:22:35 [INFO] data_fusion - Day 20190123 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:22:35 [INFO] data_fusion - Day 20190123 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:22:39 [INFO] fusion_io - Finalised GPM_AGRI_20190123_031500_031459.h5 (36 tiles)
+2026-05-22 05:22:39 [INFO] fusion_io - Finalised GPM_AGRI_20190123_054500_054459.h5 (36 tiles)
+2026-05-22 05:22:39 [INFO] fusion_io - Finalised GPM_AGRI_20190123_114500_114459.h5 (36 tiles)
+2026-05-22 05:22:39 [INFO] fusion_io - Finalised GPM_AGRI_20190123_061500_061459.h5 (36 tiles)
+2026-05-22 05:22:39 [INFO] fusion_io - Finalised GPM_AGRI_20190123_091500_091459.h5 (36 tiles)
+2026-05-22 05:22:39 [INFO] fusion_io - Finalised GPM_AGRI_20190123_001500_001459.h5 (36 tiles)
+2026-05-22 05:22:39 [INFO] fusion_io - Finalised GPM_AGRI_20190123_024500_024459.h5 (36 tiles)
+2026-05-22 05:22:40 [INFO] fusion_io - Finalised GPM_AGRI_20190123_084500_084459.h5 (36 tiles)
+2026-05-22 05:22:43 [INFO] fusion_io - Finalised GPM_AGRI_20190123_121500_121459.h5 (36 tiles)
+2026-05-22 05:22:44 [INFO] fusion_io - Finalised GPM_AGRI_20190123_144500_144459.h5 (36 tiles)
+2026-05-22 05:22:44 [INFO] fusion_io - Finalised GPM_AGRI_20190123_151500_151459.h5 (36 tiles)
+2026-05-22 05:22:44 [INFO] fusion_io - Finalised GPM_AGRI_20190123_174500_174459.h5 (36 tiles)
+2026-05-22 05:22:44 [INFO] fusion_io - Finalised GPM_AGRI_20190123_181500_181459.h5 (36 tiles)
+2026-05-22 05:22:44 [INFO] fusion_io - Finalised GPM_AGRI_20190123_204500_204459.h5 (36 tiles)
+2026-05-22 05:22:44 [INFO] fusion_io - Finalised GPM_AGRI_20190123_211500_211459.h5 (36 tiles)
+2026-05-22 05:22:44 [INFO] fusion_io - Finalised GPM_AGRI_20190123_234500_234459.h5 (36 tiles)
+2026-05-22 05:22:44 [INFO] data_fusion - Day 20190123 - 16/16 ok
+2026-05-22 05:22:44 [INFO] data_fusion - Day 20190125 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:22:44 [INFO] data_fusion - Day 20190125 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:22:49 [INFO] fusion_io - Finalised GPM_AGRI_20190125_001500_001459.h5 (36 tiles)
+2026-05-22 05:22:49 [INFO] fusion_io - Finalised GPM_AGRI_20190125_114500_114459.h5 (36 tiles)
+2026-05-22 05:22:49 [INFO] fusion_io - Finalised GPM_AGRI_20190125_024500_024459.h5 (36 tiles)
+2026-05-22 05:22:49 [INFO] fusion_io - Finalised GPM_AGRI_20190125_031500_031459.h5 (36 tiles)
+2026-05-22 05:22:49 [INFO] fusion_io - Finalised GPM_AGRI_20190125_084500_084459.h5 (36 tiles)
+2026-05-22 05:22:49 [INFO] fusion_io - Finalised GPM_AGRI_20190125_091500_091459.h5 (36 tiles)
+2026-05-22 05:22:49 [INFO] fusion_io - Finalised GPM_AGRI_20190125_054500_054459.h5 (36 tiles)
+2026-05-22 05:22:49 [INFO] fusion_io - Finalised GPM_AGRI_20190125_061500_061459.h5 (36 tiles)
+2026-05-22 05:22:53 [INFO] fusion_io - Finalised GPM_AGRI_20190125_121500_121459.h5 (36 tiles)
+2026-05-22 05:22:53 [INFO] fusion_io - Finalised GPM_AGRI_20190125_144500_144459.h5 (36 tiles)
+2026-05-22 05:22:54 [INFO] fusion_io - Finalised GPM_AGRI_20190125_151500_151459.h5 (36 tiles)
+2026-05-22 05:22:54 [INFO] fusion_io - Finalised GPM_AGRI_20190125_174500_174459.h5 (36 tiles)
+2026-05-22 05:22:54 [INFO] fusion_io - Finalised GPM_AGRI_20190125_181500_181459.h5 (36 tiles)
+2026-05-22 05:22:54 [INFO] fusion_io - Finalised GPM_AGRI_20190125_204500_204459.h5 (36 tiles)
+2026-05-22 05:22:54 [INFO] fusion_io - Finalised GPM_AGRI_20190125_211500_211459.h5 (36 tiles)
+2026-05-22 05:22:54 [INFO] fusion_io - Finalised GPM_AGRI_20190125_234500_234459.h5 (36 tiles)
+2026-05-22 05:22:54 [INFO] data_fusion - Day 20190125 - 16/16 ok
+2026-05-22 05:22:54 [INFO] data_fusion - Day 20190126 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:22:54 [INFO] data_fusion - Day 20190126 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:22:59 [INFO] fusion_io - Finalised GPM_AGRI_20190126_031500_031459.h5 (36 tiles)
+2026-05-22 05:22:59 [INFO] fusion_io - Finalised GPM_AGRI_20190126_114500_114459.h5 (36 tiles)
+2026-05-22 05:22:59 [INFO] fusion_io - Finalised GPM_AGRI_20190126_024500_024459.h5 (36 tiles)
+2026-05-22 05:23:00 [INFO] fusion_io - Finalised GPM_AGRI_20190126_084500_084459.h5 (36 tiles)
+2026-05-22 05:23:00 [INFO] fusion_io - Finalised GPM_AGRI_20190126_091500_091459.h5 (36 tiles)
+2026-05-22 05:23:00 [INFO] fusion_io - Finalised GPM_AGRI_20190126_001500_001459.h5 (36 tiles)
+2026-05-22 05:23:00 [INFO] fusion_io - Finalised GPM_AGRI_20190126_061500_061459.h5 (36 tiles)
+2026-05-22 05:23:00 [INFO] fusion_io - Finalised GPM_AGRI_20190126_054500_054459.h5 (36 tiles)
+2026-05-22 05:23:04 [INFO] fusion_io - Finalised GPM_AGRI_20190126_144500_144459.h5 (36 tiles)
+2026-05-22 05:23:04 [INFO] fusion_io - Finalised GPM_AGRI_20190126_121500_121459.h5 (36 tiles)
+2026-05-22 05:23:04 [INFO] fusion_io - Finalised GPM_AGRI_20190126_151500_151459.h5 (36 tiles)
+2026-05-22 05:23:04 [INFO] fusion_io - Finalised GPM_AGRI_20190126_181500_181459.h5 (36 tiles)
+2026-05-22 05:23:04 [INFO] fusion_io - Finalised GPM_AGRI_20190126_174500_174459.h5 (36 tiles)
+2026-05-22 05:23:04 [INFO] fusion_io - Finalised GPM_AGRI_20190126_204500_204459.h5 (36 tiles)
+2026-05-22 05:23:04 [INFO] fusion_io - Finalised GPM_AGRI_20190126_211500_211459.h5 (36 tiles)
+2026-05-22 05:23:05 [INFO] fusion_io - Finalised GPM_AGRI_20190126_234500_234459.h5 (36 tiles)
+2026-05-22 05:23:05 [INFO] data_fusion - Day 20190126 - 16/16 ok
+2026-05-22 05:23:05 [INFO] data_fusion - Day 20190127 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:23:05 [INFO] data_fusion - Day 20190127 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:23:10 [INFO] fusion_io - Finalised GPM_AGRI_20190127_031500_031459.h5 (36 tiles)
+2026-05-22 05:23:10 [INFO] fusion_io - Finalised GPM_AGRI_20190127_114500_114459.h5 (36 tiles)
+2026-05-22 05:23:10 [INFO] fusion_io - Finalised GPM_AGRI_20190127_054500_054459.h5 (36 tiles)
+2026-05-22 05:23:10 [INFO] fusion_io - Finalised GPM_AGRI_20190127_084500_084459.h5 (36 tiles)
+2026-05-22 05:23:10 [INFO] fusion_io - Finalised GPM_AGRI_20190127_001500_001459.h5 (36 tiles)
+2026-05-22 05:23:10 [INFO] fusion_io - Finalised GPM_AGRI_20190127_091500_091459.h5 (36 tiles)
+2026-05-22 05:23:10 [INFO] fusion_io - Finalised GPM_AGRI_20190127_024500_024459.h5 (36 tiles)
+2026-05-22 05:23:10 [INFO] fusion_io - Finalised GPM_AGRI_20190127_061500_061459.h5 (36 tiles)
+2026-05-22 05:23:14 [INFO] fusion_io - Finalised GPM_AGRI_20190127_121500_121459.h5 (36 tiles)
+2026-05-22 05:23:14 [INFO] fusion_io - Finalised GPM_AGRI_20190127_144500_144459.h5 (36 tiles)
+2026-05-22 05:23:14 [INFO] fusion_io - Finalised GPM_AGRI_20190127_151500_151459.h5 (36 tiles)
+2026-05-22 05:23:14 [INFO] fusion_io - Finalised GPM_AGRI_20190127_174500_174459.h5 (36 tiles)
+2026-05-22 05:23:15 [INFO] fusion_io - Finalised GPM_AGRI_20190127_181500_181459.h5 (36 tiles)
+2026-05-22 05:23:15 [INFO] fusion_io - Finalised GPM_AGRI_20190127_211500_211459.h5 (36 tiles)
+2026-05-22 05:23:15 [INFO] fusion_io - Finalised GPM_AGRI_20190127_204500_204459.h5 (36 tiles)
+2026-05-22 05:23:15 [INFO] fusion_io - Finalised GPM_AGRI_20190127_234500_234459.h5 (36 tiles)
+2026-05-22 05:23:15 [INFO] data_fusion - Day 20190127 - 16/16 ok
+2026-05-22 05:23:15 [INFO] data_fusion - Day 20190128 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:23:15 [INFO] data_fusion - Day 20190128 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:23:20 [INFO] fusion_io - Finalised GPM_AGRI_20190128_114500_114459.h5 (36 tiles)
+2026-05-22 05:23:20 [INFO] fusion_io - Finalised GPM_AGRI_20190128_061500_061459.h5 (36 tiles)
+2026-05-22 05:23:20 [INFO] fusion_io - Finalised GPM_AGRI_20190128_001500_001459.h5 (36 tiles)
+2026-05-22 05:23:20 [INFO] fusion_io - Finalised GPM_AGRI_20190128_091500_091459.h5 (36 tiles)
+2026-05-22 05:23:20 [INFO] fusion_io - Finalised GPM_AGRI_20190128_084500_084459.h5 (36 tiles)
+2026-05-22 05:23:20 [INFO] fusion_io - Finalised GPM_AGRI_20190128_024500_024459.h5 (36 tiles)
+2026-05-22 05:23:20 [INFO] fusion_io - Finalised GPM_AGRI_20190128_031500_031459.h5 (36 tiles)
+2026-05-22 05:23:20 [INFO] fusion_io - Finalised GPM_AGRI_20190128_054500_054459.h5 (36 tiles)
+2026-05-22 05:23:24 [INFO] fusion_io - Finalised GPM_AGRI_20190128_121500_121459.h5 (36 tiles)
+2026-05-22 05:23:25 [INFO] fusion_io - Finalised GPM_AGRI_20190128_144500_144459.h5 (36 tiles)
+2026-05-22 05:23:25 [INFO] fusion_io - Finalised GPM_AGRI_20190128_151500_151459.h5 (36 tiles)
+2026-05-22 05:23:25 [INFO] fusion_io - Finalised GPM_AGRI_20190128_174500_174459.h5 (36 tiles)
+2026-05-22 05:23:25 [INFO] fusion_io - Finalised GPM_AGRI_20190128_181500_181459.h5 (36 tiles)
+2026-05-22 05:23:25 [INFO] fusion_io - Finalised GPM_AGRI_20190128_211500_211459.h5 (36 tiles)
+2026-05-22 05:23:25 [INFO] fusion_io - Finalised GPM_AGRI_20190128_204500_204459.h5 (36 tiles)
+2026-05-22 05:23:25 [INFO] fusion_io - Finalised GPM_AGRI_20190128_234500_234459.h5 (36 tiles)
+2026-05-22 05:23:25 [INFO] data_fusion - Day 20190128 - 16/16 ok
+2026-05-22 05:23:25 [INFO] data_fusion - Day 20190129 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:23:25 [INFO] data_fusion - Day 20190129 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:23:30 [INFO] fusion_io - Finalised GPM_AGRI_20190129_024500_024459.h5 (36 tiles)
+2026-05-22 05:23:30 [INFO] fusion_io - Finalised GPM_AGRI_20190129_114500_114459.h5 (36 tiles)
+2026-05-22 05:23:30 [INFO] fusion_io - Finalised GPM_AGRI_20190129_001500_001459.h5 (36 tiles)
+2026-05-22 05:23:30 [INFO] fusion_io - Finalised GPM_AGRI_20190129_091500_091459.h5 (36 tiles)
+2026-05-22 05:23:30 [INFO] fusion_io - Finalised GPM_AGRI_20190129_084500_084459.h5 (36 tiles)
+2026-05-22 05:23:31 [INFO] fusion_io - Finalised GPM_AGRI_20190129_061500_061459.h5 (36 tiles)
+2026-05-22 05:23:31 [INFO] fusion_io - Finalised GPM_AGRI_20190129_054500_054459.h5 (36 tiles)
+2026-05-22 05:23:31 [INFO] fusion_io - Finalised GPM_AGRI_20190129_031500_031459.h5 (36 tiles)
+2026-05-22 05:23:35 [INFO] fusion_io - Finalised GPM_AGRI_20190129_121500_121459.h5 (36 tiles)
+2026-05-22 05:23:35 [INFO] fusion_io - Finalised GPM_AGRI_20190129_144500_144459.h5 (36 tiles)
+2026-05-22 05:23:35 [INFO] fusion_io - Finalised GPM_AGRI_20190129_151500_151459.h5 (36 tiles)
+2026-05-22 05:23:35 [INFO] fusion_io - Finalised GPM_AGRI_20190129_181500_181459.h5 (36 tiles)
+2026-05-22 05:23:35 [INFO] fusion_io - Finalised GPM_AGRI_20190129_174500_174459.h5 (36 tiles)
+2026-05-22 05:23:35 [INFO] fusion_io - Finalised GPM_AGRI_20190129_211500_211459.h5 (36 tiles)
+2026-05-22 05:23:35 [INFO] fusion_io - Finalised GPM_AGRI_20190129_204500_204459.h5 (36 tiles)
+2026-05-22 05:23:35 [INFO] fusion_io - Finalised GPM_AGRI_20190129_234500_234459.h5 (36 tiles)
+2026-05-22 05:23:35 [INFO] data_fusion - Day 20190129 - 16/16 ok
+2026-05-22 05:23:35 [INFO] data_fusion - Day 20190130 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:23:35 [INFO] data_fusion - Day 20190130 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:23:40 [INFO] fusion_io - Finalised GPM_AGRI_20190130_001500_001459.h5 (36 tiles)
+2026-05-22 05:23:40 [INFO] fusion_io - Finalised GPM_AGRI_20190130_114500_114459.h5 (36 tiles)
+2026-05-22 05:23:41 [INFO] fusion_io - Finalised GPM_AGRI_20190130_054500_054459.h5 (36 tiles)
+2026-05-22 05:23:41 [INFO] fusion_io - Finalised GPM_AGRI_20190130_091500_091459.h5 (36 tiles)
+2026-05-22 05:23:41 [INFO] fusion_io - Finalised GPM_AGRI_20190130_084500_084459.h5 (36 tiles)
+2026-05-22 05:23:41 [INFO] fusion_io - Finalised GPM_AGRI_20190130_031500_031459.h5 (36 tiles)
+2026-05-22 05:23:41 [INFO] fusion_io - Finalised GPM_AGRI_20190130_061500_061459.h5 (36 tiles)
+2026-05-22 05:23:41 [INFO] fusion_io - Finalised GPM_AGRI_20190130_024500_024459.h5 (36 tiles)
+2026-05-22 05:23:45 [INFO] fusion_io - Finalised GPM_AGRI_20190130_121500_121459.h5 (36 tiles)
+2026-05-22 05:23:45 [INFO] fusion_io - Finalised GPM_AGRI_20190130_144500_144459.h5 (36 tiles)
+2026-05-22 05:23:45 [INFO] fusion_io - Finalised GPM_AGRI_20190130_151500_151459.h5 (36 tiles)
+2026-05-22 05:23:45 [INFO] fusion_io - Finalised GPM_AGRI_20190130_174500_174459.h5 (36 tiles)
+2026-05-22 05:23:45 [INFO] fusion_io - Finalised GPM_AGRI_20190130_204500_204459.h5 (36 tiles)
+2026-05-22 05:23:45 [INFO] fusion_io - Finalised GPM_AGRI_20190130_181500_181459.h5 (36 tiles)
+2026-05-22 05:23:46 [INFO] fusion_io - Finalised GPM_AGRI_20190130_211500_211459.h5 (36 tiles)
+2026-05-22 05:23:46 [INFO] fusion_io - Finalised GPM_AGRI_20190130_234500_234459.h5 (36 tiles)
+2026-05-22 05:23:46 [INFO] data_fusion - Day 20190130 - 16/16 ok
+2026-05-22 05:23:46 [INFO] data_fusion - Day 20190131 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:23:46 [INFO] data_fusion - Day 20190131 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:23:51 [INFO] fusion_io - Finalised GPM_AGRI_20190131_024500_024459.h5 (36 tiles)
+2026-05-22 05:23:51 [INFO] fusion_io - Finalised GPM_AGRI_20190131_001500_001459.h5 (36 tiles)
+2026-05-22 05:23:51 [INFO] fusion_io - Finalised GPM_AGRI_20190131_114500_114459.h5 (36 tiles)
+2026-05-22 05:23:51 [INFO] fusion_io - Finalised GPM_AGRI_20190131_054500_054459.h5 (36 tiles)
+2026-05-22 05:23:51 [INFO] fusion_io - Finalised GPM_AGRI_20190131_084500_084459.h5 (36 tiles)
+2026-05-22 05:23:51 [INFO] fusion_io - Finalised GPM_AGRI_20190131_091500_091459.h5 (36 tiles)
+2026-05-22 05:23:51 [INFO] fusion_io - Finalised GPM_AGRI_20190131_031500_031459.h5 (36 tiles)
+2026-05-22 05:23:51 [INFO] fusion_io - Finalised GPM_AGRI_20190131_061500_061459.h5 (36 tiles)
+2026-05-22 05:23:55 [INFO] fusion_io - Finalised GPM_AGRI_20190131_121500_121459.h5 (36 tiles)
+2026-05-22 05:23:55 [INFO] fusion_io - Finalised GPM_AGRI_20190131_151500_151459.h5 (36 tiles)
+2026-05-22 05:23:56 [INFO] fusion_io - Finalised GPM_AGRI_20190131_144500_144459.h5 (36 tiles)
+2026-05-22 05:23:56 [INFO] fusion_io - Finalised GPM_AGRI_20190131_204500_204459.h5 (36 tiles)
+2026-05-22 05:23:56 [INFO] fusion_io - Finalised GPM_AGRI_20190131_174500_174459.h5 (36 tiles)
+2026-05-22 05:23:56 [INFO] fusion_io - Finalised GPM_AGRI_20190131_181500_181459.h5 (36 tiles)
+2026-05-22 05:23:56 [INFO] fusion_io - Finalised GPM_AGRI_20190131_211500_211459.h5 (36 tiles)
+2026-05-22 05:23:56 [INFO] fusion_io - Finalised GPM_AGRI_20190131_234500_234459.h5 (36 tiles)
+2026-05-22 05:23:56 [INFO] data_fusion - Day 20190131 - 16/16 ok
+2026-05-22 05:23:56 [INFO] data_fusion - Day 20190201 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:23:56 [INFO] data_fusion - Day 20190201 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:24:01 [INFO] fusion_io - Finalised GPM_AGRI_20190201_001500_001459.h5 (36 tiles)
+2026-05-22 05:24:01 [INFO] fusion_io - Finalised GPM_AGRI_20190201_024500_024459.h5 (36 tiles)
+2026-05-22 05:24:01 [INFO] fusion_io - Finalised GPM_AGRI_20190201_114500_114459.h5 (36 tiles)
+2026-05-22 05:24:01 [INFO] fusion_io - Finalised GPM_AGRI_20190201_031500_031459.h5 (36 tiles)
+2026-05-22 05:24:01 [INFO] fusion_io - Finalised GPM_AGRI_20190201_084500_084459.h5 (36 tiles)
+2026-05-22 05:24:01 [INFO] fusion_io - Finalised GPM_AGRI_20190201_091500_091459.h5 (36 tiles)
+2026-05-22 05:24:01 [INFO] fusion_io - Finalised GPM_AGRI_20190201_054500_054459.h5 (36 tiles)
+2026-05-22 05:24:01 [INFO] fusion_io - Finalised GPM_AGRI_20190201_061500_061459.h5 (36 tiles)
+2026-05-22 05:24:05 [INFO] fusion_io - Finalised GPM_AGRI_20190201_121500_121459.h5 (36 tiles)
+2026-05-22 05:24:05 [INFO] fusion_io - Finalised GPM_AGRI_20190201_144500_144459.h5 (36 tiles)
+2026-05-22 05:24:05 [INFO] fusion_io - Finalised GPM_AGRI_20190201_151500_151459.h5 (36 tiles)
+2026-05-22 05:24:06 [INFO] fusion_io - Finalised GPM_AGRI_20190201_174500_174459.h5 (36 tiles)
+2026-05-22 05:24:06 [INFO] fusion_io - Finalised GPM_AGRI_20190201_181500_181459.h5 (36 tiles)
+2026-05-22 05:24:06 [INFO] fusion_io - Finalised GPM_AGRI_20190201_204500_204459.h5 (36 tiles)
+2026-05-22 05:24:06 [INFO] fusion_io - Finalised GPM_AGRI_20190201_211500_211459.h5 (36 tiles)
+2026-05-22 05:24:06 [INFO] fusion_io - Finalised GPM_AGRI_20190201_234500_234459.h5 (36 tiles)
+2026-05-22 05:24:06 [INFO] data_fusion - Day 20190201 - 16/16 ok
+2026-05-22 05:24:06 [INFO] data_fusion - Day 20190202 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:24:06 [INFO] data_fusion - Day 20190202 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:24:10 [WARNING] fusion_io - read_gpm_file failed /data/Data_yuq/GPM_2019/20190202/3B-HHR.MS.MRG.3IMERG.20190202-S023000-E025959.0150.V07B.HDF5: Unable to synchronously open file (truncated file: eof = 5603328, sblock->base_addr = 0, stored_eof = 7713684)
+2026-05-22 05:24:10 [WARNING] fusion_io - read_gpm_file failed /data/Data_yuq/GPM_2019/20190202/3B-HHR.MS.MRG.3IMERG.20190202-S113000-E115959.0690.V07B.HDF5: Unable to synchronously open file (truncated file: eof = 3956736, sblock->base_addr = 0, stored_eof = 7513539)
+2026-05-22 05:24:10 [WARNING] fusion_io - read_gpm_file failed /data/Data_yuq/GPM_2019/20190202/3B-HHR.MS.MRG.3IMERG.20190202-S030000-E032959.0180.V07B.HDF5: Unable to synchronously open file (truncated file: eof = 5890048, sblock->base_addr = 0, stored_eof = 7696048)
+2026-05-22 05:24:11 [INFO] fusion_io - Finalised GPM_AGRI_20190202_001500_001459.h5 (36 tiles)
+2026-05-22 05:24:11 [INFO] fusion_io - Finalised GPM_AGRI_20190202_091500_091459.h5 (36 tiles)
+2026-05-22 05:24:11 [INFO] fusion_io - Finalised GPM_AGRI_20190202_054500_054459.h5 (36 tiles)
+2026-05-22 05:24:12 [INFO] fusion_io - Finalised GPM_AGRI_20190202_061500_061459.h5 (36 tiles)
+2026-05-22 05:24:12 [INFO] fusion_io - Finalised GPM_AGRI_20190202_084500_084459.h5 (36 tiles)
+2026-05-22 05:24:13 [WARNING] fusion_io - read_gpm_file failed /data/Data_yuq/GPM_2019/20190202/3B-HHR.MS.MRG.3IMERG.20190202-S120000-E122959.0720.V07B.HDF5: Unable to synchronously open file (truncated file: eof = 3997696, sblock->base_addr = 0, stored_eof = 7545830)
+2026-05-22 05:24:14 [INFO] fusion_io - Finalised GPM_AGRI_20190202_151500_151459.h5 (36 tiles)
+2026-05-22 05:24:14 [INFO] fusion_io - Finalised GPM_AGRI_20190202_144500_144459.h5 (36 tiles)
+2026-05-22 05:24:16 [INFO] fusion_io - Finalised GPM_AGRI_20190202_181500_181459.h5 (36 tiles)
+2026-05-22 05:24:16 [INFO] fusion_io - Finalised GPM_AGRI_20190202_174500_174459.h5 (36 tiles)
+2026-05-22 05:24:16 [INFO] fusion_io - Finalised GPM_AGRI_20190202_204500_204459.h5 (36 tiles)
+2026-05-22 05:24:16 [INFO] fusion_io - Finalised GPM_AGRI_20190202_211500_211459.h5 (36 tiles)
+2026-05-22 05:24:16 [INFO] fusion_io - Finalised GPM_AGRI_20190202_234500_234459.h5 (36 tiles)
+2026-05-22 05:24:16 [INFO] data_fusion - Day 20190202 - 12/16 ok
+2026-05-22 05:24:16 [INFO] data_fusion - Day 20190204 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:24:16 [INFO] data_fusion - Day 20190204 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:24:21 [INFO] fusion_io - Finalised GPM_AGRI_20190204_114500_114459.h5 (36 tiles)
+2026-05-22 05:24:22 [INFO] fusion_io - Finalised GPM_AGRI_20190204_054500_054459.h5 (36 tiles)
+2026-05-22 05:24:22 [INFO] fusion_io - Finalised GPM_AGRI_20190204_061500_061459.h5 (36 tiles)
+2026-05-22 05:24:22 [INFO] fusion_io - Finalised GPM_AGRI_20190204_031500_031459.h5 (36 tiles)
+2026-05-22 05:24:22 [INFO] fusion_io - Finalised GPM_AGRI_20190204_091500_091459.h5 (36 tiles)
+2026-05-22 05:24:22 [INFO] fusion_io - Finalised GPM_AGRI_20190204_001500_001459.h5 (36 tiles)
+2026-05-22 05:24:22 [INFO] fusion_io - Finalised GPM_AGRI_20190204_024500_024459.h5 (36 tiles)
+2026-05-22 05:24:22 [INFO] fusion_io - Finalised GPM_AGRI_20190204_084500_084459.h5 (36 tiles)
+2026-05-22 05:24:27 [INFO] fusion_io - Finalised GPM_AGRI_20190204_121500_121459.h5 (36 tiles)
+2026-05-22 05:24:27 [INFO] fusion_io - Finalised GPM_AGRI_20190204_144500_144459.h5 (36 tiles)
+2026-05-22 05:24:27 [INFO] fusion_io - Finalised GPM_AGRI_20190204_151500_151459.h5 (36 tiles)
+2026-05-22 05:24:27 [INFO] fusion_io - Finalised GPM_AGRI_20190204_211500_211459.h5 (36 tiles)
+2026-05-22 05:24:27 [INFO] fusion_io - Finalised GPM_AGRI_20190204_204500_204459.h5 (36 tiles)
+2026-05-22 05:24:27 [INFO] fusion_io - Finalised GPM_AGRI_20190204_181500_181459.h5 (36 tiles)
+2026-05-22 05:24:27 [INFO] fusion_io - Finalised GPM_AGRI_20190204_174500_174459.h5 (36 tiles)
+2026-05-22 05:24:27 [INFO] fusion_io - Finalised GPM_AGRI_20190204_234500_234459.h5 (36 tiles)
+2026-05-22 05:24:27 [INFO] data_fusion - Day 20190204 - 16/16 ok
+2026-05-22 05:24:27 [INFO] data_fusion - Day 20190205 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:24:27 [INFO] data_fusion - Day 20190205 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:24:33 [INFO] fusion_io - Finalised GPM_AGRI_20190205_114500_114459.h5 (36 tiles)
+2026-05-22 05:24:33 [INFO] fusion_io - Finalised GPM_AGRI_20190205_084500_084459.h5 (36 tiles)
+2026-05-22 05:24:33 [INFO] fusion_io - Finalised GPM_AGRI_20190205_001500_001459.h5 (36 tiles)
+2026-05-22 05:24:33 [INFO] fusion_io - Finalised GPM_AGRI_20190205_061500_061459.h5 (36 tiles)
+2026-05-22 05:24:33 [INFO] fusion_io - Finalised GPM_AGRI_20190205_031500_031459.h5 (36 tiles)
+2026-05-22 05:24:33 [INFO] fusion_io - Finalised GPM_AGRI_20190205_091500_091459.h5 (36 tiles)
+2026-05-22 05:24:33 [INFO] fusion_io - Finalised GPM_AGRI_20190205_054500_054459.h5 (36 tiles)
+2026-05-22 05:24:33 [INFO] fusion_io - Finalised GPM_AGRI_20190205_024500_024459.h5 (36 tiles)
+2026-05-22 05:24:38 [INFO] fusion_io - Finalised GPM_AGRI_20190205_121500_121459.h5 (36 tiles)
+2026-05-22 05:24:38 [INFO] fusion_io - Finalised GPM_AGRI_20190205_144500_144459.h5 (36 tiles)
+2026-05-22 05:24:38 [INFO] fusion_io - Finalised GPM_AGRI_20190205_151500_151459.h5 (36 tiles)
+2026-05-22 05:24:38 [INFO] fusion_io - Finalised GPM_AGRI_20190205_174500_174459.h5 (36 tiles)
+2026-05-22 05:24:38 [INFO] fusion_io - Finalised GPM_AGRI_20190205_181500_181459.h5 (36 tiles)
+2026-05-22 05:24:39 [INFO] fusion_io - Finalised GPM_AGRI_20190205_211500_211459.h5 (36 tiles)
+2026-05-22 05:24:39 [INFO] fusion_io - Finalised GPM_AGRI_20190205_204500_204459.h5 (36 tiles)
+2026-05-22 05:24:39 [INFO] fusion_io - Finalised GPM_AGRI_20190205_234500_234459.h5 (36 tiles)
+2026-05-22 05:24:39 [INFO] data_fusion - Day 20190205 - 16/16 ok
+2026-05-22 05:24:39 [INFO] data_fusion - Day 20190206 | AGRI=39 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:24:39 [INFO] data_fusion - Day 20190206 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:24:45 [INFO] fusion_io - Finalised GPM_AGRI_20190206_114500_114459.h5 (36 tiles)
+2026-05-22 05:24:45 [INFO] fusion_io - Finalised GPM_AGRI_20190206_084500_084459.h5 (36 tiles)
+2026-05-22 05:24:45 [INFO] fusion_io - Finalised GPM_AGRI_20190206_001500_001459.h5 (36 tiles)
+2026-05-22 05:24:45 [INFO] fusion_io - Finalised GPM_AGRI_20190206_031500_031459.h5 (36 tiles)
+2026-05-22 05:24:45 [INFO] fusion_io - Finalised GPM_AGRI_20190206_024500_024459.h5 (36 tiles)
+2026-05-22 05:24:45 [INFO] fusion_io - Finalised GPM_AGRI_20190206_061500_061459.h5 (36 tiles)
+2026-05-22 05:24:45 [INFO] fusion_io - Finalised GPM_AGRI_20190206_054500_054459.h5 (36 tiles)
+2026-05-22 05:24:45 [INFO] fusion_io - Finalised GPM_AGRI_20190206_091500_091459.h5 (36 tiles)
+2026-05-22 05:24:50 [INFO] fusion_io - Finalised GPM_AGRI_20190206_121500_121459.h5 (36 tiles)
+2026-05-22 05:24:50 [INFO] fusion_io - Finalised GPM_AGRI_20190206_144500_144459.h5 (36 tiles)
+2026-05-22 05:24:50 [INFO] fusion_io - Finalised GPM_AGRI_20190206_151500_151459.h5 (36 tiles)
+2026-05-22 05:24:50 [INFO] fusion_io - Finalised GPM_AGRI_20190206_174500_174459.h5 (36 tiles)
+2026-05-22 05:24:51 [INFO] fusion_io - Finalised GPM_AGRI_20190206_181500_181459.h5 (36 tiles)
+2026-05-22 05:24:51 [INFO] fusion_io - Finalised GPM_AGRI_20190206_234500_234459.h5 (36 tiles)
+2026-05-22 05:24:51 [INFO] fusion_io - Finalised GPM_AGRI_20190206_211500_211459.h5 (36 tiles)
+2026-05-22 05:24:51 [INFO] fusion_io - Finalised GPM_AGRI_20190206_204500_204459.h5 (36 tiles)
+2026-05-22 05:24:51 [INFO] data_fusion - Day 20190206 - 16/16 ok
+2026-05-22 05:24:51 [INFO] data_fusion - Day 20190207 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:24:51 [INFO] data_fusion - Day 20190207 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:24:57 [INFO] fusion_io - Finalised GPM_AGRI_20190207_001500_001459.h5 (36 tiles)
+2026-05-22 05:24:57 [INFO] fusion_io - Finalised GPM_AGRI_20190207_114500_114459.h5 (36 tiles)
+2026-05-22 05:24:57 [INFO] fusion_io - Finalised GPM_AGRI_20190207_024500_024459.h5 (36 tiles)
+2026-05-22 05:24:57 [INFO] fusion_io - Finalised GPM_AGRI_20190207_031500_031459.h5 (36 tiles)
+2026-05-22 05:24:57 [INFO] fusion_io - Finalised GPM_AGRI_20190207_061500_061459.h5 (36 tiles)
+2026-05-22 05:24:57 [INFO] fusion_io - Finalised GPM_AGRI_20190207_084500_084459.h5 (36 tiles)
+2026-05-22 05:24:57 [INFO] fusion_io - Finalised GPM_AGRI_20190207_091500_091459.h5 (36 tiles)
+2026-05-22 05:24:57 [INFO] fusion_io - Finalised GPM_AGRI_20190207_054500_054459.h5 (36 tiles)
+2026-05-22 05:25:02 [INFO] fusion_io - Finalised GPM_AGRI_20190207_144500_144459.h5 (36 tiles)
+2026-05-22 05:25:02 [INFO] fusion_io - Finalised GPM_AGRI_20190207_151500_151459.h5 (36 tiles)
+2026-05-22 05:25:02 [INFO] fusion_io - Finalised GPM_AGRI_20190207_121500_121459.h5 (36 tiles)
+2026-05-22 05:25:02 [INFO] fusion_io - Finalised GPM_AGRI_20190207_174500_174459.h5 (36 tiles)
+2026-05-22 05:25:02 [INFO] fusion_io - Finalised GPM_AGRI_20190207_204500_204459.h5 (36 tiles)
+2026-05-22 05:25:02 [INFO] fusion_io - Finalised GPM_AGRI_20190207_181500_181459.h5 (36 tiles)
+2026-05-22 05:25:03 [INFO] fusion_io - Finalised GPM_AGRI_20190207_211500_211459.h5 (36 tiles)
+2026-05-22 05:25:03 [INFO] fusion_io - Finalised GPM_AGRI_20190207_234500_234459.h5 (36 tiles)
+2026-05-22 05:25:03 [INFO] data_fusion - Day 20190207 - 16/16 ok
+2026-05-22 05:25:03 [INFO] data_fusion - Day 20190208 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:25:03 [INFO] data_fusion - Day 20190208 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:25:09 [INFO] fusion_io - Finalised GPM_AGRI_20190208_001500_001459.h5 (36 tiles)
+2026-05-22 05:25:09 [INFO] fusion_io - Finalised GPM_AGRI_20190208_091500_091459.h5 (36 tiles)
+2026-05-22 05:25:09 [INFO] fusion_io - Finalised GPM_AGRI_20190208_024500_024459.h5 (36 tiles)
+2026-05-22 05:25:09 [INFO] fusion_io - Finalised GPM_AGRI_20190208_054500_054459.h5 (36 tiles)
+2026-05-22 05:25:09 [INFO] fusion_io - Finalised GPM_AGRI_20190208_114500_114459.h5 (36 tiles)
+2026-05-22 05:25:09 [INFO] fusion_io - Finalised GPM_AGRI_20190208_084500_084459.h5 (36 tiles)
+2026-05-22 05:25:09 [INFO] fusion_io - Finalised GPM_AGRI_20190208_031500_031459.h5 (36 tiles)
+2026-05-22 05:25:09 [INFO] fusion_io - Finalised GPM_AGRI_20190208_061500_061459.h5 (36 tiles)
+2026-05-22 05:25:14 [INFO] fusion_io - Finalised GPM_AGRI_20190208_174500_174459.h5 (36 tiles)
+2026-05-22 05:25:14 [INFO] fusion_io - Finalised GPM_AGRI_20190208_144500_144459.h5 (36 tiles)
+2026-05-22 05:25:14 [INFO] fusion_io - Finalised GPM_AGRI_20190208_181500_181459.h5 (36 tiles)
+2026-05-22 05:25:14 [INFO] fusion_io - Finalised GPM_AGRI_20190208_151500_151459.h5 (36 tiles)
+2026-05-22 05:25:15 [INFO] fusion_io - Finalised GPM_AGRI_20190208_121500_121459.h5 (36 tiles)
+2026-05-22 05:25:15 [INFO] fusion_io - Finalised GPM_AGRI_20190208_211500_211459.h5 (36 tiles)
+2026-05-22 05:25:15 [INFO] fusion_io - Finalised GPM_AGRI_20190208_204500_204459.h5 (36 tiles)
+2026-05-22 05:25:15 [INFO] fusion_io - Finalised GPM_AGRI_20190208_234500_234459.h5 (36 tiles)
+2026-05-22 05:25:15 [INFO] data_fusion - Day 20190208 - 16/16 ok
+2026-05-22 05:25:15 [INFO] data_fusion - Day 20190209 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:25:15 [INFO] data_fusion - Day 20190209 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:25:21 [INFO] fusion_io - Finalised GPM_AGRI_20190209_024500_024459.h5 (36 tiles)
+2026-05-22 05:25:21 [INFO] fusion_io - Finalised GPM_AGRI_20190209_001500_001459.h5 (36 tiles)
+2026-05-22 05:25:21 [INFO] fusion_io - Finalised GPM_AGRI_20190209_054500_054459.h5 (36 tiles)
+2026-05-22 05:25:21 [INFO] fusion_io - Finalised GPM_AGRI_20190209_031500_031459.h5 (36 tiles)
+2026-05-22 05:25:21 [INFO] fusion_io - Finalised GPM_AGRI_20190209_091500_091459.h5 (36 tiles)
+2026-05-22 05:25:21 [INFO] fusion_io - Finalised GPM_AGRI_20190209_084500_084459.h5 (36 tiles)
+2026-05-22 05:25:21 [INFO] fusion_io - Finalised GPM_AGRI_20190209_114500_114459.h5 (36 tiles)
+2026-05-22 05:25:21 [INFO] fusion_io - Finalised GPM_AGRI_20190209_061500_061459.h5 (36 tiles)
+2026-05-22 05:25:26 [INFO] fusion_io - Finalised GPM_AGRI_20190209_121500_121459.h5 (36 tiles)
+2026-05-22 05:25:26 [INFO] fusion_io - Finalised GPM_AGRI_20190209_151500_151459.h5 (36 tiles)
+2026-05-22 05:25:26 [INFO] fusion_io - Finalised GPM_AGRI_20190209_144500_144459.h5 (36 tiles)
+2026-05-22 05:25:26 [INFO] fusion_io - Finalised GPM_AGRI_20190209_174500_174459.h5 (36 tiles)
+2026-05-22 05:25:27 [INFO] fusion_io - Finalised GPM_AGRI_20190209_204500_204459.h5 (36 tiles)
+2026-05-22 05:25:27 [INFO] fusion_io - Finalised GPM_AGRI_20190209_181500_181459.h5 (36 tiles)
+2026-05-22 05:25:27 [INFO] fusion_io - Finalised GPM_AGRI_20190209_211500_211459.h5 (36 tiles)
+2026-05-22 05:25:27 [INFO] fusion_io - Finalised GPM_AGRI_20190209_234500_234459.h5 (36 tiles)
+2026-05-22 05:25:27 [INFO] data_fusion - Day 20190209 - 16/16 ok
+2026-05-22 05:25:27 [INFO] data_fusion - Day 20190210 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:25:27 [INFO] data_fusion - Day 20190210 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:25:33 [INFO] fusion_io - Finalised GPM_AGRI_20190210_091500_091459.h5 (36 tiles)
+2026-05-22 05:25:33 [INFO] fusion_io - Finalised GPM_AGRI_20190210_061500_061459.h5 (36 tiles)
+2026-05-22 05:25:33 [INFO] fusion_io - Finalised GPM_AGRI_20190210_054500_054459.h5 (36 tiles)
+2026-05-22 05:25:33 [INFO] fusion_io - Finalised GPM_AGRI_20190210_114500_114459.h5 (36 tiles)
+2026-05-22 05:25:33 [INFO] fusion_io - Finalised GPM_AGRI_20190210_031500_031459.h5 (36 tiles)
+2026-05-22 05:25:33 [INFO] fusion_io - Finalised GPM_AGRI_20190210_024500_024459.h5 (36 tiles)
+2026-05-22 05:25:33 [INFO] fusion_io - Finalised GPM_AGRI_20190210_001500_001459.h5 (36 tiles)
+2026-05-22 05:25:34 [INFO] fusion_io - Finalised GPM_AGRI_20190210_084500_084459.h5 (36 tiles)
+2026-05-22 05:25:38 [INFO] fusion_io - Finalised GPM_AGRI_20190210_121500_121459.h5 (36 tiles)
+2026-05-22 05:25:38 [INFO] fusion_io - Finalised GPM_AGRI_20190210_151500_151459.h5 (36 tiles)
+2026-05-22 05:25:38 [INFO] fusion_io - Finalised GPM_AGRI_20190210_144500_144459.h5 (36 tiles)
+2026-05-22 05:25:39 [INFO] fusion_io - Finalised GPM_AGRI_20190210_181500_181459.h5 (36 tiles)
+2026-05-22 05:25:39 [INFO] fusion_io - Finalised GPM_AGRI_20190210_174500_174459.h5 (36 tiles)
+2026-05-22 05:25:39 [INFO] fusion_io - Finalised GPM_AGRI_20190210_204500_204459.h5 (36 tiles)
+2026-05-22 05:25:39 [INFO] fusion_io - Finalised GPM_AGRI_20190210_211500_211459.h5 (36 tiles)
+2026-05-22 05:25:39 [INFO] fusion_io - Finalised GPM_AGRI_20190210_234500_234459.h5 (36 tiles)
+2026-05-22 05:25:39 [INFO] data_fusion - Day 20190210 - 16/16 ok
+2026-05-22 05:25:39 [INFO] data_fusion - Day 20190211 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:25:39 [INFO] data_fusion - Day 20190211 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:25:45 [INFO] fusion_io - Finalised GPM_AGRI_20190211_031500_031459.h5 (36 tiles)
+2026-05-22 05:25:45 [INFO] fusion_io - Finalised GPM_AGRI_20190211_054500_054459.h5 (36 tiles)
+2026-05-22 05:25:45 [INFO] fusion_io - Finalised GPM_AGRI_20190211_114500_114459.h5 (36 tiles)
+2026-05-22 05:25:45 [INFO] fusion_io - Finalised GPM_AGRI_20190211_061500_061459.h5 (36 tiles)
+2026-05-22 05:25:46 [INFO] fusion_io - Finalised GPM_AGRI_20190211_091500_091459.h5 (36 tiles)
+2026-05-22 05:25:46 [INFO] fusion_io - Finalised GPM_AGRI_20190211_084500_084459.h5 (36 tiles)
+2026-05-22 05:25:46 [INFO] fusion_io - Finalised GPM_AGRI_20190211_024500_024459.h5 (36 tiles)
+2026-05-22 05:25:46 [INFO] fusion_io - Finalised GPM_AGRI_20190211_001500_001459.h5 (36 tiles)
+2026-05-22 05:25:50 [INFO] fusion_io - Finalised GPM_AGRI_20190211_144500_144459.h5 (36 tiles)
+2026-05-22 05:25:51 [INFO] fusion_io - Finalised GPM_AGRI_20190211_151500_151459.h5 (36 tiles)
+2026-05-22 05:25:51 [INFO] fusion_io - Finalised GPM_AGRI_20190211_174500_174459.h5 (36 tiles)
+2026-05-22 05:25:51 [INFO] fusion_io - Finalised GPM_AGRI_20190211_121500_121459.h5 (36 tiles)
+2026-05-22 05:25:51 [INFO] fusion_io - Finalised GPM_AGRI_20190211_204500_204459.h5 (36 tiles)
+2026-05-22 05:25:51 [INFO] fusion_io - Finalised GPM_AGRI_20190211_181500_181459.h5 (36 tiles)
+2026-05-22 05:25:51 [INFO] fusion_io - Finalised GPM_AGRI_20190211_211500_211459.h5 (36 tiles)
+2026-05-22 05:25:51 [INFO] fusion_io - Finalised GPM_AGRI_20190211_234500_234459.h5 (36 tiles)
+2026-05-22 05:25:52 [INFO] data_fusion - Day 20190211 - 16/16 ok
+2026-05-22 05:25:52 [INFO] data_fusion - Day 20190212 | AGRI=39 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:25:52 [INFO] data_fusion - Day 20190212 | tasks=15 skipped(no_agri_match)=33
+2026-05-22 05:25:57 [INFO] fusion_io - Finalised GPM_AGRI_20190212_024500_024459.h5 (36 tiles)
+2026-05-22 05:25:57 [INFO] fusion_io - Finalised GPM_AGRI_20190212_114500_114459.h5 (36 tiles)
+2026-05-22 05:25:57 [INFO] fusion_io - Finalised GPM_AGRI_20190212_001500_001459.h5 (36 tiles)
+2026-05-22 05:25:57 [INFO] fusion_io - Finalised GPM_AGRI_20190212_121500_121459.h5 (36 tiles)
+2026-05-22 05:25:58 [INFO] fusion_io - Finalised GPM_AGRI_20190212_084500_084459.h5 (36 tiles)
+2026-05-22 05:25:58 [INFO] fusion_io - Finalised GPM_AGRI_20190212_031500_031459.h5 (36 tiles)
+2026-05-22 05:25:58 [INFO] fusion_io - Finalised GPM_AGRI_20190212_054500_054459.h5 (36 tiles)
+2026-05-22 05:25:58 [INFO] fusion_io - Finalised GPM_AGRI_20190212_061500_061459.h5 (36 tiles)
+2026-05-22 05:26:02 [INFO] fusion_io - Finalised GPM_AGRI_20190212_144500_144459.h5 (36 tiles)
+2026-05-22 05:26:02 [INFO] fusion_io - Finalised GPM_AGRI_20190212_151500_151459.h5 (36 tiles)
+2026-05-22 05:26:03 [INFO] fusion_io - Finalised GPM_AGRI_20190212_204500_204459.h5 (36 tiles)
+2026-05-22 05:26:03 [INFO] fusion_io - Finalised GPM_AGRI_20190212_181500_181459.h5 (36 tiles)
+2026-05-22 05:26:03 [INFO] fusion_io - Finalised GPM_AGRI_20190212_174500_174459.h5 (36 tiles)
+2026-05-22 05:26:03 [INFO] fusion_io - Finalised GPM_AGRI_20190212_211500_211459.h5 (36 tiles)
+2026-05-22 05:26:03 [INFO] fusion_io - Finalised GPM_AGRI_20190212_234500_234459.h5 (36 tiles)
+2026-05-22 05:26:03 [INFO] data_fusion - Day 20190212 - 15/15 ok
+2026-05-22 05:26:03 [INFO] data_fusion - Day 20190213 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:26:03 [INFO] data_fusion - Day 20190213 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:26:09 [INFO] fusion_io - Finalised GPM_AGRI_20190213_001500_001459.h5 (36 tiles)
+2026-05-22 05:26:09 [INFO] fusion_io - Finalised GPM_AGRI_20190213_024500_024459.h5 (36 tiles)
+2026-05-22 05:26:09 [INFO] fusion_io - Finalised GPM_AGRI_20190213_091500_091459.h5 (36 tiles)
+2026-05-22 05:26:09 [INFO] fusion_io - Finalised GPM_AGRI_20190213_031500_031459.h5 (36 tiles)
+2026-05-22 05:26:09 [INFO] fusion_io - Finalised GPM_AGRI_20190213_114500_114459.h5 (36 tiles)
+2026-05-22 05:26:09 [INFO] fusion_io - Finalised GPM_AGRI_20190213_061500_061459.h5 (36 tiles)
+2026-05-22 05:26:09 [INFO] fusion_io - Finalised GPM_AGRI_20190213_054500_054459.h5 (36 tiles)
+2026-05-22 05:26:09 [INFO] fusion_io - Finalised GPM_AGRI_20190213_084500_084459.h5 (36 tiles)
+2026-05-22 05:26:14 [INFO] fusion_io - Finalised GPM_AGRI_20190213_121500_121459.h5 (36 tiles)
+2026-05-22 05:26:14 [INFO] fusion_io - Finalised GPM_AGRI_20190213_144500_144459.h5 (36 tiles)
+2026-05-22 05:26:14 [INFO] fusion_io - Finalised GPM_AGRI_20190213_174500_174459.h5 (36 tiles)
+2026-05-22 05:26:15 [INFO] fusion_io - Finalised GPM_AGRI_20190213_204500_204459.h5 (36 tiles)
+2026-05-22 05:26:15 [INFO] fusion_io - Finalised GPM_AGRI_20190213_151500_151459.h5 (36 tiles)
+2026-05-22 05:26:15 [INFO] fusion_io - Finalised GPM_AGRI_20190213_181500_181459.h5 (36 tiles)
+2026-05-22 05:26:15 [INFO] fusion_io - Finalised GPM_AGRI_20190213_211500_211459.h5 (36 tiles)
+2026-05-22 05:26:15 [INFO] fusion_io - Finalised GPM_AGRI_20190213_234500_234459.h5 (36 tiles)
+2026-05-22 05:26:15 [INFO] data_fusion - Day 20190213 - 16/16 ok
+2026-05-22 05:26:15 [INFO] data_fusion - Day 20190215 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:26:15 [INFO] data_fusion - Day 20190215 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:26:21 [INFO] fusion_io - Finalised GPM_AGRI_20190215_001500_001459.h5 (36 tiles)
+2026-05-22 05:26:21 [INFO] fusion_io - Finalised GPM_AGRI_20190215_031500_031459.h5 (36 tiles)
+2026-05-22 05:26:21 [INFO] fusion_io - Finalised GPM_AGRI_20190215_024500_024459.h5 (36 tiles)
+2026-05-22 05:26:22 [INFO] fusion_io - Finalised GPM_AGRI_20190215_084500_084459.h5 (36 tiles)
+2026-05-22 05:26:22 [INFO] fusion_io - Finalised GPM_AGRI_20190215_114500_114459.h5 (36 tiles)
+2026-05-22 05:26:22 [INFO] fusion_io - Finalised GPM_AGRI_20190215_054500_054459.h5 (36 tiles)
+2026-05-22 05:26:22 [INFO] fusion_io - Finalised GPM_AGRI_20190215_091500_091459.h5 (36 tiles)
+2026-05-22 05:26:22 [INFO] fusion_io - Finalised GPM_AGRI_20190215_061500_061459.h5 (36 tiles)
+2026-05-22 05:26:26 [INFO] fusion_io - Finalised GPM_AGRI_20190215_144500_144459.h5 (36 tiles)
+2026-05-22 05:26:26 [INFO] fusion_io - Finalised GPM_AGRI_20190215_121500_121459.h5 (36 tiles)
+2026-05-22 05:26:26 [INFO] fusion_io - Finalised GPM_AGRI_20190215_151500_151459.h5 (36 tiles)
+2026-05-22 05:26:27 [INFO] fusion_io - Finalised GPM_AGRI_20190215_204500_204459.h5 (36 tiles)
+2026-05-22 05:26:27 [INFO] fusion_io - Finalised GPM_AGRI_20190215_174500_174459.h5 (36 tiles)
+2026-05-22 05:26:27 [INFO] fusion_io - Finalised GPM_AGRI_20190215_181500_181459.h5 (36 tiles)
+2026-05-22 05:26:28 [INFO] fusion_io - Finalised GPM_AGRI_20190215_234500_234459.h5 (36 tiles)
+2026-05-22 05:26:28 [INFO] fusion_io - Finalised GPM_AGRI_20190215_211500_211459.h5 (36 tiles)
+2026-05-22 05:26:28 [INFO] data_fusion - Day 20190215 - 16/16 ok
+2026-05-22 05:26:28 [INFO] data_fusion - Day 20190217 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:26:28 [INFO] data_fusion - Day 20190217 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:26:34 [INFO] fusion_io - Finalised GPM_AGRI_20190217_114500_114459.h5 (36 tiles)
+2026-05-22 05:26:35 [INFO] fusion_io - Finalised GPM_AGRI_20190217_091500_091459.h5 (36 tiles)
+2026-05-22 05:26:35 [INFO] fusion_io - Finalised GPM_AGRI_20190217_054500_054459.h5 (36 tiles)
+2026-05-22 05:26:35 [INFO] fusion_io - Finalised GPM_AGRI_20190217_001500_001459.h5 (36 tiles)
+2026-05-22 05:26:35 [INFO] fusion_io - Finalised GPM_AGRI_20190217_031500_031459.h5 (36 tiles)
+2026-05-22 05:26:35 [INFO] fusion_io - Finalised GPM_AGRI_20190217_024500_024459.h5 (36 tiles)
+2026-05-22 05:26:35 [INFO] fusion_io - Finalised GPM_AGRI_20190217_061500_061459.h5 (36 tiles)
+2026-05-22 05:26:35 [INFO] fusion_io - Finalised GPM_AGRI_20190217_084500_084459.h5 (36 tiles)
+2026-05-22 05:26:39 [INFO] fusion_io - Finalised GPM_AGRI_20190217_121500_121459.h5 (36 tiles)
+2026-05-22 05:26:40 [INFO] fusion_io - Finalised GPM_AGRI_20190217_174500_174459.h5 (36 tiles)
+2026-05-22 05:26:40 [INFO] fusion_io - Finalised GPM_AGRI_20190217_181500_181459.h5 (36 tiles)
+2026-05-22 05:26:40 [INFO] fusion_io - Finalised GPM_AGRI_20190217_144500_144459.h5 (36 tiles)
+2026-05-22 05:26:40 [INFO] fusion_io - Finalised GPM_AGRI_20190217_151500_151459.h5 (36 tiles)
+2026-05-22 05:26:40 [INFO] fusion_io - Finalised GPM_AGRI_20190217_204500_204459.h5 (36 tiles)
+2026-05-22 05:26:40 [INFO] fusion_io - Finalised GPM_AGRI_20190217_211500_211459.h5 (36 tiles)
+2026-05-22 05:26:40 [INFO] fusion_io - Finalised GPM_AGRI_20190217_234500_234459.h5 (36 tiles)
+2026-05-22 05:26:40 [INFO] data_fusion - Day 20190217 - 16/16 ok
+2026-05-22 05:26:40 [INFO] data_fusion - Day 20190218 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:26:41 [INFO] data_fusion - Day 20190218 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:26:46 [INFO] fusion_io - Finalised GPM_AGRI_20190218_091500_091459.h5 (36 tiles)
+2026-05-22 05:26:46 [INFO] fusion_io - Finalised GPM_AGRI_20190218_001500_001459.h5 (36 tiles)
+2026-05-22 05:26:46 [INFO] fusion_io - Finalised GPM_AGRI_20190218_024500_024459.h5 (36 tiles)
+2026-05-22 05:26:46 [INFO] fusion_io - Finalised GPM_AGRI_20190218_031500_031459.h5 (36 tiles)
+2026-05-22 05:26:47 [INFO] fusion_io - Finalised GPM_AGRI_20190218_114500_114459.h5 (36 tiles)
+2026-05-22 05:26:47 [INFO] fusion_io - Finalised GPM_AGRI_20190218_061500_061459.h5 (36 tiles)
+2026-05-22 05:26:47 [INFO] fusion_io - Finalised GPM_AGRI_20190218_084500_084459.h5 (36 tiles)
+2026-05-22 05:26:47 [INFO] fusion_io - Finalised GPM_AGRI_20190218_054500_054459.h5 (36 tiles)
+2026-05-22 05:26:51 [INFO] fusion_io - Finalised GPM_AGRI_20190218_121500_121459.h5 (36 tiles)
+2026-05-22 05:26:52 [INFO] fusion_io - Finalised GPM_AGRI_20190218_151500_151459.h5 (36 tiles)
+2026-05-22 05:26:52 [INFO] fusion_io - Finalised GPM_AGRI_20190218_174500_174459.h5 (36 tiles)
+2026-05-22 05:26:52 [INFO] fusion_io - Finalised GPM_AGRI_20190218_144500_144459.h5 (36 tiles)
+2026-05-22 05:26:52 [INFO] fusion_io - Finalised GPM_AGRI_20190218_204500_204459.h5 (36 tiles)
+2026-05-22 05:26:52 [INFO] fusion_io - Finalised GPM_AGRI_20190218_181500_181459.h5 (36 tiles)
+2026-05-22 05:26:53 [INFO] fusion_io - Finalised GPM_AGRI_20190218_211500_211459.h5 (36 tiles)
+2026-05-22 05:26:53 [INFO] fusion_io - Finalised GPM_AGRI_20190218_234500_234459.h5 (36 tiles)
+2026-05-22 05:26:53 [INFO] data_fusion - Day 20190218 - 16/16 ok
+2026-05-22 05:26:53 [INFO] data_fusion - Day 20190219 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:26:53 [INFO] data_fusion - Day 20190219 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:26:59 [INFO] fusion_io - Finalised GPM_AGRI_20190219_001500_001459.h5 (36 tiles)
+2026-05-22 05:26:59 [INFO] fusion_io - Finalised GPM_AGRI_20190219_084500_084459.h5 (36 tiles)
+2026-05-22 05:26:59 [INFO] fusion_io - Finalised GPM_AGRI_20190219_024500_024459.h5 (36 tiles)
+2026-05-22 05:26:59 [INFO] fusion_io - Finalised GPM_AGRI_20190219_091500_091459.h5 (36 tiles)
+2026-05-22 05:26:59 [INFO] fusion_io - Finalised GPM_AGRI_20190219_031500_031459.h5 (36 tiles)
+2026-05-22 05:26:59 [INFO] fusion_io - Finalised GPM_AGRI_20190219_061500_061459.h5 (36 tiles)
+2026-05-22 05:26:59 [INFO] fusion_io - Finalised GPM_AGRI_20190219_054500_054459.h5 (36 tiles)
+2026-05-22 05:26:59 [INFO] fusion_io - Finalised GPM_AGRI_20190219_114500_114459.h5 (36 tiles)
+2026-05-22 05:27:04 [INFO] fusion_io - Finalised GPM_AGRI_20190219_144500_144459.h5 (36 tiles)
+2026-05-22 05:27:04 [INFO] fusion_io - Finalised GPM_AGRI_20190219_121500_121459.h5 (36 tiles)
+2026-05-22 05:27:04 [INFO] fusion_io - Finalised GPM_AGRI_20190219_151500_151459.h5 (36 tiles)
+2026-05-22 05:27:04 [INFO] fusion_io - Finalised GPM_AGRI_20190219_204500_204459.h5 (36 tiles)
+2026-05-22 05:27:05 [INFO] fusion_io - Finalised GPM_AGRI_20190219_181500_181459.h5 (36 tiles)
+2026-05-22 05:27:05 [INFO] fusion_io - Finalised GPM_AGRI_20190219_211500_211459.h5 (36 tiles)
+2026-05-22 05:27:05 [INFO] fusion_io - Finalised GPM_AGRI_20190219_174500_174459.h5 (36 tiles)
+2026-05-22 05:27:05 [INFO] fusion_io - Finalised GPM_AGRI_20190219_234500_234459.h5 (36 tiles)
+2026-05-22 05:27:05 [INFO] data_fusion - Day 20190219 - 16/16 ok
+2026-05-22 05:27:05 [INFO] data_fusion - Day 20190220 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:27:05 [INFO] data_fusion - Day 20190220 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:27:11 [INFO] fusion_io - Finalised GPM_AGRI_20190220_001500_001459.h5 (36 tiles)
+2026-05-22 05:27:11 [INFO] fusion_io - Finalised GPM_AGRI_20190220_024500_024459.h5 (36 tiles)
+2026-05-22 05:27:11 [INFO] fusion_io - Finalised GPM_AGRI_20190220_054500_054459.h5 (36 tiles)
+2026-05-22 05:27:11 [INFO] fusion_io - Finalised GPM_AGRI_20190220_031500_031459.h5 (36 tiles)
+2026-05-22 05:27:11 [INFO] fusion_io - Finalised GPM_AGRI_20190220_084500_084459.h5 (36 tiles)
+2026-05-22 05:27:11 [INFO] fusion_io - Finalised GPM_AGRI_20190220_091500_091459.h5 (36 tiles)
+2026-05-22 05:27:11 [INFO] fusion_io - Finalised GPM_AGRI_20190220_114500_114459.h5 (36 tiles)
+2026-05-22 05:27:11 [INFO] fusion_io - Finalised GPM_AGRI_20190220_061500_061459.h5 (36 tiles)
+2026-05-22 05:27:16 [INFO] fusion_io - Finalised GPM_AGRI_20190220_121500_121459.h5 (36 tiles)
+2026-05-22 05:27:16 [INFO] fusion_io - Finalised GPM_AGRI_20190220_144500_144459.h5 (36 tiles)
+2026-05-22 05:27:16 [INFO] fusion_io - Finalised GPM_AGRI_20190220_151500_151459.h5 (36 tiles)
+2026-05-22 05:27:16 [INFO] fusion_io - Finalised GPM_AGRI_20190220_174500_174459.h5 (36 tiles)
+2026-05-22 05:27:17 [INFO] fusion_io - Finalised GPM_AGRI_20190220_204500_204459.h5 (36 tiles)
+2026-05-22 05:27:17 [INFO] fusion_io - Finalised GPM_AGRI_20190220_211500_211459.h5 (36 tiles)
+2026-05-22 05:27:17 [INFO] fusion_io - Finalised GPM_AGRI_20190220_181500_181459.h5 (36 tiles)
+2026-05-22 05:27:17 [INFO] fusion_io - Finalised GPM_AGRI_20190220_234500_234459.h5 (36 tiles)
+2026-05-22 05:27:17 [INFO] data_fusion - Day 20190220 - 16/16 ok
+2026-05-22 05:27:17 [INFO] data_fusion - Day 20190221 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:27:17 [INFO] data_fusion - Day 20190221 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:27:23 [INFO] fusion_io - Finalised GPM_AGRI_20190221_001500_001459.h5 (36 tiles)
+2026-05-22 05:27:23 [INFO] fusion_io - Finalised GPM_AGRI_20190221_114500_114459.h5 (36 tiles)
+2026-05-22 05:27:24 [INFO] fusion_io - Finalised GPM_AGRI_20190221_091500_091459.h5 (36 tiles)
+2026-05-22 05:27:24 [INFO] fusion_io - Finalised GPM_AGRI_20190221_024500_024459.h5 (36 tiles)
+2026-05-22 05:27:24 [INFO] fusion_io - Finalised GPM_AGRI_20190221_054500_054459.h5 (36 tiles)
+2026-05-22 05:27:24 [INFO] fusion_io - Finalised GPM_AGRI_20190221_061500_061459.h5 (36 tiles)
+2026-05-22 05:27:24 [INFO] fusion_io - Finalised GPM_AGRI_20190221_084500_084459.h5 (36 tiles)
+2026-05-22 05:27:24 [INFO] fusion_io - Finalised GPM_AGRI_20190221_031500_031459.h5 (36 tiles)
+2026-05-22 05:27:28 [INFO] fusion_io - Finalised GPM_AGRI_20190221_144500_144459.h5 (36 tiles)
+2026-05-22 05:27:29 [INFO] fusion_io - Finalised GPM_AGRI_20190221_121500_121459.h5 (36 tiles)
+2026-05-22 05:27:29 [INFO] fusion_io - Finalised GPM_AGRI_20190221_151500_151459.h5 (36 tiles)
+2026-05-22 05:27:29 [INFO] fusion_io - Finalised GPM_AGRI_20190221_181500_181459.h5 (36 tiles)
+2026-05-22 05:27:29 [INFO] fusion_io - Finalised GPM_AGRI_20190221_174500_174459.h5 (36 tiles)
+2026-05-22 05:27:29 [INFO] fusion_io - Finalised GPM_AGRI_20190221_211500_211459.h5 (36 tiles)
+2026-05-22 05:27:29 [INFO] fusion_io - Finalised GPM_AGRI_20190221_204500_204459.h5 (36 tiles)
+2026-05-22 05:27:30 [INFO] fusion_io - Finalised GPM_AGRI_20190221_234500_234459.h5 (36 tiles)
+2026-05-22 05:27:30 [INFO] data_fusion - Day 20190221 - 16/16 ok
+2026-05-22 05:27:30 [INFO] data_fusion - Day 20190222 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:27:30 [INFO] data_fusion - Day 20190222 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:27:36 [INFO] fusion_io - Finalised GPM_AGRI_20190222_031500_031459.h5 (36 tiles)
+2026-05-22 05:27:36 [INFO] fusion_io - Finalised GPM_AGRI_20190222_084500_084459.h5 (36 tiles)
+2026-05-22 05:27:36 [INFO] fusion_io - Finalised GPM_AGRI_20190222_114500_114459.h5 (36 tiles)
+2026-05-22 05:27:36 [INFO] fusion_io - Finalised GPM_AGRI_20190222_061500_061459.h5 (36 tiles)
+2026-05-22 05:27:36 [INFO] fusion_io - Finalised GPM_AGRI_20190222_054500_054459.h5 (36 tiles)
+2026-05-22 05:27:36 [INFO] fusion_io - Finalised GPM_AGRI_20190222_091500_091459.h5 (36 tiles)
+2026-05-22 05:27:37 [INFO] fusion_io - Finalised GPM_AGRI_20190222_024500_024459.h5 (36 tiles)
+2026-05-22 05:27:37 [INFO] fusion_io - Finalised GPM_AGRI_20190222_001500_001459.h5 (36 tiles)
+2026-05-22 05:27:41 [INFO] fusion_io - Finalised GPM_AGRI_20190222_144500_144459.h5 (36 tiles)
+2026-05-22 05:27:41 [INFO] fusion_io - Finalised GPM_AGRI_20190222_121500_121459.h5 (36 tiles)
+2026-05-22 05:27:41 [INFO] fusion_io - Finalised GPM_AGRI_20190222_151500_151459.h5 (36 tiles)
+2026-05-22 05:27:42 [INFO] fusion_io - Finalised GPM_AGRI_20190222_174500_174459.h5 (36 tiles)
+2026-05-22 05:27:42 [INFO] fusion_io - Finalised GPM_AGRI_20190222_204500_204459.h5 (36 tiles)
+2026-05-22 05:27:42 [INFO] fusion_io - Finalised GPM_AGRI_20190222_181500_181459.h5 (36 tiles)
+2026-05-22 05:27:42 [INFO] fusion_io - Finalised GPM_AGRI_20190222_234500_234459.h5 (36 tiles)
+2026-05-22 05:27:42 [INFO] fusion_io - Finalised GPM_AGRI_20190222_211500_211459.h5 (36 tiles)
+2026-05-22 05:27:42 [INFO] data_fusion - Day 20190222 - 16/16 ok
+2026-05-22 05:27:42 [INFO] data_fusion - Day 20190225 | AGRI=38 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:27:42 [INFO] data_fusion - Day 20190225 | tasks=16 skipped(no_agri_match)=32
+/home/yuq/anaconda3/envs/cloudunet/lib/python3.10/site-packages/numpy/lib/_nanfunctions_impl.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+/home/yuq/anaconda3/envs/cloudunet/lib/python3.10/site-packages/numpy/lib/_nanfunctions_impl.py:1215: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+2026-05-22 05:27:48 [INFO] fusion_io - Finalised GPM_AGRI_20190225_114500_114459.h5 (36 tiles)
+2026-05-22 05:27:48 [INFO] fusion_io - Finalised GPM_AGRI_20190225_061500_061459.h5 (36 tiles)
+2026-05-22 05:27:48 [INFO] fusion_io - Finalised GPM_AGRI_20190225_054500_054459.h5 (36 tiles)
+2026-05-22 05:27:48 [INFO] fusion_io - Finalised GPM_AGRI_20190225_084500_084459.h5 (36 tiles)
+2026-05-22 05:27:48 [INFO] fusion_io - Finalised GPM_AGRI_20190225_001500_001459.h5 (36 tiles)
+2026-05-22 05:27:48 [INFO] fusion_io - Finalised GPM_AGRI_20190225_091500_091459.h5 (36 tiles)
+2026-05-22 05:27:51 [INFO] fusion_io - Finalised GPM_AGRI_20190225_121500_121459.h5 (36 tiles)
+2026-05-22 05:27:51 [INFO] fusion_io - Finalised GPM_AGRI_20190225_144500_144459.h5 (36 tiles)
+2026-05-22 05:27:53 [INFO] fusion_io - Finalised GPM_AGRI_20190225_151500_151459.h5 (36 tiles)
+2026-05-22 05:27:53 [INFO] fusion_io - Finalised GPM_AGRI_20190225_174500_174459.h5 (36 tiles)
+2026-05-22 05:27:53 [INFO] fusion_io - Finalised GPM_AGRI_20190225_204500_204459.h5 (36 tiles)
+2026-05-22 05:27:53 [INFO] fusion_io - Finalised GPM_AGRI_20190225_181500_181459.h5 (36 tiles)
+2026-05-22 05:27:53 [INFO] fusion_io - Finalised GPM_AGRI_20190225_211500_211459.h5 (36 tiles)
+2026-05-22 05:27:54 [INFO] fusion_io - Finalised GPM_AGRI_20190225_234500_234459.h5 (36 tiles)
+2026-05-22 05:27:54 [INFO] data_fusion - Day 20190225 - 14/16 ok
+2026-05-22 05:27:54 [INFO] data_fusion - Day 20190226 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:27:54 [INFO] data_fusion - Day 20190226 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:28:00 [INFO] fusion_io - Finalised GPM_AGRI_20190226_091500_091459.h5 (36 tiles)
+2026-05-22 05:28:00 [INFO] fusion_io - Finalised GPM_AGRI_20190226_024500_024459.h5 (36 tiles)
+2026-05-22 05:28:00 [INFO] fusion_io - Finalised GPM_AGRI_20190226_001500_001459.h5 (36 tiles)
+2026-05-22 05:28:00 [INFO] fusion_io - Finalised GPM_AGRI_20190226_114500_114459.h5 (36 tiles)
+2026-05-22 05:28:00 [INFO] fusion_io - Finalised GPM_AGRI_20190226_084500_084459.h5 (36 tiles)
+2026-05-22 05:28:00 [INFO] fusion_io - Finalised GPM_AGRI_20190226_031500_031459.h5 (36 tiles)
+2026-05-22 05:28:00 [INFO] fusion_io - Finalised GPM_AGRI_20190226_054500_054459.h5 (36 tiles)
+2026-05-22 05:28:00 [INFO] fusion_io - Finalised GPM_AGRI_20190226_061500_061459.h5 (36 tiles)
+2026-05-22 05:28:05 [INFO] fusion_io - Finalised GPM_AGRI_20190226_144500_144459.h5 (36 tiles)
+2026-05-22 05:28:05 [INFO] fusion_io - Finalised GPM_AGRI_20190226_121500_121459.h5 (36 tiles)
+2026-05-22 05:28:06 [INFO] fusion_io - Finalised GPM_AGRI_20190226_204500_204459.h5 (36 tiles)
+2026-05-22 05:28:06 [INFO] fusion_io - Finalised GPM_AGRI_20190226_174500_174459.h5 (36 tiles)
+2026-05-22 05:28:06 [INFO] fusion_io - Finalised GPM_AGRI_20190226_211500_211459.h5 (36 tiles)
+2026-05-22 05:28:06 [INFO] fusion_io - Finalised GPM_AGRI_20190226_151500_151459.h5 (36 tiles)
+2026-05-22 05:28:06 [INFO] fusion_io - Finalised GPM_AGRI_20190226_181500_181459.h5 (36 tiles)
+2026-05-22 05:28:06 [INFO] fusion_io - Finalised GPM_AGRI_20190226_234500_234459.h5 (36 tiles)
+2026-05-22 05:28:06 [INFO] data_fusion - Day 20190226 - 16/16 ok
+2026-05-22 05:28:06 [INFO] data_fusion - Day 20190228 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:28:06 [INFO] data_fusion - Day 20190228 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:28:12 [INFO] fusion_io - Finalised GPM_AGRI_20190228_001500_001459.h5 (36 tiles)
+2026-05-22 05:28:12 [INFO] fusion_io - Finalised GPM_AGRI_20190228_114500_114459.h5 (36 tiles)
+2026-05-22 05:28:12 [INFO] fusion_io - Finalised GPM_AGRI_20190228_024500_024459.h5 (36 tiles)
+2026-05-22 05:28:12 [INFO] fusion_io - Finalised GPM_AGRI_20190228_054500_054459.h5 (36 tiles)
+2026-05-22 05:28:12 [INFO] fusion_io - Finalised GPM_AGRI_20190228_031500_031459.h5 (36 tiles)
+2026-05-22 05:28:12 [INFO] fusion_io - Finalised GPM_AGRI_20190228_061500_061459.h5 (36 tiles)
+2026-05-22 05:28:12 [INFO] fusion_io - Finalised GPM_AGRI_20190228_084500_084459.h5 (36 tiles)
+2026-05-22 05:28:12 [INFO] fusion_io - Finalised GPM_AGRI_20190228_091500_091459.h5 (36 tiles)
+2026-05-22 05:28:17 [INFO] fusion_io - Finalised GPM_AGRI_20190228_121500_121459.h5 (36 tiles)
+2026-05-22 05:28:17 [INFO] fusion_io - Finalised GPM_AGRI_20190228_144500_144459.h5 (36 tiles)
+2026-05-22 05:28:17 [INFO] fusion_io - Finalised GPM_AGRI_20190228_174500_174459.h5 (36 tiles)
+2026-05-22 05:28:17 [INFO] fusion_io - Finalised GPM_AGRI_20190228_204500_204459.h5 (36 tiles)
+2026-05-22 05:28:17 [INFO] fusion_io - Finalised GPM_AGRI_20190228_151500_151459.h5 (36 tiles)
+2026-05-22 05:28:17 [INFO] fusion_io - Finalised GPM_AGRI_20190228_181500_181459.h5 (36 tiles)
+2026-05-22 05:28:18 [INFO] fusion_io - Finalised GPM_AGRI_20190228_211500_211459.h5 (36 tiles)
+2026-05-22 05:28:18 [INFO] fusion_io - Finalised GPM_AGRI_20190228_234500_234459.h5 (36 tiles)
+2026-05-22 05:28:18 [INFO] data_fusion - Day 20190228 - 16/16 ok
+2026-05-22 05:28:18 [INFO] __main__ - Stage FUSE complete
+2026-05-22 05:28:18 [INFO] __main__ - All stages finished.
+2026-05-22 05:28:18 [INFO] __main__ - ============================================================
+2026-05-22 05:28:18 [INFO] __main__ - Pipeline stages: fuse
+2026-05-22 05:28:18 [INFO] __main__ - ============================================================
+2026-05-22 05:28:18 [INFO] __main__ - Stage: FUSE
+2026-05-22 05:28:18 [INFO] data_fusion - Day 20190110 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:28:18 [INFO] data_fusion - Day 20190110 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:28:24 [INFO] fusion_io - Finalised GPM_AGRI_20190110_031500_031459.h5 (36 tiles)
+2026-05-22 05:28:24 [INFO] fusion_io - Finalised GPM_AGRI_20190110_001500_001459.h5 (36 tiles)
+2026-05-22 05:28:25 [INFO] fusion_io - Finalised GPM_AGRI_20190110_084500_084459.h5 (36 tiles)
+2026-05-22 05:28:25 [INFO] fusion_io - Finalised GPM_AGRI_20190110_061500_061459.h5 (36 tiles)
+2026-05-22 05:28:25 [INFO] fusion_io - Finalised GPM_AGRI_20190110_024500_024459.h5 (36 tiles)
+2026-05-22 05:28:25 [INFO] fusion_io - Finalised GPM_AGRI_20190110_114500_114459.h5 (36 tiles)
+2026-05-22 05:28:25 [INFO] fusion_io - Finalised GPM_AGRI_20190110_054500_054459.h5 (36 tiles)
+2026-05-22 05:28:25 [INFO] fusion_io - Finalised GPM_AGRI_20190110_091500_091459.h5 (36 tiles)
+2026-05-22 05:28:30 [INFO] fusion_io - Finalised GPM_AGRI_20190110_144500_144459.h5 (36 tiles)
+2026-05-22 05:28:30 [INFO] fusion_io - Finalised GPM_AGRI_20190110_151500_151459.h5 (36 tiles)
+2026-05-22 05:28:30 [INFO] fusion_io - Finalised GPM_AGRI_20190110_174500_174459.h5 (36 tiles)
+2026-05-22 05:28:30 [INFO] fusion_io - Finalised GPM_AGRI_20190110_181500_181459.h5 (36 tiles)
+2026-05-22 05:28:30 [INFO] fusion_io - Finalised GPM_AGRI_20190110_121500_121459.h5 (36 tiles)
+2026-05-22 05:28:30 [INFO] fusion_io - Finalised GPM_AGRI_20190110_204500_204459.h5 (36 tiles)
+2026-05-22 05:28:30 [INFO] fusion_io - Finalised GPM_AGRI_20190110_211500_211459.h5 (36 tiles)
+2026-05-22 05:28:30 [INFO] fusion_io - Finalised GPM_AGRI_20190110_234500_234459.h5 (36 tiles)
+2026-05-22 05:28:30 [INFO] data_fusion - Day 20190110 - 16/16 ok
+2026-05-22 05:28:30 [INFO] data_fusion - Day 20190120 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:28:30 [INFO] data_fusion - Day 20190120 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:28:36 [INFO] fusion_io - Finalised GPM_AGRI_20190120_031500_031459.h5 (36 tiles)
+2026-05-22 05:28:36 [INFO] fusion_io - Finalised GPM_AGRI_20190120_091500_091459.h5 (36 tiles)
+2026-05-22 05:28:36 [INFO] fusion_io - Finalised GPM_AGRI_20190120_024500_024459.h5 (36 tiles)
+2026-05-22 05:28:36 [INFO] fusion_io - Finalised GPM_AGRI_20190120_001500_001459.h5 (36 tiles)
+2026-05-22 05:28:36 [INFO] fusion_io - Finalised GPM_AGRI_20190120_114500_114459.h5 (36 tiles)
+2026-05-22 05:28:36 [INFO] fusion_io - Finalised GPM_AGRI_20190120_084500_084459.h5 (36 tiles)
+2026-05-22 05:28:36 [INFO] fusion_io - Finalised GPM_AGRI_20190120_061500_061459.h5 (36 tiles)
+2026-05-22 05:28:36 [INFO] fusion_io - Finalised GPM_AGRI_20190120_054500_054459.h5 (36 tiles)
+2026-05-22 05:28:41 [INFO] fusion_io - Finalised GPM_AGRI_20190120_121500_121459.h5 (36 tiles)
+2026-05-22 05:28:41 [INFO] fusion_io - Finalised GPM_AGRI_20190120_144500_144459.h5 (36 tiles)
+2026-05-22 05:28:41 [INFO] fusion_io - Finalised GPM_AGRI_20190120_151500_151459.h5 (36 tiles)
+2026-05-22 05:28:41 [INFO] fusion_io - Finalised GPM_AGRI_20190120_174500_174459.h5 (36 tiles)
+2026-05-22 05:28:42 [INFO] fusion_io - Finalised GPM_AGRI_20190120_181500_181459.h5 (36 tiles)
+2026-05-22 05:28:42 [INFO] fusion_io - Finalised GPM_AGRI_20190120_204500_204459.h5 (36 tiles)
+2026-05-22 05:28:42 [INFO] fusion_io - Finalised GPM_AGRI_20190120_211500_211459.h5 (36 tiles)
+2026-05-22 05:28:42 [INFO] fusion_io - Finalised GPM_AGRI_20190120_234500_234459.h5 (36 tiles)
+2026-05-22 05:28:42 [INFO] data_fusion - Day 20190120 - 16/16 ok
+2026-05-22 05:28:42 [INFO] data_fusion - Day 20190203 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:28:42 [INFO] data_fusion - Day 20190203 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:28:48 [INFO] fusion_io - Finalised GPM_AGRI_20190203_114500_114459.h5 (36 tiles)
+2026-05-22 05:28:48 [INFO] fusion_io - Finalised GPM_AGRI_20190203_001500_001459.h5 (36 tiles)
+2026-05-22 05:28:48 [INFO] fusion_io - Finalised GPM_AGRI_20190203_031500_031459.h5 (36 tiles)
+2026-05-22 05:28:48 [INFO] fusion_io - Finalised GPM_AGRI_20190203_024500_024459.h5 (36 tiles)
+2026-05-22 05:28:48 [INFO] fusion_io - Finalised GPM_AGRI_20190203_054500_054459.h5 (36 tiles)
+2026-05-22 05:28:48 [INFO] fusion_io - Finalised GPM_AGRI_20190203_091500_091459.h5 (36 tiles)
+2026-05-22 05:28:48 [INFO] fusion_io - Finalised GPM_AGRI_20190203_084500_084459.h5 (36 tiles)
+2026-05-22 05:28:48 [INFO] fusion_io - Finalised GPM_AGRI_20190203_061500_061459.h5 (36 tiles)
+2026-05-22 05:28:53 [INFO] fusion_io - Finalised GPM_AGRI_20190203_121500_121459.h5 (36 tiles)
+2026-05-22 05:28:53 [INFO] fusion_io - Finalised GPM_AGRI_20190203_151500_151459.h5 (36 tiles)
+2026-05-22 05:28:54 [INFO] fusion_io - Finalised GPM_AGRI_20190203_144500_144459.h5 (36 tiles)
+2026-05-22 05:28:54 [INFO] fusion_io - Finalised GPM_AGRI_20190203_211500_211459.h5 (36 tiles)
+2026-05-22 05:28:54 [INFO] fusion_io - Finalised GPM_AGRI_20190203_174500_174459.h5 (36 tiles)
+2026-05-22 05:28:54 [INFO] fusion_io - Finalised GPM_AGRI_20190203_204500_204459.h5 (36 tiles)
+2026-05-22 05:28:54 [INFO] fusion_io - Finalised GPM_AGRI_20190203_181500_181459.h5 (36 tiles)
+2026-05-22 05:28:54 [INFO] fusion_io - Finalised GPM_AGRI_20190203_234500_234459.h5 (36 tiles)
+2026-05-22 05:28:54 [INFO] data_fusion - Day 20190203 - 16/16 ok
+2026-05-22 05:28:54 [INFO] data_fusion - Day 20190216 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:28:54 [INFO] data_fusion - Day 20190216 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:29:00 [INFO] fusion_io - Finalised GPM_AGRI_20190216_001500_001459.h5 (36 tiles)
+2026-05-22 05:29:00 [INFO] fusion_io - Finalised GPM_AGRI_20190216_024500_024459.h5 (36 tiles)
+2026-05-22 05:29:00 [INFO] fusion_io - Finalised GPM_AGRI_20190216_114500_114459.h5 (36 tiles)
+2026-05-22 05:29:00 [INFO] fusion_io - Finalised GPM_AGRI_20190216_031500_031459.h5 (36 tiles)
+2026-05-22 05:29:00 [INFO] fusion_io - Finalised GPM_AGRI_20190216_084500_084459.h5 (36 tiles)
+2026-05-22 05:29:00 [INFO] fusion_io - Finalised GPM_AGRI_20190216_091500_091459.h5 (36 tiles)
+2026-05-22 05:29:00 [INFO] fusion_io - Finalised GPM_AGRI_20190216_061500_061459.h5 (36 tiles)
+2026-05-22 05:29:00 [INFO] fusion_io - Finalised GPM_AGRI_20190216_054500_054459.h5 (36 tiles)
+2026-05-22 05:29:05 [INFO] fusion_io - Finalised GPM_AGRI_20190216_121500_121459.h5 (36 tiles)
+2026-05-22 05:29:06 [INFO] fusion_io - Finalised GPM_AGRI_20190216_174500_174459.h5 (36 tiles)
+2026-05-22 05:29:06 [INFO] fusion_io - Finalised GPM_AGRI_20190216_181500_181459.h5 (36 tiles)
+2026-05-22 05:29:06 [INFO] fusion_io - Finalised GPM_AGRI_20190216_211500_211459.h5 (36 tiles)
+2026-05-22 05:29:06 [INFO] fusion_io - Finalised GPM_AGRI_20190216_204500_204459.h5 (36 tiles)
+2026-05-22 05:29:06 [INFO] fusion_io - Finalised GPM_AGRI_20190216_151500_151459.h5 (36 tiles)
+2026-05-22 05:29:06 [INFO] fusion_io - Finalised GPM_AGRI_20190216_144500_144459.h5 (36 tiles)
+2026-05-22 05:29:06 [INFO] fusion_io - Finalised GPM_AGRI_20190216_234500_234459.h5 (36 tiles)
+2026-05-22 05:29:06 [INFO] data_fusion - Day 20190216 - 16/16 ok
+2026-05-22 05:29:06 [INFO] data_fusion - Day 20190224 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:29:06 [INFO] data_fusion - Day 20190224 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:29:12 [INFO] fusion_io - Finalised GPM_AGRI_20190224_114500_114459.h5 (36 tiles)
+2026-05-22 05:29:12 [INFO] fusion_io - Finalised GPM_AGRI_20190224_031500_031459.h5 (36 tiles)
+2026-05-22 05:29:13 [INFO] fusion_io - Finalised GPM_AGRI_20190224_061500_061459.h5 (36 tiles)
+2026-05-22 05:29:13 [INFO] fusion_io - Finalised GPM_AGRI_20190224_091500_091459.h5 (36 tiles)
+2026-05-22 05:29:13 [INFO] fusion_io - Finalised GPM_AGRI_20190224_001500_001459.h5 (36 tiles)
+2026-05-22 05:29:13 [INFO] fusion_io - Finalised GPM_AGRI_20190224_084500_084459.h5 (36 tiles)
+2026-05-22 05:29:13 [INFO] fusion_io - Finalised GPM_AGRI_20190224_024500_024459.h5 (36 tiles)
+2026-05-22 05:29:13 [INFO] fusion_io - Finalised GPM_AGRI_20190224_054500_054459.h5 (36 tiles)
+2026-05-22 05:29:17 [INFO] fusion_io - Finalised GPM_AGRI_20190224_144500_144459.h5 (36 tiles)
+2026-05-22 05:29:18 [INFO] fusion_io - Finalised GPM_AGRI_20190224_121500_121459.h5 (36 tiles)
+2026-05-22 05:29:18 [INFO] fusion_io - Finalised GPM_AGRI_20190224_151500_151459.h5 (36 tiles)
+2026-05-22 05:29:18 [INFO] fusion_io - Finalised GPM_AGRI_20190224_174500_174459.h5 (36 tiles)
+2026-05-22 05:29:18 [INFO] fusion_io - Finalised GPM_AGRI_20190224_181500_181459.h5 (36 tiles)
+2026-05-22 05:29:18 [INFO] fusion_io - Finalised GPM_AGRI_20190224_204500_204459.h5 (36 tiles)
+2026-05-22 05:29:18 [INFO] fusion_io - Finalised GPM_AGRI_20190224_211500_211459.h5 (36 tiles)
+2026-05-22 05:29:19 [INFO] fusion_io - Finalised GPM_AGRI_20190224_234500_234459.h5 (36 tiles)
+2026-05-22 05:29:19 [INFO] data_fusion - Day 20190224 - 16/16 ok
+2026-05-22 05:29:19 [INFO] data_fusion - Day 20190227 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:29:19 [INFO] data_fusion - Day 20190227 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:29:24 [INFO] fusion_io - Finalised GPM_AGRI_20190227_024500_024459.h5 (36 tiles)
+2026-05-22 05:29:25 [INFO] fusion_io - Finalised GPM_AGRI_20190227_001500_001459.h5 (36 tiles)
+2026-05-22 05:29:25 [INFO] fusion_io - Finalised GPM_AGRI_20190227_114500_114459.h5 (36 tiles)
+2026-05-22 05:29:25 [INFO] fusion_io - Finalised GPM_AGRI_20190227_084500_084459.h5 (36 tiles)
+2026-05-22 05:29:25 [INFO] fusion_io - Finalised GPM_AGRI_20190227_091500_091459.h5 (36 tiles)
+2026-05-22 05:29:25 [INFO] fusion_io - Finalised GPM_AGRI_20190227_054500_054459.h5 (36 tiles)
+2026-05-22 05:29:25 [INFO] fusion_io - Finalised GPM_AGRI_20190227_031500_031459.h5 (36 tiles)
+2026-05-22 05:29:25 [INFO] fusion_io - Finalised GPM_AGRI_20190227_061500_061459.h5 (36 tiles)
+2026-05-22 05:29:29 [INFO] fusion_io - Finalised GPM_AGRI_20190227_121500_121459.h5 (36 tiles)
+2026-05-22 05:29:30 [INFO] fusion_io - Finalised GPM_AGRI_20190227_144500_144459.h5 (36 tiles)
+2026-05-22 05:29:30 [INFO] fusion_io - Finalised GPM_AGRI_20190227_151500_151459.h5 (36 tiles)
+2026-05-22 05:29:30 [INFO] fusion_io - Finalised GPM_AGRI_20190227_174500_174459.h5 (36 tiles)
+2026-05-22 05:29:30 [INFO] fusion_io - Finalised GPM_AGRI_20190227_204500_204459.h5 (36 tiles)
+2026-05-22 05:29:30 [INFO] fusion_io - Finalised GPM_AGRI_20190227_181500_181459.h5 (36 tiles)
+2026-05-22 05:29:30 [INFO] fusion_io - Finalised GPM_AGRI_20190227_211500_211459.h5 (36 tiles)
+2026-05-22 05:29:31 [INFO] fusion_io - Finalised GPM_AGRI_20190227_234500_234459.h5 (36 tiles)
+2026-05-22 05:29:31 [INFO] data_fusion - Day 20190227 - 16/16 ok
+2026-05-22 05:29:31 [INFO] __main__ - Stage FUSE complete
+2026-05-22 05:29:31 [INFO] __main__ - All stages finished.
+2026-05-22 05:29:31 [INFO] __main__ - ============================================================
+2026-05-22 05:29:31 [INFO] __main__ - Pipeline stages: fuse
+2026-05-22 05:29:31 [INFO] __main__ - ============================================================
+2026-05-22 05:29:31 [INFO] __main__ - Stage: FUSE
+2026-05-22 05:29:31 [INFO] data_fusion - Day 20190112 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:29:31 [INFO] data_fusion - Day 20190112 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:29:36 [INFO] fusion_io - Finalised GPM_AGRI_20190112_114500_114459.h5 (36 tiles)
+2026-05-22 05:29:36 [INFO] fusion_io - Finalised GPM_AGRI_20190112_024500_024459.h5 (36 tiles)
+2026-05-22 05:29:36 [INFO] fusion_io - Finalised GPM_AGRI_20190112_084500_084459.h5 (36 tiles)
+2026-05-22 05:29:36 [INFO] fusion_io - Finalised GPM_AGRI_20190112_061500_061459.h5 (36 tiles)
+2026-05-22 05:29:36 [INFO] fusion_io - Finalised GPM_AGRI_20190112_091500_091459.h5 (36 tiles)
+2026-05-22 05:29:36 [INFO] fusion_io - Finalised GPM_AGRI_20190112_054500_054459.h5 (36 tiles)
+2026-05-22 05:29:36 [INFO] fusion_io - Finalised GPM_AGRI_20190112_001500_001459.h5 (36 tiles)
+2026-05-22 05:29:37 [INFO] fusion_io - Finalised GPM_AGRI_20190112_031500_031459.h5 (36 tiles)
+2026-05-22 05:29:41 [INFO] fusion_io - Finalised GPM_AGRI_20190112_121500_121459.h5 (36 tiles)
+2026-05-22 05:29:41 [INFO] fusion_io - Finalised GPM_AGRI_20190112_151500_151459.h5 (36 tiles)
+2026-05-22 05:29:41 [INFO] fusion_io - Finalised GPM_AGRI_20190112_174500_174459.h5 (36 tiles)
+2026-05-22 05:29:42 [INFO] fusion_io - Finalised GPM_AGRI_20190112_204500_204459.h5 (36 tiles)
+2026-05-22 05:29:42 [INFO] fusion_io - Finalised GPM_AGRI_20190112_144500_144459.h5 (36 tiles)
+2026-05-22 05:29:42 [INFO] fusion_io - Finalised GPM_AGRI_20190112_181500_181459.h5 (36 tiles)
+2026-05-22 05:29:42 [INFO] fusion_io - Finalised GPM_AGRI_20190112_211500_211459.h5 (36 tiles)
+2026-05-22 05:29:42 [INFO] fusion_io - Finalised GPM_AGRI_20190112_234500_234459.h5 (36 tiles)
+2026-05-22 05:29:42 [INFO] data_fusion - Day 20190112 - 16/16 ok
+2026-05-22 05:29:42 [INFO] data_fusion - Day 20190117 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:29:42 [INFO] data_fusion - Day 20190117 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:29:47 [INFO] fusion_io - Finalised GPM_AGRI_20190117_061500_061459.h5 (36 tiles)
+2026-05-22 05:29:47 [INFO] fusion_io - Finalised GPM_AGRI_20190117_114500_114459.h5 (36 tiles)
+2026-05-22 05:29:48 [INFO] fusion_io - Finalised GPM_AGRI_20190117_084500_084459.h5 (36 tiles)
+2026-05-22 05:29:48 [INFO] fusion_io - Finalised GPM_AGRI_20190117_091500_091459.h5 (36 tiles)
+2026-05-22 05:29:48 [INFO] fusion_io - Finalised GPM_AGRI_20190117_031500_031459.h5 (36 tiles)
+2026-05-22 05:29:48 [INFO] fusion_io - Finalised GPM_AGRI_20190117_001500_001459.h5 (36 tiles)
+2026-05-22 05:29:48 [INFO] fusion_io - Finalised GPM_AGRI_20190117_024500_024459.h5 (36 tiles)
+2026-05-22 05:29:48 [INFO] fusion_io - Finalised GPM_AGRI_20190117_054500_054459.h5 (36 tiles)
+2026-05-22 05:29:52 [INFO] fusion_io - Finalised GPM_AGRI_20190117_144500_144459.h5 (36 tiles)
+2026-05-22 05:29:53 [INFO] fusion_io - Finalised GPM_AGRI_20190117_151500_151459.h5 (36 tiles)
+2026-05-22 05:29:53 [INFO] fusion_io - Finalised GPM_AGRI_20190117_121500_121459.h5 (36 tiles)
+2026-05-22 05:29:53 [INFO] fusion_io - Finalised GPM_AGRI_20190117_181500_181459.h5 (36 tiles)
+2026-05-22 05:29:53 [INFO] fusion_io - Finalised GPM_AGRI_20190117_174500_174459.h5 (36 tiles)
+2026-05-22 05:29:53 [INFO] fusion_io - Finalised GPM_AGRI_20190117_204500_204459.h5 (36 tiles)
+2026-05-22 05:29:53 [INFO] fusion_io - Finalised GPM_AGRI_20190117_211500_211459.h5 (36 tiles)
+2026-05-22 05:29:53 [INFO] fusion_io - Finalised GPM_AGRI_20190117_234500_234459.h5 (36 tiles)
+2026-05-22 05:29:53 [INFO] data_fusion - Day 20190117 - 16/16 ok
+2026-05-22 05:29:53 [INFO] data_fusion - Day 20190121 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:29:53 [INFO] data_fusion - Day 20190121 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:29:59 [INFO] fusion_io - Finalised GPM_AGRI_20190121_031500_031459.h5 (36 tiles)
+2026-05-22 05:29:59 [INFO] fusion_io - Finalised GPM_AGRI_20190121_114500_114459.h5 (36 tiles)
+2026-05-22 05:29:59 [INFO] fusion_io - Finalised GPM_AGRI_20190121_054500_054459.h5 (36 tiles)
+2026-05-22 05:29:59 [INFO] fusion_io - Finalised GPM_AGRI_20190121_024500_024459.h5 (36 tiles)
+2026-05-22 05:29:59 [INFO] fusion_io - Finalised GPM_AGRI_20190121_061500_061459.h5 (36 tiles)
+2026-05-22 05:29:59 [INFO] fusion_io - Finalised GPM_AGRI_20190121_001500_001459.h5 (36 tiles)
+2026-05-22 05:29:59 [INFO] fusion_io - Finalised GPM_AGRI_20190121_091500_091459.h5 (36 tiles)
+2026-05-22 05:29:59 [INFO] fusion_io - Finalised GPM_AGRI_20190121_084500_084459.h5 (36 tiles)
+2026-05-22 05:30:04 [INFO] fusion_io - Finalised GPM_AGRI_20190121_144500_144459.h5 (36 tiles)
+2026-05-22 05:30:04 [INFO] fusion_io - Finalised GPM_AGRI_20190121_151500_151459.h5 (36 tiles)
+2026-05-22 05:30:04 [INFO] fusion_io - Finalised GPM_AGRI_20190121_181500_181459.h5 (36 tiles)
+2026-05-22 05:30:04 [INFO] fusion_io - Finalised GPM_AGRI_20190121_121500_121459.h5 (36 tiles)
+2026-05-22 05:30:04 [INFO] fusion_io - Finalised GPM_AGRI_20190121_174500_174459.h5 (36 tiles)
+2026-05-22 05:30:04 [INFO] fusion_io - Finalised GPM_AGRI_20190121_204500_204459.h5 (36 tiles)
+2026-05-22 05:30:05 [INFO] fusion_io - Finalised GPM_AGRI_20190121_211500_211459.h5 (36 tiles)
+2026-05-22 05:30:05 [INFO] fusion_io - Finalised GPM_AGRI_20190121_234500_234459.h5 (36 tiles)
+2026-05-22 05:30:05 [INFO] data_fusion - Day 20190121 - 16/16 ok
+2026-05-22 05:30:05 [INFO] data_fusion - Day 20190124 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:30:05 [INFO] data_fusion - Day 20190124 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:30:10 [INFO] fusion_io - Finalised GPM_AGRI_20190124_001500_001459.h5 (36 tiles)
+2026-05-22 05:30:10 [INFO] fusion_io - Finalised GPM_AGRI_20190124_114500_114459.h5 (36 tiles)
+2026-05-22 05:30:10 [INFO] fusion_io - Finalised GPM_AGRI_20190124_091500_091459.h5 (36 tiles)
+2026-05-22 05:30:10 [INFO] fusion_io - Finalised GPM_AGRI_20190124_024500_024459.h5 (36 tiles)
+2026-05-22 05:30:10 [INFO] fusion_io - Finalised GPM_AGRI_20190124_061500_061459.h5 (36 tiles)
+2026-05-22 05:30:10 [INFO] fusion_io - Finalised GPM_AGRI_20190124_084500_084459.h5 (36 tiles)
+2026-05-22 05:30:10 [INFO] fusion_io - Finalised GPM_AGRI_20190124_031500_031459.h5 (36 tiles)
+2026-05-22 05:30:10 [INFO] fusion_io - Finalised GPM_AGRI_20190124_054500_054459.h5 (36 tiles)
+2026-05-22 05:30:15 [INFO] fusion_io - Finalised GPM_AGRI_20190124_144500_144459.h5 (36 tiles)
+2026-05-22 05:30:15 [INFO] fusion_io - Finalised GPM_AGRI_20190124_121500_121459.h5 (36 tiles)
+2026-05-22 05:30:15 [INFO] fusion_io - Finalised GPM_AGRI_20190124_151500_151459.h5 (36 tiles)
+2026-05-22 05:30:15 [INFO] fusion_io - Finalised GPM_AGRI_20190124_181500_181459.h5 (36 tiles)
+2026-05-22 05:30:15 [INFO] fusion_io - Finalised GPM_AGRI_20190124_204500_204459.h5 (36 tiles)
+2026-05-22 05:30:16 [INFO] fusion_io - Finalised GPM_AGRI_20190124_174500_174459.h5 (36 tiles)
+2026-05-22 05:30:16 [INFO] fusion_io - Finalised GPM_AGRI_20190124_211500_211459.h5 (36 tiles)
+2026-05-22 05:30:16 [INFO] fusion_io - Finalised GPM_AGRI_20190124_234500_234459.h5 (36 tiles)
+2026-05-22 05:30:16 [INFO] data_fusion - Day 20190124 - 16/16 ok
+2026-05-22 05:30:16 [INFO] data_fusion - Day 20190214 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:30:16 [INFO] data_fusion - Day 20190214 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:30:21 [INFO] fusion_io - Finalised GPM_AGRI_20190214_091500_091459.h5 (36 tiles)
+2026-05-22 05:30:21 [INFO] fusion_io - Finalised GPM_AGRI_20190214_001500_001459.h5 (36 tiles)
+2026-05-22 05:30:21 [INFO] fusion_io - Finalised GPM_AGRI_20190214_114500_114459.h5 (36 tiles)
+2026-05-22 05:30:22 [INFO] fusion_io - Finalised GPM_AGRI_20190214_054500_054459.h5 (36 tiles)
+2026-05-22 05:30:22 [INFO] fusion_io - Finalised GPM_AGRI_20190214_024500_024459.h5 (36 tiles)
+2026-05-22 05:30:22 [INFO] fusion_io - Finalised GPM_AGRI_20190214_061500_061459.h5 (36 tiles)
+2026-05-22 05:30:22 [INFO] fusion_io - Finalised GPM_AGRI_20190214_031500_031459.h5 (36 tiles)
+2026-05-22 05:30:22 [INFO] fusion_io - Finalised GPM_AGRI_20190214_084500_084459.h5 (36 tiles)
+2026-05-22 05:30:26 [INFO] fusion_io - Finalised GPM_AGRI_20190214_151500_151459.h5 (36 tiles)
+2026-05-22 05:30:27 [INFO] fusion_io - Finalised GPM_AGRI_20190214_144500_144459.h5 (36 tiles)
+2026-05-22 05:30:27 [INFO] fusion_io - Finalised GPM_AGRI_20190214_174500_174459.h5 (36 tiles)
+2026-05-22 05:30:27 [INFO] fusion_io - Finalised GPM_AGRI_20190214_121500_121459.h5 (36 tiles)
+2026-05-22 05:30:27 [INFO] fusion_io - Finalised GPM_AGRI_20190214_204500_204459.h5 (36 tiles)
+2026-05-22 05:30:27 [INFO] fusion_io - Finalised GPM_AGRI_20190214_234500_234459.h5 (36 tiles)
+2026-05-22 05:30:27 [INFO] fusion_io - Finalised GPM_AGRI_20190214_181500_181459.h5 (36 tiles)
+2026-05-22 05:30:27 [INFO] fusion_io - Finalised GPM_AGRI_20190214_211500_211459.h5 (36 tiles)
+2026-05-22 05:30:27 [INFO] data_fusion - Day 20190214 - 16/16 ok
+2026-05-22 05:30:27 [INFO] data_fusion - Day 20190223 | AGRI=40 GPM=48 | workers=8 dt_max=10min
+2026-05-22 05:30:27 [INFO] data_fusion - Day 20190223 | tasks=16 skipped(no_agri_match)=32
+2026-05-22 05:30:33 [INFO] fusion_io - Finalised GPM_AGRI_20190223_114500_114459.h5 (36 tiles)
+2026-05-22 05:30:33 [INFO] fusion_io - Finalised GPM_AGRI_20190223_001500_001459.h5 (36 tiles)
+2026-05-22 05:30:33 [INFO] fusion_io - Finalised GPM_AGRI_20190223_054500_054459.h5 (36 tiles)
+2026-05-22 05:30:33 [INFO] fusion_io - Finalised GPM_AGRI_20190223_091500_091459.h5 (36 tiles)
+2026-05-22 05:30:34 [INFO] fusion_io - Finalised GPM_AGRI_20190223_024500_024459.h5 (36 tiles)
+2026-05-22 05:30:34 [INFO] fusion_io - Finalised GPM_AGRI_20190223_031500_031459.h5 (36 tiles)
+2026-05-22 05:30:34 [INFO] fusion_io - Finalised GPM_AGRI_20190223_061500_061459.h5 (36 tiles)
+2026-05-22 05:30:34 [INFO] fusion_io - Finalised GPM_AGRI_20190223_084500_084459.h5 (36 tiles)
+2026-05-22 05:30:38 [INFO] fusion_io - Finalised GPM_AGRI_20190223_121500_121459.h5 (36 tiles)
+2026-05-22 05:30:38 [INFO] fusion_io - Finalised GPM_AGRI_20190223_144500_144459.h5 (36 tiles)
+2026-05-22 05:30:39 [INFO] fusion_io - Finalised GPM_AGRI_20190223_151500_151459.h5 (36 tiles)
+2026-05-22 05:30:39 [INFO] fusion_io - Finalised GPM_AGRI_20190223_181500_181459.h5 (36 tiles)
+2026-05-22 05:30:39 [INFO] fusion_io - Finalised GPM_AGRI_20190223_174500_174459.h5 (36 tiles)
+2026-05-22 05:30:39 [INFO] fusion_io - Finalised GPM_AGRI_20190223_211500_211459.h5 (36 tiles)
+2026-05-22 05:30:39 [INFO] fusion_io - Finalised GPM_AGRI_20190223_204500_204459.h5 (36 tiles)
+2026-05-22 05:30:39 [INFO] fusion_io - Finalised GPM_AGRI_20190223_234500_234459.h5 (36 tiles)
+2026-05-22 05:30:39 [INFO] data_fusion - Day 20190223 - 16/16 ok
+2026-05-22 05:30:39 [INFO] __main__ - Stage FUSE complete
+2026-05-22 05:30:39 [INFO] __main__ - All stages finished.
+2026-05-22 05:30:39 [INFO] __main__ - ============================================================
+2026-05-22 05:30:39 [INFO] __main__ - Pipeline stages: stats
+2026-05-22 05:30:39 [INFO] __main__ - ============================================================
+2026-05-22 05:30:39 [INFO] __main__ - Stage: STATS
+2026-05-22 05:30:40 [INFO] __main__ - Computing normalisation statistics from training split...
+2026-05-22 05:30:40 [INFO] dataset - Computing normalisation statistics from /data/Data_yuq/unet_workdir/paired/train (workers=8)
+2026-05-22 05:30:40 [INFO] dataset - Using 744/744 train files after date filter
+2026-05-22 05:30:42 [INFO] dataset -   10 / 744 files processed
+2026-05-22 05:30:43 [INFO] dataset -   20 / 744 files processed
+2026-05-22 05:30:44 [INFO] dataset -   30 / 744 files processed
+2026-05-22 05:30:45 [INFO] dataset -   40 / 744 files processed
+2026-05-22 05:30:47 [INFO] dataset -   50 / 744 files processed
+2026-05-22 05:30:48 [INFO] dataset -   60 / 744 files processed
+2026-05-22 05:30:49 [INFO] dataset -   70 / 744 files processed
+2026-05-22 05:30:50 [INFO] dataset -   80 / 744 files processed
+2026-05-22 05:30:52 [INFO] dataset -   90 / 744 files processed
+2026-05-22 05:30:53 [INFO] dataset -   100 / 744 files processed
+2026-05-22 05:30:54 [INFO] dataset -   110 / 744 files processed
+2026-05-22 05:30:54 [INFO] dataset -   120 / 744 files processed
+2026-05-22 05:30:56 [INFO] dataset -   130 / 744 files processed
+2026-05-22 05:30:57 [INFO] dataset -   140 / 744 files processed
+2026-05-22 05:30:58 [INFO] dataset -   150 / 744 files processed
+2026-05-22 05:30:59 [INFO] dataset -   160 / 744 files processed
+2026-05-22 05:31:01 [INFO] dataset -   170 / 744 files processed
+2026-05-22 05:31:02 [INFO] dataset -   180 / 744 files processed
+2026-05-22 05:31:03 [INFO] dataset -   190 / 744 files processed
+2026-05-22 05:31:04 [INFO] dataset -   200 / 744 files processed
+2026-05-22 05:31:05 [INFO] dataset -   210 / 744 files processed
+2026-05-22 05:31:06 [INFO] dataset -   220 / 744 files processed
+2026-05-22 05:31:07 [INFO] dataset -   230 / 744 files processed
+2026-05-22 05:31:08 [INFO] dataset -   240 / 744 files processed
+2026-05-22 05:31:10 [INFO] dataset -   250 / 744 files processed
+2026-05-22 05:31:11 [INFO] dataset -   260 / 744 files processed
+2026-05-22 05:31:12 [INFO] dataset -   270 / 744 files processed
+2026-05-22 05:31:13 [INFO] dataset -   280 / 744 files processed
+2026-05-22 05:31:14 [INFO] dataset -   290 / 744 files processed
+2026-05-22 05:31:16 [INFO] dataset -   300 / 744 files processed
+2026-05-22 05:31:17 [INFO] dataset -   310 / 744 files processed
+2026-05-22 05:31:18 [INFO] dataset -   320 / 744 files processed
+2026-05-22 05:31:19 [INFO] dataset -   330 / 744 files processed
+2026-05-22 05:31:20 [INFO] dataset -   340 / 744 files processed
+2026-05-22 05:31:21 [INFO] dataset -   350 / 744 files processed
+2026-05-22 05:31:22 [INFO] dataset -   360 / 744 files processed
+2026-05-22 05:31:23 [INFO] dataset -   370 / 744 files processed
+2026-05-22 05:31:25 [INFO] dataset -   380 / 744 files processed
+2026-05-22 05:31:26 [INFO] dataset -   390 / 744 files processed
+2026-05-22 05:31:27 [INFO] dataset -   400 / 744 files processed
+2026-05-22 05:31:28 [INFO] dataset -   410 / 744 files processed
+2026-05-22 05:31:29 [INFO] dataset -   420 / 744 files processed
+2026-05-22 05:31:30 [INFO] dataset -   430 / 744 files processed
+2026-05-22 05:31:32 [INFO] dataset -   440 / 744 files processed
+2026-05-22 05:31:33 [INFO] dataset -   450 / 744 files processed
+2026-05-22 05:31:34 [INFO] dataset -   460 / 744 files processed
+2026-05-22 05:31:35 [INFO] dataset -   470 / 744 files processed
+2026-05-22 05:31:36 [INFO] dataset -   480 / 744 files processed
+2026-05-22 05:31:37 [INFO] dataset -   490 / 744 files processed
+2026-05-22 05:31:38 [INFO] dataset -   500 / 744 files processed
+2026-05-22 05:31:39 [INFO] dataset -   510 / 744 files processed
+2026-05-22 05:31:41 [INFO] dataset -   520 / 744 files processed
+2026-05-22 05:31:42 [INFO] dataset -   530 / 744 files processed
+2026-05-22 05:31:43 [INFO] dataset -   540 / 744 files processed
+2026-05-22 05:31:44 [INFO] dataset -   550 / 744 files processed
+2026-05-22 05:31:45 [INFO] dataset -   560 / 744 files processed
+2026-05-22 05:31:46 [INFO] dataset -   570 / 744 files processed
+2026-05-22 05:31:47 [INFO] dataset -   580 / 744 files processed
+2026-05-22 05:31:49 [INFO] dataset -   590 / 744 files processed
+2026-05-22 05:31:50 [INFO] dataset -   600 / 744 files processed
+2026-05-22 05:31:51 [INFO] dataset -   610 / 744 files processed
+2026-05-22 05:31:52 [INFO] dataset -   620 / 744 files processed
+2026-05-22 05:31:53 [INFO] dataset -   630 / 744 files processed
+2026-05-22 05:31:54 [INFO] dataset -   640 / 744 files processed
+2026-05-22 05:31:55 [INFO] dataset -   650 / 744 files processed
+2026-05-22 05:31:57 [INFO] dataset -   660 / 744 files processed
+2026-05-22 05:31:58 [INFO] dataset -   670 / 744 files processed
+2026-05-22 05:31:59 [INFO] dataset -   680 / 744 files processed
+2026-05-22 05:32:00 [INFO] dataset -   690 / 744 files processed
+2026-05-22 05:32:01 [INFO] dataset -   700 / 744 files processed
+2026-05-22 05:32:02 [INFO] dataset -   710 / 744 files processed
+2026-05-22 05:32:03 [INFO] dataset -   720 / 744 files processed
+2026-05-22 05:32:05 [INFO] dataset -   730 / 744 files processed
+2026-05-22 05:32:06 [INFO] dataset -   740 / 744 files processed
+2026-05-22 05:32:06 [INFO] dataset -   744 / 744 files processed
+2026-05-22 05:32:06 [INFO] dataset - Saved normalisation stats → /data/Data_yuq/unet_workdir/stats/norm_stats.npz
+2026-05-22 05:32:06 [INFO] dataset - Stats computed across 744 files (valid px=438829056)
+2026-05-22 05:32:06 [INFO] __main__ - Stats saved to /data/Data_yuq/unet_workdir/stats/norm_stats.npz
+2026-05-22 05:32:06 [INFO] __main__ - Stage STATS complete
+2026-05-22 05:32:06 [INFO] __main__ - All stages finished.
+2026-05-22 05:32:06 [INFO] __main__ - ============================================================
+2026-05-22 05:32:06 [INFO] __main__ - Pipeline stages: train
+2026-05-22 05:32:06 [INFO] __main__ - ============================================================
+2026-05-22 05:32:06 [INFO] __main__ - Stage: TRAIN
+2026-05-22 05:32:07 [INFO] numexpr.utils - Note: detected 96 virtual cores but NumExpr set to maximum of 64, check "NUMEXPR_MAX_THREADS" environment variable.
+2026-05-22 05:32:07 [INFO] numexpr.utils - Note: NumExpr detected 96 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 16.
+2026-05-22 05:32:07 [INFO] numexpr.utils - NumExpr defaulting to 16 threads.
+2026-05-22 05:32:07 [INFO] __main__ - Starting training...
+2026-05-22 05:32:10 [INFO] train - Training on cuda (2 GPUs)
+2026-05-22 05:32:10 [INFO] dataset - Using 744/744 train files after date filter
+2026-05-22 05:32:10 [INFO] dataset - Building tile index from 744 files (mode=train)...
+2026-05-22 05:32:10 [INFO] dataset - Dataset ready – 26784 tiles (from 744 files, mode=train)
+2026-05-22 05:32:10 [INFO] train - train tiles (total) = 26784
+2026-05-22 05:32:10 [INFO] train - Rain tiles: 24640 (92.0%), weight=3×
+2026-05-22 05:32:10 [INFO] train - Sampler: 26784 tiles/epoch (100%)
+2026-05-22 05:32:10 [INFO] dataset - Using 96/96 val files after date filter
+2026-05-22 05:32:10 [INFO] dataset - Building tile index from 96 files (mode=val)...
+2026-05-22 05:32:10 [INFO] dataset - Dataset ready – 3456 tiles (from 96 files, mode=val)
+2026-05-22 05:32:10 [INFO] dataset - Using 96/96 test files after date filter
+2026-05-22 05:32:10 [INFO] dataset - Building tile index from 96 files (mode=test)...
+2026-05-22 05:32:11 [INFO] dataset - Dataset ready – 3456 tiles (from 96 files, mode=test)
+2026-05-22 05:32:11 [INFO] train - val tiles   = 3456
+2026-05-22 05:32:11 [INFO] train - test tiles  = 3456
+2026-05-22 05:32:11 [INFO] train - train iters/epoch = 210
+2026-05-22 05:32:11 [INFO] train - val iters/epoch   = 54
+2026-05-22 05:32:11 [INFO] train - Wrapped model with DataParallel across 2 GPUs
+2026-05-22 05:32:11 [INFO] train - Loss: DualHeadLoss (BCE×0.4 + wMSE×0.6, rain_weight=5)
+Traceback (most recent call last):
+  File "/home/yuq/cloudmask/unet/main.py", line 190, in <module>
+    main()
+  File "/home/yuq/cloudmask/unet/main.py", line 183, in main
+    STAGE_FN[stage](args)
+  File "/home/yuq/cloudmask/unet/main.py", line 98, in stage_train
+    train(stats)
+  File "/home/yuq/cloudmask/unet/train.py", line 306, in train
+    train_m = _run_epoch(model, train_dl, loss_fn, device,
+  File "/home/yuq/cloudmask/unet/train.py", line 189, in _run_epoch
+    loss = loss_fn(prob, rain, y)
+  File "/home/yuq/anaconda3/envs/cloudunet/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1779, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/home/yuq/anaconda3/envs/cloudunet/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1790, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/yuq/cloudmask/unet/losses.py", line 55, in forward
+    bce = F.binary_cross_entropy(
+  File "/home/yuq/anaconda3/envs/cloudunet/lib/python3.10/site-packages/torch/nn/functional.py", line 3574, in binary_cross_entropy
+    return torch._C._nn.binary_cross_entropy(input, target, weight, reduction_enum)
+RuntimeError: torch.nn.functional.binary_cross_entropy and torch.nn.BCELoss are unsafe to autocast.
+Many models use a sigmoid layer right before the binary cross entropy layer.
+In this case, combine the two layers using torch.nn.functional.binary_cross_entropy_with_logits
+or torch.nn.BCEWithLogitsLoss.  binary_cross_entropy_with_logits and BCEWithLogits are
+safe to autocast.
+nohup: ignoring input
+2026-05-22 06:13:06 [INFO] __main__ - ============================================================
+2026-05-22 06:13:06 [INFO] __main__ - Pipeline stages: train
+2026-05-22 06:13:06 [INFO] __main__ - ============================================================
+2026-05-22 06:13:06 [INFO] __main__ - Stage: TRAIN
+2026-05-22 06:13:07 [INFO] numexpr.utils - Note: detected 96 virtual cores but NumExpr set to maximum of 64, check "NUMEXPR_MAX_THREADS" environment variable.
+2026-05-22 06:13:07 [INFO] numexpr.utils - Note: NumExpr detected 96 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 16.
+2026-05-22 06:13:07 [INFO] numexpr.utils - NumExpr defaulting to 16 threads.
+2026-05-22 06:13:08 [INFO] __main__ - Starting training...
+2026-05-22 06:13:10 [INFO] train - Training on cuda (2 GPUs)
+2026-05-22 06:13:10 [INFO] dataset - Using 744/744 train files after date filter
+2026-05-22 06:13:10 [INFO] dataset - Building tile index from 744 files (mode=train)...
+2026-05-22 06:13:11 [INFO] dataset - Dataset ready – 26784 tiles (from 744 files, mode=train)
+2026-05-22 06:13:11 [INFO] train - train tiles (total) = 26784
+2026-05-22 06:13:11 [INFO] train - Rain tiles: 24640 (92.0%), weight=3×
+2026-05-22 06:13:11 [INFO] train - Sampler: 26784 tiles/epoch (100%)
+2026-05-22 06:13:11 [INFO] dataset - Using 96/96 val files after date filter
+2026-05-22 06:13:11 [INFO] dataset - Building tile index from 96 files (mode=val)...
+2026-05-22 06:13:11 [INFO] dataset - Dataset ready – 3456 tiles (from 96 files, mode=val)
+2026-05-22 06:13:11 [INFO] dataset - Using 96/96 test files after date filter
+2026-05-22 06:13:11 [INFO] dataset - Building tile index from 96 files (mode=test)...
+2026-05-22 06:13:11 [INFO] dataset - Dataset ready – 3456 tiles (from 96 files, mode=test)
+2026-05-22 06:13:11 [INFO] train - val tiles   = 3456
+2026-05-22 06:13:11 [INFO] train - test tiles  = 3456
+2026-05-22 06:13:11 [INFO] train - train iters/epoch = 210
+2026-05-22 06:13:11 [INFO] train - val iters/epoch   = 54
+2026-05-22 06:13:11 [INFO] train - Wrapped model with DataParallel across 2 GPUs
+2026-05-22 06:13:12 [INFO] train - Loss: DualHeadLoss (BCE×0.4 + wMSE×0.6, rain_weight=5)
+2026-05-22 06:13:32 [INFO] train -   train 26/210 | loss=3.1420
+2026-05-22 06:13:49 [INFO] train -   train 52/210 | loss=2.9767
+2026-05-22 06:14:05 [INFO] train -   train 78/210 | loss=2.9669
+2026-05-22 06:14:26 [INFO] train -   train 104/210 | loss=2.9827
+2026-05-22 06:14:42 [INFO] train -   train 130/210 | loss=2.9426
+2026-05-22 06:14:59 [INFO] train -   train 156/210 | loss=2.9110
+2026-05-22 06:15:19 [INFO] train -   train 182/210 | loss=2.8897
+2026-05-22 06:15:34 [INFO] train -   train 208/210 | loss=2.8678
+2026-05-22 06:15:34 [INFO] train -   train 210/210 | loss=2.8736
+2026-05-22 06:15:36 [INFO] train -   val 6/54 | loss=1.3010
+2026-05-22 06:15:37 [INFO] train -   val 12/54 | loss=2.6804
+2026-05-22 06:15:38 [INFO] train -   val 18/54 | loss=5.9439
+2026-05-22 06:15:39 [INFO] train -   val 24/54 | loss=4.7767
+2026-05-22 06:15:40 [INFO] train -   val 30/54 | loss=4.2955
+2026-05-22 06:15:41 [INFO] train -   val 36/54 | loss=4.1130
+2026-05-22 06:15:41 [INFO] train -   val 42/54 | loss=3.7513
+2026-05-22 06:15:42 [INFO] train -   val 48/54 | loss=3.4328
+2026-05-22 06:15:43 [INFO] train -   val 54/54 | loss=3.2230
+2026-05-22 06:15:43 [INFO] train - Epoch   1/100 | TrainLoss=2.8736 | ValLoss=3.2230 | CSI=0.159 POD=0.895 FAR=0.838 | MAE=1.413 RMSE=3.180 CC=0.034 | 151.5s
+2026-05-22 06:15:43 [INFO] train -   New best val_csi: 0.1592 CSI=0.159 CC=0.034
+2026-05-22 06:16:04 [INFO] train -   train 26/210 | loss=2.8080
+2026-05-22 06:16:21 [INFO] train -   train 52/210 | loss=2.8485
+2026-05-22 06:16:37 [INFO] train -   train 78/210 | loss=2.9014
+2026-05-22 06:16:57 [INFO] train -   train 104/210 | loss=2.8667
+2026-05-22 06:17:13 [INFO] train -   train 130/210 | loss=2.9050
+2026-05-22 06:17:30 [INFO] train -   train 156/210 | loss=2.8705
+2026-05-22 06:17:50 [INFO] train -   train 182/210 | loss=2.8694
+2026-05-22 06:18:05 [INFO] train -   train 208/210 | loss=2.8885
+2026-05-22 06:18:06 [INFO] train -   train 210/210 | loss=2.8852
+2026-05-22 06:18:07 [INFO] train -   val 6/54 | loss=1.2982
+2026-05-22 06:18:08 [INFO] train -   val 12/54 | loss=2.7005
+2026-05-22 06:18:09 [INFO] train -   val 18/54 | loss=6.0088
+2026-05-22 06:18:10 [INFO] train -   val 24/54 | loss=4.8300
+2026-05-22 06:18:11 [INFO] train -   val 30/54 | loss=4.3300
+2026-05-22 06:18:12 [INFO] train -   val 36/54 | loss=4.1359
+2026-05-22 06:18:13 [INFO] train -   val 42/54 | loss=3.7739
+2026-05-22 06:18:13 [INFO] train -   val 48/54 | loss=3.4509
+2026-05-22 06:18:14 [INFO] train -   val 54/54 | loss=3.2365
+2026-05-22 06:18:14 [INFO] train - Epoch   2/100 | TrainLoss=2.8852 | ValLoss=3.2365 | CSI=0.150 POD=0.887 FAR=0.847 | MAE=1.419 RMSE=3.196 CC=-0.022 | 150.9s
+2026-05-22 06:18:35 [INFO] train -   train 26/210 | loss=2.7272
+2026-05-22 06:18:52 [INFO] train -   train 52/210 | loss=2.9750
+2026-05-22 06:19:09 [INFO] train -   train 78/210 | loss=2.9133
+2026-05-22 06:19:28 [INFO] train -   train 104/210 | loss=2.8663
+2026-05-22 06:19:45 [INFO] train -   train 130/210 | loss=2.8968
+2026-05-22 06:20:02 [INFO] train -   train 156/210 | loss=2.8528
+2026-05-22 06:20:21 [INFO] train -   train 182/210 | loss=2.8278
+2026-05-22 06:20:37 [INFO] train -   train 208/210 | loss=2.8083
+2026-05-22 06:20:37 [INFO] train -   train 210/210 | loss=2.8036
+2026-05-22 06:20:39 [INFO] train -   val 6/54 | loss=1.2581
+2026-05-22 06:20:40 [INFO] train -   val 12/54 | loss=2.6326
+2026-05-22 06:20:41 [INFO] train -   val 18/54 | loss=6.0282
+2026-05-22 06:20:42 [INFO] train -   val 24/54 | loss=4.8372
+2026-05-22 06:20:43 [INFO] train -   val 30/54 | loss=4.3262
+2026-05-22 06:20:43 [INFO] train -   val 36/54 | loss=4.1248
+2026-05-22 06:20:44 [INFO] train -   val 42/54 | loss=3.7570
+2026-05-22 06:20:45 [INFO] train -   val 48/54 | loss=3.4305
+2026-05-22 06:20:46 [INFO] train -   val 54/54 | loss=3.2136
+2026-05-22 06:20:46 [INFO] train - Epoch   3/100 | TrainLoss=2.8036 | ValLoss=3.2136 | CSI=0.173 POD=0.821 FAR=0.821 | MAE=1.446 RMSE=3.217 CC=-0.012 | 151.8s
+2026-05-22 06:20:46 [INFO] train -   New best val_csi: 0.1727 CSI=0.173 CC=-0.012
+2026-05-22 06:21:07 [INFO] train -   train 26/210 | loss=2.8138
+2026-05-22 06:21:24 [INFO] train -   train 52/210 | loss=2.8576
+2026-05-22 06:21:41 [INFO] train -   train 78/210 | loss=2.9954
+2026-05-22 06:22:01 [INFO] train -   train 104/210 | loss=2.9225
+2026-05-22 06:22:17 [INFO] train -   train 130/210 | loss=2.8867
+2026-05-22 06:22:34 [INFO] train -   train 156/210 | loss=2.9054
+2026-05-22 06:22:54 [INFO] train -   train 182/210 | loss=2.8726
+2026-05-22 06:23:10 [INFO] train -   train 208/210 | loss=2.8867
+2026-05-22 06:23:10 [INFO] train -   train 210/210 | loss=2.8915
+2026-05-22 06:23:11 [INFO] train -   val 6/54 | loss=1.2735
+2026-05-22 06:23:12 [INFO] train -   val 12/54 | loss=2.6677
+2026-05-22 06:23:13 [INFO] train -   val 18/54 | loss=6.0134
+2026-05-22 06:23:14 [INFO] train -   val 24/54 | loss=4.8247
+2026-05-22 06:23:15 [INFO] train -   val 30/54 | loss=4.3158
+2026-05-22 06:23:16 [INFO] train -   val 36/54 | loss=4.1083
+2026-05-22 06:23:17 [INFO] train -   val 42/54 | loss=3.7405
+2026-05-22 06:23:18 [INFO] train -   val 48/54 | loss=3.4160
+2026-05-22 06:23:18 [INFO] train -   val 54/54 | loss=3.2018
+2026-05-22 06:23:18 [INFO] train - Epoch   4/100 | TrainLoss=2.8915 | ValLoss=3.2018 | CSI=0.173 POD=0.805 FAR=0.820 | MAE=1.443 RMSE=3.214 CC=-0.034 | 152.3s
+2026-05-22 06:23:18 [INFO] train -   New best val_csi: 0.1728 CSI=0.173 CC=-0.034
+2026-05-22 06:23:40 [INFO] train -   train 26/210 | loss=2.9983
+2026-05-22 06:23:56 [INFO] train -   train 52/210 | loss=2.9559
+2026-05-22 06:24:12 [INFO] train -   train 78/210 | loss=2.9030
+2026-05-22 06:24:32 [INFO] train -   train 104/210 | loss=2.9291
+2026-05-22 06:24:49 [INFO] train -   train 130/210 | loss=2.9432
+2026-05-22 06:25:05 [INFO] train -   train 156/210 | loss=2.9102
+2026-05-22 06:25:25 [INFO] train -   train 182/210 | loss=2.9037
+2026-05-22 06:25:41 [INFO] train -   train 208/210 | loss=2.8895
+2026-05-22 06:25:41 [INFO] train -   train 210/210 | loss=2.8911
+2026-05-22 06:25:42 [INFO] train -   val 6/54 | loss=1.2566
+2026-05-22 06:25:43 [INFO] train -   val 12/54 | loss=2.6356
+2026-05-22 06:25:44 [INFO] train -   val 18/54 | loss=5.9848
+2026-05-22 06:25:45 [INFO] train -   val 24/54 | loss=4.7989
+2026-05-22 06:25:46 [INFO] train -   val 30/54 | loss=4.2950
+2026-05-22 06:25:47 [INFO] train -   val 36/54 | loss=4.0879
+2026-05-22 06:25:48 [INFO] train -   val 42/54 | loss=3.7150
+2026-05-22 06:25:48 [INFO] train -   val 48/54 | loss=3.3900
+2026-05-22 06:25:49 [INFO] train -   val 54/54 | loss=3.1731
+2026-05-22 06:25:49 [INFO] train - Epoch   5/100 | TrainLoss=2.8911 | ValLoss=3.1731 | CSI=0.186 POD=0.766 FAR=0.803 | MAE=1.443 RMSE=3.209 CC=0.008 | 150.8s
+2026-05-22 06:25:49 [INFO] train -   New best val_csi: 0.1860 CSI=0.186 CC=0.008
+2026-05-22 06:26:11 [INFO] train -   train 26/210 | loss=2.8577
+2026-05-22 06:26:27 [INFO] train -   train 52/210 | loss=2.7879
+2026-05-22 06:26:44 [INFO] train -   train 78/210 | loss=2.7436
+2026-05-22 06:27:04 [INFO] train -   train 104/210 | loss=2.7574
+2026-05-22 06:27:21 [INFO] train -   train 130/210 | loss=2.7483
+2026-05-22 06:27:37 [INFO] train -   train 156/210 | loss=2.7317
+2026-05-22 06:27:57 [INFO] train -   train 182/210 | loss=2.7880
+2026-05-22 06:28:13 [INFO] train -   train 208/210 | loss=2.7737
+2026-05-22 06:28:13 [INFO] train -   train 210/210 | loss=2.7738
+2026-05-22 06:28:15 [INFO] train -   val 6/54 | loss=1.2394
+2026-05-22 06:28:16 [INFO] train -   val 12/54 | loss=2.6453
+2026-05-22 06:28:17 [INFO] train -   val 18/54 | loss=5.9786
+2026-05-22 06:28:18 [INFO] train -   val 24/54 | loss=4.7875
+2026-05-22 06:28:19 [INFO] train -   val 30/54 | loss=4.2878
+2026-05-22 06:28:19 [INFO] train -   val 36/54 | loss=4.0882
+2026-05-22 06:28:20 [INFO] train -   val 42/54 | loss=3.7184
+2026-05-22 06:28:21 [INFO] train -   val 48/54 | loss=3.3921
+2026-05-22 06:28:22 [INFO] train -   val 54/54 | loss=3.1800
+2026-05-22 06:28:22 [INFO] train - Epoch   6/100 | TrainLoss=2.7738 | ValLoss=3.1800 | CSI=0.188 POD=0.702 FAR=0.796 | MAE=1.462 RMSE=3.227 CC=-0.018 | 152.5s
+2026-05-22 06:28:22 [INFO] train -   New best val_csi: 0.1878 CSI=0.188 CC=-0.018
+2026-05-22 06:28:43 [INFO] train -   train 26/210 | loss=2.8835
+2026-05-22 06:29:00 [INFO] train -   train 52/210 | loss=2.8457
+2026-05-22 06:29:17 [INFO] train -   train 78/210 | loss=2.7737
+2026-05-22 06:29:37 [INFO] train -   train 104/210 | loss=2.7692
+2026-05-22 06:29:53 [INFO] train -   train 130/210 | loss=2.8189
+2026-05-22 06:30:10 [INFO] train -   train 156/210 | loss=2.7938
+2026-05-22 06:30:30 [INFO] train -   train 182/210 | loss=2.7953
+2026-05-22 06:30:46 [INFO] train -   train 208/210 | loss=2.7922
+2026-05-22 06:30:46 [INFO] train -   train 210/210 | loss=2.7936
+2026-05-22 06:30:47 [INFO] train -   val 6/54 | loss=1.2417
+2026-05-22 06:30:48 [INFO] train -   val 12/54 | loss=2.6463
+2026-05-22 06:30:49 [INFO] train -   val 18/54 | loss=5.9811
+2026-05-22 06:30:50 [INFO] train -   val 24/54 | loss=4.7905
+2026-05-22 06:30:51 [INFO] train -   val 30/54 | loss=4.2856
+2026-05-22 06:30:52 [INFO] train -   val 36/54 | loss=4.0835
+2026-05-22 06:30:53 [INFO] train -   val 42/54 | loss=3.7118
+2026-05-22 06:30:54 [INFO] train -   val 48/54 | loss=3.3843
+2026-05-22 06:30:54 [INFO] train -   val 54/54 | loss=3.1718
+2026-05-22 06:30:54 [INFO] train - Epoch   7/100 | TrainLoss=2.7936 | ValLoss=3.1718 | CSI=0.188 POD=0.702 FAR=0.796 | MAE=1.461 RMSE=3.226 CC=-0.013 | 152.3s
+2026-05-22 06:31:16 [INFO] train -   train 26/210 | loss=2.9317
+2026-05-22 06:31:32 [INFO] train -   train 52/210 | loss=2.9376
+2026-05-22 06:31:49 [INFO] train -   train 78/210 | loss=2.9101
+2026-05-22 06:32:09 [INFO] train -   train 104/210 | loss=2.8747
+2026-05-22 06:32:26 [INFO] train -   train 130/210 | loss=2.8737
+2026-05-22 06:32:42 [INFO] train -   train 156/210 | loss=2.8141
+2026-05-22 06:33:02 [INFO] train -   train 182/210 | loss=2.7939
+2026-05-22 06:33:18 [INFO] train -   train 208/210 | loss=2.7973
+2026-05-22 06:33:18 [INFO] train -   train 210/210 | loss=2.7911
+2026-05-22 06:33:20 [INFO] train -   val 6/54 | loss=1.2396
+2026-05-22 06:33:21 [INFO] train -   val 12/54 | loss=2.6140
+2026-05-22 06:33:22 [INFO] train -   val 18/54 | loss=5.9715
+2026-05-22 06:33:22 [INFO] train -   val 24/54 | loss=4.7816
+2026-05-22 06:33:23 [INFO] train -   val 30/54 | loss=4.2759
+2026-05-22 06:33:24 [INFO] train -   val 36/54 | loss=4.0752
+2026-05-22 06:33:25 [INFO] train -   val 42/54 | loss=3.7007
+2026-05-22 06:33:26 [INFO] train -   val 48/54 | loss=3.3740
+2026-05-22 06:33:27 [INFO] train -   val 54/54 | loss=3.1597
+2026-05-22 06:33:27 [INFO] train - Epoch   8/100 | TrainLoss=2.7911 | ValLoss=3.1597 | CSI=0.200 POD=0.682 FAR=0.779 | MAE=1.467 RMSE=3.227 CC=0.011 | 152.5s
+2026-05-22 06:33:27 [INFO] train -   New best val_csi: 0.2000 CSI=0.200 CC=0.011
+2026-05-22 06:33:48 [INFO] train -   train 26/210 | loss=2.9648
+2026-05-22 06:34:05 [INFO] train -   train 52/210 | loss=2.9158
+2026-05-22 06:34:21 [INFO] train -   train 78/210 | loss=2.8138
+2026-05-22 06:34:42 [INFO] train -   train 104/210 | loss=2.8129
+2026-05-22 06:34:59 [INFO] train -   train 130/210 | loss=2.8151
+2026-05-22 06:35:15 [INFO] train -   train 156/210 | loss=2.8130
+2026-05-22 06:35:35 [INFO] train -   train 182/210 | loss=2.8434
+2026-05-22 06:35:50 [INFO] train -   train 208/210 | loss=2.8503
+2026-05-22 06:35:50 [INFO] train -   train 210/210 | loss=2.8478
+2026-05-22 06:35:52 [INFO] train -   val 6/54 | loss=1.2155
+2026-05-22 06:35:53 [INFO] train -   val 12/54 | loss=2.6202
+2026-05-22 06:35:54 [INFO] train -   val 18/54 | loss=5.9907
+2026-05-22 06:35:54 [INFO] train -   val 24/54 | loss=4.7911
+2026-05-22 06:35:55 [INFO] train -   val 30/54 | loss=4.2790
+2026-05-22 06:35:56 [INFO] train -   val 36/54 | loss=4.0752
+2026-05-22 06:35:57 [INFO] train -   val 42/54 | loss=3.6976
+2026-05-22 06:35:58 [INFO] train -   val 48/54 | loss=3.3674
+2026-05-22 06:35:59 [INFO] train -   val 54/54 | loss=3.1500
+2026-05-22 06:35:59 [INFO] train - Epoch   9/100 | TrainLoss=2.8478 | ValLoss=3.1500 | CSI=0.211 POD=0.634 FAR=0.759 | MAE=1.478 RMSE=3.236 CC=0.004 | 151.9s
+2026-05-22 06:35:59 [INFO] train -   New best val_csi: 0.2114 CSI=0.211 CC=0.004
+2026-05-22 06:36:20 [INFO] train -   train 26/210 | loss=2.7673
+2026-05-22 06:36:37 [INFO] train -   train 52/210 | loss=2.7716
+2026-05-22 06:36:54 [INFO] train -   train 78/210 | loss=2.7713
+2026-05-22 06:37:14 [INFO] train -   train 104/210 | loss=2.7596
+2026-05-22 06:37:31 [INFO] train -   train 130/210 | loss=2.8215
+2026-05-22 06:37:47 [INFO] train -   train 156/210 | loss=2.8202
+2026-05-22 06:38:08 [INFO] train -   train 182/210 | loss=2.8336
+2026-05-22 06:38:23 [INFO] train -   train 208/210 | loss=2.8473
+2026-05-22 06:38:23 [INFO] train -   train 210/210 | loss=2.8458
+2026-05-22 06:38:24 [INFO] train -   val 6/54 | loss=1.2562
+2026-05-22 06:38:25 [INFO] train -   val 12/54 | loss=2.6792
+2026-05-22 06:38:26 [INFO] train -   val 18/54 | loss=5.9859
+2026-05-22 06:38:27 [INFO] train -   val 24/54 | loss=4.7968
+2026-05-22 06:38:28 [INFO] train -   val 30/54 | loss=4.2767
+2026-05-22 06:38:29 [INFO] train -   val 36/54 | loss=4.0712
+2026-05-22 06:38:30 [INFO] train -   val 42/54 | loss=3.7049
+2026-05-22 06:38:31 [INFO] train -   val 48/54 | loss=3.3795
+2026-05-22 06:38:31 [INFO] train -   val 54/54 | loss=3.1695
+2026-05-22 06:38:32 [INFO] train - Epoch  10/100 | TrainLoss=2.8458 | ValLoss=3.1695 | CSI=0.182 POD=0.630 FAR=0.796 | MAE=1.467 RMSE=3.227 CC=-0.018 | 152.6s
+2026-05-22 06:38:53 [INFO] train -   train 26/210 | loss=2.8141
+2026-05-22 06:39:10 [INFO] train -   train 52/210 | loss=2.6810
+2026-05-22 06:39:26 [INFO] train -   train 78/210 | loss=2.7321
+2026-05-22 06:39:46 [INFO] train -   train 104/210 | loss=2.8200
+2026-05-22 06:40:03 [INFO] train -   train 130/210 | loss=2.7848
+2026-05-22 06:40:20 [INFO] train -   train 156/210 | loss=2.7731
+2026-05-22 06:40:40 [INFO] train -   train 182/210 | loss=2.7531
+2026-05-22 06:40:55 [INFO] train -   train 208/210 | loss=2.7850
+2026-05-22 06:40:56 [INFO] train -   train 210/210 | loss=2.7843
+2026-05-22 06:40:57 [INFO] train -   val 6/54 | loss=1.2215
+2026-05-22 06:40:58 [INFO] train -   val 12/54 | loss=2.6177
+2026-05-22 06:40:59 [INFO] train -   val 18/54 | loss=5.9650
+2026-05-22 06:41:00 [INFO] train -   val 24/54 | loss=4.7789
+2026-05-22 06:41:01 [INFO] train -   val 30/54 | loss=4.2812
+2026-05-22 06:41:02 [INFO] train -   val 36/54 | loss=4.0949
+2026-05-22 06:41:03 [INFO] train -   val 42/54 | loss=3.7172
+2026-05-22 06:41:03 [INFO] train -   val 48/54 | loss=3.3863
+2026-05-22 06:41:04 [INFO] train -   val 54/54 | loss=3.1665
+2026-05-22 06:41:04 [INFO] train - Epoch  11/100 | TrainLoss=2.7843 | ValLoss=3.1665 | CSI=0.202 POD=0.642 FAR=0.773 | MAE=1.482 RMSE=3.239 CC=-0.009 | 152.7s
+2026-05-22 06:41:26 [INFO] train -   train 26/210 | loss=2.8369
+2026-05-22 06:41:42 [INFO] train -   train 52/210 | loss=2.8391
+2026-05-22 06:41:59 [INFO] train -   train 78/210 | loss=2.8301
+2026-05-22 06:42:19 [INFO] train -   train 104/210 | loss=2.8217
+2026-05-22 06:42:36 [INFO] train -   train 130/210 | loss=2.8206
+2026-05-22 06:42:53 [INFO] train -   train 156/210 | loss=2.8105
+2026-05-22 06:43:13 [INFO] train -   train 182/210 | loss=2.8442
+2026-05-22 06:43:29 [INFO] train -   train 208/210 | loss=2.8537
+2026-05-22 06:43:29 [INFO] train -   train 210/210 | loss=2.8475
+2026-05-22 06:43:30 [INFO] train -   val 6/54 | loss=1.2362
+2026-05-22 06:43:31 [INFO] train -   val 12/54 | loss=2.6456
+2026-05-22 06:43:32 [INFO] train -   val 18/54 | loss=6.0207
+2026-05-22 06:43:33 [INFO] train -   val 24/54 | loss=4.8154
+2026-05-22 06:43:34 [INFO] train -   val 30/54 | loss=4.2977
+2026-05-22 06:43:35 [INFO] train -   val 36/54 | loss=4.0930
+2026-05-22 06:43:36 [INFO] train -   val 42/54 | loss=3.7204
+2026-05-22 06:43:37 [INFO] train -   val 48/54 | loss=3.3886
+2026-05-22 06:43:37 [INFO] train -   val 54/54 | loss=3.1670
+2026-05-22 06:43:37 [INFO] train - Epoch  12/100 | TrainLoss=2.8475 | ValLoss=3.1670 | CSI=0.204 POD=0.657 FAR=0.771 | MAE=1.467 RMSE=3.230 CC=-0.015 | 153.1s
+2026-05-22 06:43:59 [INFO] train -   train 26/210 | loss=2.7926
+2026-05-22 06:44:16 [INFO] train -   train 52/210 | loss=2.8619
+2026-05-22 06:44:33 [INFO] train -   train 78/210 | loss=2.8896
+2026-05-22 06:44:54 [INFO] train -   train 104/210 | loss=2.8704
+2026-05-22 06:45:11 [INFO] train -   train 130/210 | loss=2.8895
+2026-05-22 06:45:28 [INFO] train -   train 156/210 | loss=2.8588
+2026-05-22 06:45:48 [INFO] train -   train 182/210 | loss=2.8323
+2026-05-22 06:46:04 [INFO] train -   train 208/210 | loss=2.8054
+2026-05-22 06:46:04 [INFO] train -   train 210/210 | loss=2.8046
+2026-05-22 06:46:06 [INFO] train -   val 6/54 | loss=1.2150
+2026-05-22 06:46:07 [INFO] train -   val 12/54 | loss=2.6027
+2026-05-22 06:46:08 [INFO] train -   val 18/54 | loss=5.9881
+2026-05-22 06:46:09 [INFO] train -   val 24/54 | loss=4.7868
+2026-05-22 06:46:10 [INFO] train -   val 30/54 | loss=4.2760
+2026-05-22 06:46:11 [INFO] train -   val 36/54 | loss=4.0779
+2026-05-22 06:46:12 [INFO] train -   val 42/54 | loss=3.7037
+2026-05-22 06:46:12 [INFO] train -   val 48/54 | loss=3.3750
+2026-05-22 06:46:13 [INFO] train -   val 54/54 | loss=3.1591
+2026-05-22 06:46:13 [INFO] train - Epoch  13/100 | TrainLoss=2.8046 | ValLoss=3.1591 | CSI=0.212 POD=0.589 FAR=0.751 | MAE=1.491 RMSE=3.244 CC=0.016 | 155.8s
+2026-05-22 06:46:13 [INFO] train -   New best val_csi: 0.2124 CSI=0.212 CC=0.016
+2026-05-22 06:46:35 [INFO] train -   train 26/210 | loss=2.6274
+2026-05-22 06:46:52 [INFO] train -   train 52/210 | loss=2.7006
+2026-05-22 06:47:08 [INFO] train -   train 78/210 | loss=2.6671
+2026-05-22 06:47:28 [INFO] train -   train 104/210 | loss=2.6742
+2026-05-22 06:47:45 [INFO] train -   train 130/210 | loss=2.7258
+2026-05-22 06:48:01 [INFO] train -   train 156/210 | loss=2.7477
+2026-05-22 06:48:21 [INFO] train -   train 182/210 | loss=2.7286
+2026-05-22 06:48:37 [INFO] train -   train 208/210 | loss=2.7151
+2026-05-22 06:48:37 [INFO] train -   train 210/210 | loss=2.7143
+2026-05-22 06:48:39 [INFO] train -   val 6/54 | loss=1.2521
+2026-05-22 06:48:39 [INFO] train -   val 12/54 | loss=2.6377
+2026-05-22 06:48:40 [INFO] train -   val 18/54 | loss=6.0046
+
+nohup: ignoring input
+2026-05-22 07:00:49 [INFO] __main__ - ============================================================
+2026-05-22 07:00:49 [INFO] __main__ - Pipeline stages: train
+2026-05-22 07:00:49 [INFO] __main__ - ============================================================
+2026-05-22 07:00:49 [INFO] __main__ - Stage: TRAIN
+2026-05-22 07:00:50 [INFO] numexpr.utils - Note: detected 96 virtual cores but NumExpr set to maximum of 64, check "NUMEXPR_MAX_THREADS" environment variable.
+2026-05-22 07:00:50 [INFO] numexpr.utils - Note: NumExpr detected 96 cores but "NUMEXPR_MAX_THREADS" not set, so enforcing safe limit of 16.
+2026-05-22 07:00:50 [INFO] numexpr.utils - NumExpr defaulting to 16 threads.
+2026-05-22 07:00:50 [INFO] __main__ - Resuming from checkpoint: /data/Data_yuq/unet_workdir/model/AGRI_GPM_Precip_UNet_best_csi.pth
+2026-05-22 07:00:53 [INFO] train - Training on cuda (2 GPUs)
+2026-05-22 07:00:53 [INFO] dataset - Using 744/744 train files after date filter
+2026-05-22 07:00:53 [INFO] dataset - Building tile index from 744 files (mode=train)...
+2026-05-22 07:00:53 [INFO] dataset - Dataset ready – 26784 tiles (from 744 files, mode=train)
+2026-05-22 07:00:53 [INFO] train - train tiles (total) = 26784
+2026-05-22 07:00:53 [INFO] train - Rain tiles: 24640 (92.0%), weight=2×
+2026-05-22 07:00:54 [INFO] train - Sampler: 26784 tiles/epoch (100%)
+2026-05-22 07:00:54 [INFO] dataset - Using 96/96 val files after date filter
+2026-05-22 07:00:54 [INFO] dataset - Building tile index from 96 files (mode=val)...
+2026-05-22 07:00:54 [INFO] dataset - Dataset ready – 3456 tiles (from 96 files, mode=val)
+2026-05-22 07:00:54 [INFO] dataset - Using 96/96 test files after date filter
+2026-05-22 07:00:54 [INFO] dataset - Building tile index from 96 files (mode=test)...
+2026-05-22 07:00:54 [INFO] dataset - Dataset ready – 3456 tiles (from 96 files, mode=test)
+2026-05-22 07:00:54 [INFO] train - val tiles   = 3456
+2026-05-22 07:00:54 [INFO] train - test tiles  = 3456
+2026-05-22 07:00:54 [INFO] train - train iters/epoch = 210
+2026-05-22 07:00:54 [INFO] train - val iters/epoch   = 54
+2026-05-22 07:00:54 [INFO] train - Wrapped model with DataParallel across 2 GPUs
+2026-05-22 07:00:55 [INFO] train - Loss: DualHeadLoss (BCE×0.4 + wMSE×0.6, rain_weight=2)
+2026-05-22 07:00:55 [INFO] train - Loaded model weights from /data/Data_yuq/unet_workdir/model/AGRI_GPM_Precip_UNet_best_csi.pth
+2026-05-22 07:00:55 [INFO] train - No .opt.pth found — using fresh optimizer (lr=1e-04)
+2026-05-22 07:01:16 [INFO] train -   train 26/210 | loss=1.1890
+2026-05-22 07:01:32 [INFO] train -   train 52/210 | loss=1.2011
+2026-05-22 07:01:49 [INFO] train -   train 78/210 | loss=1.1823
+2026-05-22 07:02:09 [INFO] train -   train 104/210 | loss=1.2107
+2026-05-22 07:02:26 [INFO] train -   train 130/210 | loss=1.2108
+2026-05-22 07:02:42 [INFO] train -   train 156/210 | loss=1.2170
+2026-05-22 07:03:03 [INFO] train -   train 182/210 | loss=1.2312
+2026-05-22 07:03:18 [INFO] train -   train 208/210 | loss=1.2199
+2026-05-22 07:03:19 [INFO] train -   train 210/210 | loss=1.2191
+2026-05-22 07:03:21 [INFO] train -   val 6/54 | loss=0.5983
+2026-05-22 07:03:21 [INFO] train -   val 12/54 | loss=1.2000
+2026-05-22 07:03:22 [INFO] train -   val 18/54 | loss=2.5986
+2026-05-22 07:03:23 [INFO] train -   val 24/54 | loss=2.0936
+2026-05-22 07:03:24 [INFO] train -   val 30/54 | loss=1.8756
+2026-05-22 07:03:25 [INFO] train -   val 36/54 | loss=1.7919
+2026-05-22 07:03:26 [INFO] train -   val 42/54 | loss=1.6346
+2026-05-22 07:03:27 [INFO] train -   val 48/54 | loss=1.4931
+2026-05-22 07:03:28 [INFO] train -   val 54/54 | loss=1.4005
+2026-05-22 07:03:28 [INFO] train - Epoch   1/100 | TrainLoss=1.2191 | ValLoss=1.4005 | CSI=0.204 POD=0.449 FAR=0.728 | MAE=1.519 RMSE=3.260 CC=0.018 | 153.1s
+2026-05-22 07:03:28 [INFO] train -   New best val_csi: 0.2039 CSI=0.204 CC=0.018
+2026-05-22 07:03:49 [INFO] train -   train 26/210 | loss=1.3392
+2026-05-22 07:04:06 [INFO] train -   train 52/210 | loss=1.2848
+2026-05-22 07:04:22 [INFO] train -   train 78/210 | loss=1.3019
+2026-05-22 07:04:43 [INFO] train -   train 104/210 | loss=1.2776
+2026-05-22 07:04:59 [INFO] train -   train 130/210 | loss=1.2767
+2026-05-22 07:05:16 [INFO] train -   train 156/210 | loss=1.2537
+2026-05-22 07:05:36 [INFO] train -   train 182/210 | loss=1.2432
+2026-05-22 07:05:52 [INFO] train -   train 208/210 | loss=1.2417
+2026-05-22 07:05:52 [INFO] train -   train 210/210 | loss=1.2435
+2026-05-22 07:05:54 [INFO] train -   val 6/54 | loss=0.6031
+2026-05-22 07:05:55 [INFO] train -   val 12/54 | loss=1.1967
+2026-05-22 07:05:56 [INFO] train -   val 18/54 | loss=2.5809
+2026-05-22 07:05:57 [INFO] train -   val 24/54 | loss=2.0821
+2026-05-22 07:05:57 [INFO] train -   val 30/54 | loss=1.8744
+2026-05-22 07:05:58 [INFO] train -   val 36/54 | loss=1.7970
+2026-05-22 07:05:59 [INFO] train -   val 42/54 | loss=1.6369
+2026-05-22 07:06:00 [INFO] train -   val 48/54 | loss=1.4948
+2026-05-22 07:06:01 [INFO] train -   val 54/54 | loss=1.4002
+2026-05-22 07:06:01 [INFO] train - Epoch   2/100 | TrainLoss=1.2435 | ValLoss=1.4002 | CSI=0.206 POD=0.515 FAR=0.744 | MAE=1.516 RMSE=3.263 CC=-0.010 | 153.2s
+2026-05-22 07:06:01 [INFO] train -   New best val_csi: 0.2062 CSI=0.206 CC=-0.010
+2026-05-22 07:06:23 [INFO] train -   train 26/210 | loss=1.3648
+2026-05-22 07:06:39 [INFO] train -   train 52/210 | loss=1.3076
+2026-05-22 07:06:56 [INFO] train -   train 78/210 | loss=1.2717
+2026-05-22 07:07:17 [INFO] train -   train 104/210 | loss=1.2447
+2026-05-22 07:07:33 [INFO] train -   train 130/210 | loss=1.2426
+2026-05-22 07:07:50 [INFO] train -   train 156/210 | loss=1.2331
+2026-05-22 07:08:10 [INFO] train -   train 182/210 | loss=1.2384
+2026-05-22 07:08:26 [INFO] train -   train 208/210 | loss=1.2341
+2026-05-22 07:08:26 [INFO] train -   train 210/210 | loss=1.2339
+2026-05-22 07:08:27 [INFO] train -   val 6/54 | loss=0.6084
+2026-05-22 07:08:28 [INFO] train -   val 12/54 | loss=1.2006
+2026-05-22 07:08:29 [INFO] train -   val 18/54 | loss=2.5876
+2026-05-22 07:08:30 [INFO] train -   val 24/54 | loss=2.0892
+2026-05-22 07:08:31 [INFO] train -   val 30/54 | loss=1.8770
+2026-05-22 07:08:32 [INFO] train -   val 36/54 | loss=1.7948
+2026-05-22 07:08:33 [INFO] train -   val 42/54 | loss=1.6339
+2026-05-22 07:08:34 [INFO] train -   val 48/54 | loss=1.4925
+2026-05-22 07:08:35 [INFO] train -   val 54/54 | loss=1.3993
+2026-05-22 07:08:35 [INFO] train - Epoch   3/100 | TrainLoss=1.2339 | ValLoss=1.3993 | CSI=0.211 POD=0.547 FAR=0.744 | MAE=1.501 RMSE=3.246 CC=0.024 | 153.6s
+2026-05-22 07:08:35 [INFO] train -   New best val_csi: 0.2111 CSI=0.211 CC=0.024
+2026-05-22 07:08:56 [INFO] train -   train 26/210 | loss=1.1292
+2026-05-22 07:09:13 [INFO] train -   train 52/210 | loss=1.1489
+2026-05-22 07:09:30 [INFO] train -   train 78/210 | loss=1.2107
+2026-05-22 07:09:49 [INFO] train -   train 104/210 | loss=1.2184
+2026-05-22 07:10:07 [INFO] train -   train 130/210 | loss=1.2211
+2026-05-22 07:10:24 [INFO] train -   train 156/210 | loss=1.2274
+2026-05-22 07:10:43 [INFO] train -   train 182/210 | loss=1.2443
+2026-05-22 07:10:59 [INFO] train -   train 208/210 | loss=1.2536
+2026-05-22 07:10:59 [INFO] train -   train 210/210 | loss=1.2557
+2026-05-22 07:11:00 [INFO] train -   val 6/54 | loss=0.5877
+2026-05-22 07:11:01 [INFO] train -   val 12/54 | loss=1.1853
+2026-05-22 07:11:02 [INFO] train -   val 18/54 | loss=2.5607
+2026-05-22 07:11:03 [INFO] train -   val 24/54 | loss=2.0650
+2026-05-22 07:11:04 [INFO] train -   val 30/54 | loss=1.8571
+2026-05-22 07:11:05 [INFO] train -   val 36/54 | loss=1.7794
+2026-05-22 07:11:06 [INFO] train -   val 42/54 | loss=1.6223
+2026-05-22 07:11:07 [INFO] train -   val 48/54 | loss=1.4822
+2026-05-22 07:11:07 [INFO] train -   val 54/54 | loss=1.3887
+2026-05-22 07:11:07 [INFO] train - Epoch   4/100 | TrainLoss=1.2557 | ValLoss=1.3887 | CSI=0.199 POD=0.428 FAR=0.729 | MAE=1.518 RMSE=3.258 CC=0.025 | 152.7s
+2026-05-22 07:11:29 [INFO] train -   train 26/210 | loss=1.3689
+2026-05-22 07:11:46 [INFO] train -   train 52/210 | loss=1.3173
+2026-05-22 07:12:02 [INFO] train -   train 78/210 | loss=1.2817
+2026-05-22 07:12:22 [INFO] train -   train 104/210 | loss=1.2713
+2026-05-22 07:12:39 [INFO] train -   train 130/210 | loss=1.2748
+2026-05-22 07:12:56 [INFO] train -   train 156/210 | loss=1.2735
+2026-05-22 07:13:16 [INFO] train -   train 182/210 | loss=1.2671
+2026-05-22 07:13:31 [INFO] train -   train 208/210 | loss=1.2696
+2026-05-22 07:13:32 [INFO] train -   train 210/210 | loss=1.2664
+2026-05-22 07:13:33 [INFO] train -   val 6/54 | loss=0.5971
+2026-05-22 07:13:34 [INFO] train -   val 12/54 | loss=1.1724
+2026-05-22 07:13:35 [INFO] train -   val 18/54 | loss=2.5583
+2026-05-22 07:13:36 [INFO] train -   val 24/54 | loss=2.0674
+2026-05-22 07:13:37 [INFO] train -   val 30/54 | loss=1.8613
+2026-05-22 07:13:38 [INFO] train -   val 36/54 | loss=1.7838
+2026-05-22 07:13:39 [INFO] train -   val 42/54 | loss=1.6243
+2026-05-22 07:13:39 [INFO] train -   val 48/54 | loss=1.4842
+2026-05-22 07:13:40 [INFO] train -   val 54/54 | loss=1.3903
+2026-05-22 07:13:40 [INFO] train - Epoch   5/100 | TrainLoss=1.2664 | ValLoss=1.3903 | CSI=0.221 POD=0.566 FAR=0.734 | MAE=1.501 RMSE=3.248 CC=0.033 | 152.7s
+2026-05-22 07:13:40 [INFO] train -   New best val_csi: 0.2208 CSI=0.221 CC=0.033
+2026-05-22 07:14:02 [INFO] train -   train 26/210 | loss=1.1738
+2026-05-22 07:14:19 [INFO] train -   train 52/210 | loss=1.2482
+2026-05-22 07:14:35 [INFO] train -   train 78/210 | loss=1.2256
+2026-05-22 07:14:56 [INFO] train -   train 104/210 | loss=1.1968
+2026-05-22 07:15:12 [INFO] train -   train 130/210 | loss=1.2042
+2026-05-22 07:15:29 [INFO] train -   train 156/210 | loss=1.1961
+2026-05-22 07:15:49 [INFO] train -   train 182/210 | loss=1.2000
+2026-05-22 07:16:05 [INFO] train -   train 208/210 | loss=1.1929
+2026-05-22 07:16:05 [INFO] train -   train 210/210 | loss=1.1943
+2026-05-22 07:16:06 [INFO] train -   val 6/54 | loss=0.5918
+2026-05-22 07:16:07 [INFO] train -   val 12/54 | loss=1.1950
+2026-05-22 07:16:08 [INFO] train -   val 18/54 | loss=2.5806
+2026-05-22 07:16:09 [INFO] train -   val 24/54 | loss=2.0768
+2026-05-22 07:16:10 [INFO] train -   val 30/54 | loss=1.8679
+2026-05-22 07:16:11 [INFO] train -   val 36/54 | loss=1.7884
+2026-05-22 07:16:12 [INFO] train -   val 42/54 | loss=1.6302
+2026-05-22 07:16:13 [INFO] train -   val 48/54 | loss=1.4885
+2026-05-22 07:16:13 [INFO] train -   val 54/54 | loss=1.3943
+2026-05-22 07:16:13 [INFO] train - Epoch   6/100 | TrainLoss=1.1943 | ValLoss=1.3943 | CSI=0.206 POD=0.473 FAR=0.733 | MAE=1.519 RMSE=3.259 CC=0.032 | 153.2s
+2026-05-22 07:16:35 [INFO] train -   train 26/210 | loss=1.3087
+2026-05-22 07:16:52 [INFO] train -   train 52/210 | loss=1.2597
+2026-05-22 07:17:08 [INFO] train -   train 78/210 | loss=1.2396
+2026-05-22 07:17:29 [INFO] train -   train 104/210 | loss=1.2513
+2026-05-22 07:17:45 [INFO] train -   train 130/210 | loss=1.2749
+2026-05-22 07:18:02 [INFO] train -   train 156/210 | loss=1.2633
+2026-05-22 07:18:22 [INFO] train -   train 182/210 | loss=1.2602
+2026-05-22 07:18:38 [INFO] train -   train 208/210 | loss=1.2530
+2026-05-22 07:18:38 [INFO] train -   train 210/210 | loss=1.2516
+2026-05-22 07:18:39 [INFO] train -   val 6/54 | loss=0.5904
+2026-05-22 07:18:40 [INFO] train -   val 12/54 | loss=1.1802
+2026-05-22 07:18:41 [INFO] train -   val 18/54 | loss=2.5673
+2026-05-22 07:18:42 [INFO] train -   val 24/54 | loss=2.0688
+2026-05-22 07:18:43 [INFO] train -   val 30/54 | loss=1.8576
+2026-05-22 07:18:44 [INFO] train -   val 36/54 | loss=1.7793
+2026-05-22 07:18:45 [INFO] train -   val 42/54 | loss=1.6205
+2026-05-22 07:18:46 [INFO] train -   val 48/54 | loss=1.4808
+2026-05-22 07:18:46 [INFO] train -   val 54/54 | loss=1.3888
+2026-05-22 07:18:46 [INFO] train - Epoch   7/100 | TrainLoss=1.2516 | ValLoss=1.3888 | CSI=0.209 POD=0.491 FAR=0.733 | MAE=1.508 RMSE=3.252 CC=0.021 | 152.8s
+2026-05-22 07:19:08 [INFO] train -   train 26/210 | loss=1.2174
+2026-05-22 07:19:25 [INFO] train -   train 52/210 | loss=1.2243
+2026-05-22 07:19:42 [INFO] train -   train 78/210 | loss=1.2403
+2026-05-22 07:20:02 [INFO] train -   train 104/210 | loss=1.2267
+2026-05-22 07:20:19 [INFO] train -   train 130/210 | loss=1.2271
+2026-05-22 07:20:36 [INFO] train -   train 156/210 | loss=1.2365
+2026-05-22 07:20:56 [INFO] train -   train 182/210 | loss=1.2408
+2026-05-22 07:21:12 [INFO] train -   train 208/210 | loss=1.2470
+2026-05-22 07:21:12 [INFO] train -   train 210/210 | loss=1.2455
+2026-05-22 07:21:14 [INFO] train -   val 6/54 | loss=0.6062
+2026-05-22 07:21:15 [INFO] train -   val 12/54 | loss=1.2040
+2026-05-22 07:21:15 [INFO] train -   val 18/54 | loss=2.5887
+2026-05-22 07:21:16 [INFO] train -   val 24/54 | loss=2.0890
+2026-05-22 07:21:17 [INFO] train -   val 30/54 | loss=1.8756
+2026-05-22 07:21:18 [INFO] train -   val 36/54 | loss=1.7921
+2026-05-22 07:21:19 [INFO] train -   val 42/54 | loss=1.6321
+2026-05-22 07:21:20 [INFO] train -   val 48/54 | loss=1.4899
+2026-05-22 07:21:21 [INFO] train -   val 54/54 | loss=1.3967
+2026-05-22 07:21:21 [INFO] train - Epoch   8/100 | TrainLoss=1.2455 | ValLoss=1.3967 | CSI=0.219 POD=0.521 FAR=0.726 | MAE=1.502 RMSE=3.246 CC=0.022 | 154.4s
+2026-05-22 07:21:42 [INFO] train -   train 26/210 | loss=1.1727
+2026-05-22 07:21:59 [INFO] train -   train 52/210 | loss=1.2046
+2026-05-22 07:22:16 [INFO] train -   train 78/210 | loss=1.2109
+2026-05-22 07:22:36 [INFO] train -   train 104/210 | loss=1.2382
+2026-05-22 07:22:53 [INFO] train -   train 130/210 | loss=1.2252
+2026-05-22 07:23:09 [INFO] train -   train 156/210 | loss=1.1998
+2026-05-22 07:23:29 [INFO] train -   train 182/210 | loss=1.1997
+2026-05-22 07:23:45 [INFO] train -   train 208/210 | loss=1.2046
+2026-05-22 07:23:45 [INFO] train -   train 210/210 | loss=1.2044
+2026-05-22 07:23:47 [INFO] train -   val 6/54 | loss=0.5956
+2026-05-22 07:23:48 [INFO] train -   val 12/54 | loss=1.1950
+2026-05-22 07:23:49 [INFO] train -   val 18/54 | loss=2.5766
+2026-05-22 07:23:50 [INFO] train -   val 24/54 | loss=2.0748
+2026-05-22 07:23:50 [INFO] train -   val 30/54 | loss=1.8623
+2026-05-22 07:23:51 [INFO] train -   val 36/54 | loss=1.7813
+2026-05-22 07:23:52 [INFO] train -   val 42/54 | loss=1.6220
+2026-05-22 07:23:53 [INFO] train -   val 48/54 | loss=1.4816
+2026-05-22 07:23:54 [INFO] train -   val 54/54 | loss=1.3894
+2026-05-22 07:23:54 [INFO] train - Epoch   9/100 | TrainLoss=1.2044 | ValLoss=1.3894 | CSI=0.213 POD=0.485 FAR=0.725 | MAE=1.507 RMSE=3.248 CC=0.031 | 153.1s
+2026-05-22 07:24:16 [INFO] train -   train 26/210 | loss=1.3137
+2026-05-22 07:24:32 [INFO] train -   train 52/210 | loss=1.2739
+2026-05-22 07:24:49 [INFO] train -   train 78/210 | loss=1.2681
+2026-05-22 07:25:09 [INFO] train -   train 104/210 | loss=1.2453

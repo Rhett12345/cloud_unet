@@ -94,8 +94,12 @@ def stage_train(args):
         log.error("Stats file not found: %s - run --stages stats first", cfg.STATS_FILE)
         sys.exit(1)
     stats = NormStats.load(cfg.STATS_FILE)
-    log.info("Starting training...")
-    train(stats)
+    resume = getattr(args, "resume", None)
+    if resume:
+        log.info("Resuming from checkpoint: %s", resume)
+    else:
+        log.info("Starting training from scratch...")
+    train(stats, resume_checkpoint=resume)
 
 
 def stage_test(args):
@@ -156,6 +160,7 @@ def parse_args():
     p.add_argument("--overwrite",  action="store_true")
     p.add_argument("--workers",    type=int, default=None)
     p.add_argument("--max-dt-min", type=float, default=None)
+    p.add_argument("--resume",     default=None)
     p.add_argument("--checkpoint", default=None)
     p.add_argument("--agri_file",  default=None)
     p.add_argument("--agri_dir",   default=None)

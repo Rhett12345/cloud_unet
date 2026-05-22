@@ -1,24 +1,22 @@
 """
 train.py
 ========
-Training loop for AGRI → GPM precipitation classification (CNN+Transformer).
+Training loop for AGRI → GPM precipitation regression (U-Net).
 
 Features
 --------
-- Per-epoch random 20% subsample with class-balanced WeightedRandomSampler
+- Dual-head loss (BCE + weighted MSE)
+- WeightedRandomSampler: rain tiles sampled 3× more often
 - Mixed-precision (AMP) training
-- Hardcoded class loss weights [1, 3, 5, 10]
-- Multi-checkpoint saving
-- Per-epoch CSV log
+- Regression metrics: MAE, CSI, CC
+- Multi-checkpoint saving (best loss, best CSI)
 """
 
 import logging
 import random
 import time
-from collections import defaultdict
 from pathlib import Path
 
-import h5py
 import numpy as np
 import pandas as pd
 import torch
@@ -28,7 +26,8 @@ from torch.amp import GradScaler, autocast
 from torch.utils.data import DataLoader, WeightedRandomSampler
 
 import config as cfg
-from dataset import NormStats, PrecipDataset, _filter_h5_files_by_dates
+from dataset import NormStats, PrecipTileDataset
+from losses import build_loss
 from model import build_model
 
 log = logging.getLogger(__name__)
@@ -43,185 +42,110 @@ def _seed_everything(seed: int = cfg.RANDOM_SEED):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Build dataloaders with class-balanced subsampling (train only)
+# Build dataloaders
 # ─────────────────────────────────────────────────────────────────────────────
 
-def _build_balanced_train_dl(stats: NormStats):
-    """Build train DataLoader with WeightedRandomSampler.
-
-    Scans all HDF5 labels once (merged count + label storage), computes
-    per-class weights, and caches sample_weights to avoid re-scanning.
-    """
-    train_ds = PrecipDataset(cfg.PAIRED_TRAIN_DIR, stats, mode="train")
+def _build_train_dl(stats: NormStats, batch_size: int = None):
+    """Build train DataLoader with WeightedRandomSampler (rain tiles ×3)."""
+    if batch_size is None:
+        batch_size = cfg.BATCH_SIZE
+    train_ds = PrecipTileDataset(cfg.PAIRED_TRAIN_DIR, stats, mode="train")
     total = len(train_ds)
-    log.info("train samples (total) = %d", total)
+    log.info("train tiles (total) = %d", total)
 
-    cache_path = cfg.STATS_DIR / "sample_weights_cache.npz"
+    # Build sample weights from has_rain flag in index
+    sample_weights = np.ones(total, dtype=np.float32)
+    rain_count = 0
+    for i, (_, _, has_rain) in enumerate(train_ds._index):
+        if has_rain:
+            sample_weights[i] = cfg.RAIN_SAMPLE_WEIGHT
+            rain_count += 1
+    log.info("Rain tiles: %d (%.1f%%), weight=%.0f×",
+             rain_count, rain_count / max(total, 1) * 100, cfg.RAIN_SAMPLE_WEIGHT)
 
-    # ── Try cache first ──
-    if cache_path.exists():
-        c = np.load(cache_path)
-        if int(c["n_samples"]) == total:
-            sample_weights = c["sample_weights"]
-            class_counts = c["class_counts"]
-            log.info("Loaded cached sample weights (%d samples)", total)
-        else:
-            log.info("Cache stale (n_samples mismatch), re-scanning...")
-            cache_path.unlink(missing_ok=True)
-            sample_weights = None
-    else:
-        sample_weights = None
-
-    # ── Scan (if needed) ──
-    if sample_weights is None:
-        log.info("Scanning labels (single pass, merged count + weight)...")
-
-        # Group sample indices by file
-        file_samples = defaultdict(list)
-        for h5f, s_idx in train_ds._index:
-            file_samples[h5f].append(s_idx)
-
-        # Single pass: count classes + store labels
-        class_counts = np.zeros(cfg.NUM_CLASSES, dtype=np.int64)
-        all_labels = np.full(total, -1, dtype=np.int8)
-        idx = 0
-        n_scanned = 0
-        for h5f, s_list in file_samples.items():
-            try:
-                with h5py.File(h5f, "r") as f:
-                    labels_arr = f["Samples/label"][()]
-                    for s_idx in s_list:
-                        lbl = int(labels_arr[s_idx])
-                        if 0 <= lbl < cfg.NUM_CLASSES:
-                            class_counts[lbl] += 1
-                        all_labels[idx] = lbl
-                        idx += 1
-                        n_scanned += 1
-            except Exception:
-                idx += len(s_list)
-                n_scanned += len(s_list)
-                continue
-            if n_scanned % 5000000 == 0 or n_scanned == total:
-                log.info("  scanned %d/%d", n_scanned, total)
-
-        log.info("Class counts: %s", dict(enumerate(class_counts.tolist())))
-        pcts = class_counts / class_counts.sum() * 100
-        log.info("Class %%: %s",
-                 " | ".join(f"{cfg.PRECIP_CLASS_NAMES[c]}={pcts[c]:.1f}%" for c in range(cfg.NUM_CLASSES)))
-
-        # Compute per-class sampling weights
-        target = np.array(cfg.TARGET_RATIOS)
-        actual = class_counts / class_counts.sum().clip(1e-9)
-        w_per_class = target / actual.clip(1e-9)
-
-        # Build sample_weights from stored labels (no file I/O)
-        log.info("Building sample weights from cached labels...")
-        sample_weights = np.zeros(total, dtype=np.float32)
-        for i in range(total):
-            lbl = all_labels[i]
-            if 0 <= lbl < cfg.NUM_CLASSES:
-                sample_weights[i] = w_per_class[lbl]
-
-        sample_weights = np.maximum(sample_weights, 0.0)
-        if sample_weights.sum() == 0:
-            sample_weights[:] = 1.0
-
-        # Cache to disk
-        cfg.STATS_DIR.mkdir(parents=True, exist_ok=True)
-        np.savez_compressed(cache_path,
-                           sample_weights=sample_weights,
-                           class_counts=class_counts,
-                           n_samples=total)
-        log.info("Cached sample weights → %s", cache_path)
-
-    else:
-        # Recompute w_per_class from cached counts for logging
-        target = np.array(cfg.TARGET_RATIOS)
-        actual = class_counts / class_counts.sum().clip(1e-9)
-        w_per_class = target / actual.clip(1e-9)
-
-    # Num samples per epoch = 20% of total
     n_epoch = max(1, int(total * cfg.SUBSAMPLE_FRAC))
     sampler = WeightedRandomSampler(
         weights=torch.from_numpy(sample_weights),
         num_samples=n_epoch,
         replacement=True,
     )
-    log.info("Sampler: %d samples/epoch (%.0f%%), class weights=%s",
-             n_epoch, cfg.SUBSAMPLE_FRAC * 100,
-             [f"{w:.2f}" for w in w_per_class])
+    log.info("Sampler: %d tiles/epoch (%.0f%%)", n_epoch, cfg.SUBSAMPLE_FRAC * 100)
 
-    train_dl = DataLoader(train_ds, batch_size=cfg.BATCH_SIZE,
+    train_dl = DataLoader(train_ds, batch_size=batch_size,
                           sampler=sampler,
                           pin_memory=True, num_workers=cfg.NUM_WORKERS,
                           persistent_workers=True, prefetch_factor=4)
-    return train_dl
+    return train_ds, train_dl, sample_weights, n_epoch
 
 
 def _build_val_test_dls(stats: NormStats):
-    """Build val/test DataLoaders (no subsampling)."""
-    val_ds  = PrecipDataset(cfg.PAIRED_VAL_DIR, stats, mode="val")
-    test_ds = PrecipDataset(cfg.PAIRED_TEST_DIR, stats, mode="test")
+    """Build val/test DataLoaders."""
+    val_ds  = PrecipTileDataset(cfg.PAIRED_VAL_DIR, stats, mode="val")
+    test_ds = PrecipTileDataset(cfg.PAIRED_TEST_DIR, stats, mode="test")
+    log.info("val tiles   = %d", len(val_ds))
+    log.info("test tiles  = %d", len(test_ds))
 
     common = dict(pin_memory=True, num_workers=cfg.NUM_WORKERS,
                   persistent_workers=True, prefetch_factor=4)
     val_dl  = DataLoader(val_ds,  batch_size=cfg.BATCH_SIZE, shuffle=False, **common)
     test_dl = DataLoader(test_ds, batch_size=cfg.BATCH_SIZE, shuffle=False, **common)
-
-    log.info("val samples = %d  test samples = %d", len(val_ds), len(test_ds))
     return val_dl, test_dl
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Metrics
+# Metrics (regression + detection)
 # ─────────────────────────────────────────────────────────────────────────────
 
-@torch.no_grad()
-def _batch_metrics(logits, labels, device):
-    """logits: (B, C), labels: (B,)"""
-    preds = logits.argmax(dim=1)
-    valid = (labels >= 0) & (labels < cfg.NUM_CLASSES)
+def _compute_detection_metrics(pred_mmh: np.ndarray, true_mmh: np.ndarray,
+                                threshold: float = cfg.RAIN_THRESHOLD):
+    """CSI, POD, FAR for rain detection at given threshold."""
+    pred_rain = (pred_mmh > threshold)
+    true_rain = (true_mmh > threshold)
 
-    C = cfg.NUM_CLASSES
-    tp = np.zeros(C, dtype=np.int64)
-    fp = np.zeros(C, dtype=np.int64)
-    fn = np.zeros(C, dtype=np.int64)
+    tp = int((pred_rain & true_rain).sum())
+    fp = int((pred_rain & ~true_rain).sum())
+    fn = int((~pred_rain & true_rain).sum())
 
-    if valid.any():
-        p = preds[valid].cpu().numpy()
-        t = labels[valid].cpu().numpy()
-        correct = int((p == t).sum())
-        total = int(valid.sum())
-        for c in range(C):
-            tp[c] = int(((p == c) & (t == c)).sum())
-            fp[c] = int(((p == c) & (t != c)).sum())
-            fn[c] = int(((p != c) & (t == c)).sum())
+    pod = tp / max(tp + fn, 1)
+    far = fp / max(tp + fp, 1)
+    csi = tp / max(tp + fp + fn, 1)
+
+    return {"pod": pod, "far": far, "csi": csi, "tp": tp, "fp": fp, "fn": fn}
+
+
+def _compute_regression_metrics(pred_mmh: np.ndarray, true_mmh: np.ndarray):
+    """MAE, RMSE, CC, Bias on rain pixels only."""
+    mask = true_mmh > cfg.RAIN_THRESHOLD
+    if mask.sum() < 2:
+        return {"mae": 0.0, "rmse": 0.0, "cc": 0.0, "bias": 0.0, "n_rain": int(mask.sum())}
+
+    p = pred_mmh[mask]
+    t = true_mmh[mask]
+
+    mae = float(np.mean(np.abs(p - t)))
+    rmse = float(np.sqrt(np.mean((p - t) ** 2)))
+    bias = float(np.mean(p - t))
+
+    # Pearson CC
+    p_std = p.std()
+    t_std = t.std()
+    if p_std > 1e-9 and t_std > 1e-9:
+        cc = float(np.corrcoef(p, t)[0, 1])
+        cc = max(-1.0, min(1.0, cc)) if np.isfinite(cc) else 0.0
     else:
-        correct = 0
-        total = 0
-    oa = (correct / total * 100.0) if total > 0 else 0.0
-    return {"oa": oa, "tp": tp, "fp": fp, "fn": fn, "n_valid": total}
+        cc = 0.0
 
-
-def _compute_f1(tp, fp, fn):
-    C = len(tp)
-    f1 = []
-    for c in range(C):
-        denom = float(tp[c] + 0.5 * (fp[c] + fn[c]))
-        f1.append(float(tp[c]) / denom * 100.0 if denom > 0 else 0.0)
-    return f1
+    return {"mae": mae, "rmse": rmse, "cc": cc, "bias": bias, "n_rain": int(mask.sum())}
 
 
 def _metric_value(metrics, monitor: str):
     monitor = (monitor or "val_loss").lower()
     if monitor in {"val_loss", "loss"}:
         return float(metrics.get("loss", 1e9))
-    if monitor in {"val_oa", "oa"}:
-        return float(metrics.get("oa", 0.0))
-    if monitor == "val_f1_class3":
-        return float(metrics.get("f1_class3", 0.0))
-    if monitor == "val_macro_f1":
-        return float(metrics.get("macro_f1", 0.0))
+    if monitor == "val_csi":
+        return float(metrics.get("csi", 0.0))
+    if monitor == "val_cc":
+        return float(metrics.get("cc", 0.0))
     return 0.0
 
 
@@ -245,27 +169,26 @@ def _run_epoch(model, loader, loss_fn, device, optimizer=None, scaler=None):
     training = optimizer is not None
     model.train(training)
 
-    C = cfg.NUM_CLASSES
     totals = {"loss": 0.0, "n": 0}
-    tp_sum = np.zeros(C, dtype=np.int64)
-    fp_sum = np.zeros(C, dtype=np.int64)
-    fn_sum = np.zeros(C, dtype=np.int64)
-    n_correct = 0
-    n_total = 0
+    # Accumulate for per-pixel detection metrics
+    all_preds = []
+    all_trues = []
 
     total_batches = len(loader)
-    log_interval = max(1, total_batches // 10)
+    log_interval = max(1, total_batches // 8)
 
-    for batch_idx, (x, labels) in enumerate(loader):
+    for batch_idx, (x, y) in enumerate(loader):
         x = x.to(device)
-        labels = labels.to(device)
-
-        with autocast(device.type if scaler else "cpu", enabled=(scaler is not None)):
-            logits = model(x)
-            loss = loss_fn(logits, labels)
+        y = y.to(device)
 
         if training:
             optimizer.zero_grad()
+
+        with autocast(device.type if scaler else "cpu", enabled=(scaler is not None)):
+            logits, rain = model(x)
+            loss = loss_fn(logits, rain, y)
+
+        if training:
             if scaler:
                 scaler.scale(loss).backward()
                 scaler.unscale_(optimizer)
@@ -277,133 +200,198 @@ def _run_epoch(model, loader, loss_fn, device, optimizer=None, scaler=None):
                 nn.utils.clip_grad_norm_(model.parameters(), cfg.GRAD_CLIP)
                 optimizer.step()
 
-        m = _batch_metrics(logits, labels, device)
         B = x.shape[0]
         totals["loss"] += loss.item() * B
         totals["n"]   += B
-        n_correct     += m["oa"] / 100.0 * m["n_valid"]
-        n_total       += m["n_valid"]
-        tp_sum += m["tp"]
-        fp_sum += m["fp"]
-        fn_sum += m["fn"]
 
+        # Accumulate predictions for metrics (CPU, only at log intervals)
         if (batch_idx + 1) % log_interval == 0 or batch_idx == total_batches - 1:
-            cur_n = max(totals["n"], 1)
-            f1 = _compute_f1(tp_sum, fp_sum, fn_sum)
+            with torch.no_grad():
+                prob = torch.sigmoid(logits)
+                pred_mmh = (prob * rain).detach().cpu().numpy().ravel()
+                true_mmh = y.detach().cpu().numpy().ravel()
+                all_preds.append(pred_mmh)
+                all_trues.append(true_mmh)
+
             tag = "train" if training else "val"
-            log.info("  %s %d/%d | loss=%.4f | OA=%.1f%% | F1_c3=%.1f%%",
+            log.info("  %s %d/%d | loss=%.4f",
                      tag, batch_idx + 1, total_batches,
-                     totals["loss"] / cur_n,
-                     (n_correct / max(n_total, 1)) * 100.0,
-                     f1[3])
+                     totals["loss"] / max(totals["n"], 1))
 
     N = max(totals["n"], 1)
-    f1_per = _compute_f1(tp_sum, fp_sum, fn_sum)
-    macro_f1 = float(np.mean(f1_per))
+    loss_avg = totals["loss"] / N
 
-    result = {
-        "loss": totals["loss"] / N,
-        "oa": (n_correct / max(n_total, 1)) * 100.0,
-        "macro_f1": macro_f1,
+    if all_preds:
+        preds_all = np.concatenate(all_preds)
+        trues_all = np.concatenate(all_trues)
+        det = _compute_detection_metrics(preds_all, trues_all)
+        reg = _compute_regression_metrics(preds_all, trues_all)
+    else:
+        det = {"pod": 0, "far": 0, "csi": 0, "tp": 0, "fp": 0, "fn": 0}
+        reg = {"mae": 0, "rmse": 0, "cc": 0, "bias": 0, "n_rain": 0}
+
+    return {
+        "loss": loss_avg,
+        **det,
+        **reg,
     }
-    for c in range(C):
-        result[f"f1_class{c}"] = f1_per[c]
-    return result
 
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Main
 # ─────────────────────────────────────────────────────────────────────────────
 
-def train(stats: NormStats):
+def train(stats: NormStats, resume_checkpoint: str = None):
     _seed_everything()
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    log.info("Training on %s", device)
+    n_gpus = torch.cuda.device_count() if device.type == "cuda" else 0
+    multi_gpu = n_gpus > 1
+    log.info("Training on %s (%d GPUs)", device, max(n_gpus, 1))
 
-    train_dl = _build_balanced_train_dl(stats)
+    # Scale batch size with GPU count (keep per-GPU workload constant)
+    train_batch = cfg.BATCH_SIZE * max(n_gpus, 1)
+
+    train_ds, train_dl, sample_weights, n_epoch = _build_train_dl(stats, batch_size=train_batch)
     val_dl, test_dl = _build_val_test_dls(stats)
 
     log.info("train iters/epoch = %d", len(train_dl))
     log.info("val iters/epoch   = %d", len(val_dl))
 
-    model     = build_model().to(device)
-    optimizer = optim.AdamW(model.parameters(), lr=cfg.LEARNING_RATE, weight_decay=1e-3)
+    model = build_model()
+    if multi_gpu:
+        model = nn.DataParallel(model)
+        log.info("Wrapped model with DataParallel across %d GPUs", n_gpus)
+    model = model.to(device)
+
+    optimizer = optim.AdamW(model.parameters(), lr=cfg.LEARNING_RATE, weight_decay=1e-4)
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(
         optimizer, mode="max", factor=cfg.LR_FACTOR,
         patience=cfg.LR_PATIENCE, min_lr=cfg.MIN_LR,
     )
     scaler = GradScaler(device.type) if torch.cuda.is_available() else None
 
-    class_weights = torch.tensor(cfg.CLASS_WEIGHTS, dtype=torch.float32).to(device)
-    loss_fn = nn.CrossEntropyLoss(weight=class_weights, ignore_index=-100)
-    log.info("Loss weights: %s", cfg.CLASS_WEIGHTS)
+    loss_fn = build_loss()
+    log.info("Loss: DualHeadLoss (BCE×0.4 + wMSE×0.6, rain_weight=2)")
 
-    monitor = getattr(cfg, "CHECKPOINT_MONITOR", "val_f1_class3")
+    # Helper: get state_dict accounting for DataParallel wrapper
+    def _state_dict():
+        return model.module.state_dict() if multi_gpu else model.state_dict()
+
+    monitor = getattr(cfg, "CHECKPOINT_MONITOR", "val_csi")
     best_selected = None
     best_loss = None
-    best_oa = None
-    best_f1_c3 = None
+    best_csi = None
     epochs_no_best = 0
     log_rows = []
+    start_epoch = 1
+
+    # ── Resume from checkpoint ──
+    if resume_checkpoint:
+        ckpt_path = Path(resume_checkpoint)
+        if not ckpt_path.exists():
+            raise FileNotFoundError(f"Checkpoint not found: {ckpt_path}")
+        state = torch.load(ckpt_path, map_location=device, weights_only=True)
+        if multi_gpu:
+            model.module.load_state_dict(state)
+        else:
+            model.load_state_dict(state)
+        log.info("Loaded model weights from %s", ckpt_path)
+
+        # Try loading full training state
+        opt_path = ckpt_path.with_suffix(".opt.pth")
+        if opt_path.exists():
+            ckpt = torch.load(opt_path, map_location=device, weights_only=False)
+            optimizer.load_state_dict(ckpt["optimizer"])
+            scheduler.load_state_dict(ckpt["scheduler"])
+            if scaler and "scaler" in ckpt:
+                scaler.load_state_dict(ckpt["scaler"])
+            start_epoch = ckpt.get("epoch", 1) + 1
+            best_selected = ckpt.get("best_selected")
+            best_loss = ckpt.get("best_loss")
+            best_csi = ckpt.get("best_csi")
+            epochs_no_best = ckpt.get("epochs_no_best", 0)
+            log.info("Resumed optimizer/scheduler/scaler from epoch %d", ckpt.get("epoch", 0))
+        else:
+            # Model-only resume: keep default optimizer state
+            log.info("No .opt.pth found — using fresh optimizer (lr=%.0e)", cfg.LEARNING_RATE)
 
     cfg.MODEL_DIR.mkdir(parents=True, exist_ok=True)
     cfg.LOG_DIR.mkdir(parents=True, exist_ok=True)
 
-    for epoch in range(1, cfg.NUM_EPOCHS + 1):
+    for epoch in range(start_epoch, cfg.NUM_EPOCHS + 1):
         t0 = time.time()
 
-        # Rebuild train sampler each epoch (different 20% subset)
+        # Rebuild train sampler each epoch (different subset)
         if epoch > 1:
             del train_dl
-            train_dl = _build_balanced_train_dl(stats)
+            sampler = WeightedRandomSampler(
+                weights=torch.from_numpy(sample_weights),
+                num_samples=n_epoch,
+                replacement=True,
+            )
+            train_dl = DataLoader(train_ds, batch_size=train_batch,
+                                  sampler=sampler,
+                                  pin_memory=True, num_workers=cfg.NUM_WORKERS,
+                                  persistent_workers=True, prefetch_factor=4)
 
         train_m = _run_epoch(model, train_dl, loss_fn, device,
                              optimizer=optimizer, scaler=scaler)
         val_m   = _run_epoch(model, val_dl,   loss_fn, device)
 
-        scheduler.step(val_m["f1_class3"])
+        scheduler.step(val_m["csi"])
         lr_now = optimizer.param_groups[0]["lr"]
         elapsed = time.time() - t0
 
-        f1_str = " ".join(f"c{c}={val_m.get(f'f1_class{c}', 0):.1f}" for c in range(cfg.NUM_CLASSES))
         log.info(
-            "Epoch %3d/%d | TrainLoss=%.4f | ValLoss=%.4f | OA=%.2f%% | "
-            "MacroF1=%.2f%% | %s | %.1fs",
+            "Epoch %3d/%d | TrainLoss=%.4f | ValLoss=%.4f | "
+            "CSI=%.3f POD=%.3f FAR=%.3f | MAE=%.3f RMSE=%.3f CC=%.3f | %.1fs",
             epoch, cfg.NUM_EPOCHS,
-            train_m["loss"], val_m["loss"], val_m["oa"],
-            val_m["macro_f1"], f1_str, elapsed,
+            train_m["loss"], val_m["loss"],
+            val_m["csi"], val_m["pod"], val_m["far"],
+            val_m["mae"], val_m["rmse"], val_m["cc"],
+            elapsed,
         )
 
         # Checkpoints
         if _is_better(val_m, best_loss, "val_loss"):
             best_loss = dict(val_m)
-            torch.save(model.state_dict(), cfg.CHECKPOINT_BEST_LOSS)
+            torch.save(_state_dict(), cfg.CHECKPOINT_BEST_LOSS)
             if monitor == "val_loss":
-                torch.save(model.state_dict(), cfg.CHECKPOINT_BEST)
-        if _is_better(val_m, best_oa, "val_oa"):
-            best_oa = dict(val_m)
-            torch.save(model.state_dict(), cfg.CHECKPOINT_BEST_OA)
-            if monitor == "val_oa":
-                torch.save(model.state_dict(), cfg.CHECKPOINT_BEST)
-        if _is_better(val_m, best_f1_c3, "val_f1_class3"):
-            best_f1_c3 = dict(val_m)
-            torch.save(model.state_dict(), cfg.CHECKPOINT_BEST_F1_C3)
-            if monitor == "val_f1_class3":
-                torch.save(model.state_dict(), cfg.CHECKPOINT_BEST)
+                torch.save(_state_dict(), cfg.CHECKPOINT_BEST)
+
+        if _is_better(val_m, best_csi, "val_csi"):
+            best_csi = dict(val_m)
+            torch.save(_state_dict(), cfg.CHECKPOINT_BEST_CSI)
+            if monitor == "val_csi":
+                torch.save(_state_dict(), cfg.CHECKPOINT_BEST)
 
         is_best = _is_better(val_m, best_selected, monitor)
         if is_best:
             best_selected = dict(val_m)
             epochs_no_best = 0
-            torch.save(model.state_dict(), cfg.CHECKPOINT_BEST)
-            log.info("  New best %s: %.6f OA=%.2f%% F1_c3=%.1f%% → %s",
-                     monitor, _metric_value(val_m, monitor), val_m["oa"],
-                     val_m.get("f1_class3", 0), cfg.CHECKPOINT_BEST.name)
+            torch.save(_state_dict(), cfg.CHECKPOINT_BEST)
+            log.info("  New best %s: %.4f CSI=%.3f CC=%.3f",
+                     monitor, _metric_value(val_m, monitor),
+                     val_m["csi"], val_m["cc"])
         else:
             epochs_no_best += 1
 
-        torch.save(model.state_dict(), cfg.CHECKPOINT_LAST)
+        torch.save(_state_dict(), cfg.CHECKPOINT_LAST)
+
+        # Save optimizer state for resume
+        opt_state = {
+            "epoch": epoch,
+            "optimizer": optimizer.state_dict(),
+            "scheduler": scheduler.state_dict(),
+            "best_selected": best_selected,
+            "best_loss": best_loss,
+            "best_csi": best_csi,
+            "epochs_no_best": epochs_no_best,
+        }
+        if scaler:
+            opt_state["scaler"] = scaler.state_dict()
+        torch.save(opt_state, cfg.MODEL_DIR / f"{cfg.MODEL_NAME}_last.opt.pth")
 
         row = dict(epoch=epoch, lr=lr_now,
                    **{f"train_{k}": v for k, v in train_m.items()},
@@ -415,8 +403,8 @@ def train(stats: NormStats):
             log.info("Early stopping at epoch %d", epoch)
             break
 
-    log.info("Training complete. Best %s OA:%.2f%% MacroF1:%.2f%% F1_c3:%.1f%%",
+    log.info("Training complete. Best %s CSI:%.3f CC:%.3f MAE:%.3f",
              monitor,
-             best_selected["oa"] if best_selected else 0,
-             best_selected["macro_f1"] if best_selected else 0,
-             best_selected.get("f1_class3", 0) if best_selected else 0)
+             best_selected["csi"] if best_selected else 0,
+             best_selected["cc"] if best_selected else 0,
+             best_selected["mae"] if best_selected else 0)

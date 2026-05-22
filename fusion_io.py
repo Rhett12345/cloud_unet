@@ -417,7 +417,7 @@ def is_nighttime(sza: np.ndarray) -> bool:
 
 
 # ---------------------------------------------------------------------------
-# HDF5 写出 (samples_v3 格式)
+# HDF5 写出 (tile 格式)
 # ---------------------------------------------------------------------------
 
 def _create_ds(grp: h5py.Group, name: str, tail: tuple, dtype=np.float32):
@@ -433,7 +433,7 @@ def _append(ds: h5py.Dataset, val: np.ndarray):
     ds[n] = val
 
 
-def write_gpm_fused_samples(
+def write_gpm_fused_tiles(
     out_path: Path,
     samples: List[dict],
     agri_dt: datetime,
@@ -441,22 +441,20 @@ def write_gpm_fused_samples(
     mode: str,
 ) -> int:
     """
-    将 GPM+AGRI 融合样本写为 samples_v3 格式 HDF5。
+    将 GPM+AGRI 融合 tile 写为 HDF5。
 
     Parameters
     ----------
     out_path : 输出 HDF5 路径
     samples : list of dict, each with:
-        agri     : (7, 11, 11) float32
-        geo      : (4, 11, 11) float32
-        label    : int (0-3)
-        precip   : float (mm/h)
-        gpm_lat  : float
-        gpm_lon  : float
-        dt_min   : float
+        agri_tile  : (9, 128, 128) float32  7 BT + 2 geo
+        gpm_tile   : (1, 128, 128) float32  interpolated precipitation
+        lat_center : float
+        lon_center : float
+        has_rain   : bool
     agri_dt : AGRI 扫描时间
     gpm_dt : GPM 中心时间
-    mode   : "train" / "val" / "test"
+    mode : "train" / "val" / "test"
     """
     if not samples:
         raise RuntimeError(f"No samples for {agri_dt:%Y%m%d_%H%M%S}")
@@ -466,58 +464,51 @@ def write_gpm_fused_samples(
     if tmp.exists():
         tmp.unlink()
 
-    C = cfg.AGRI_CHANNELS   # 7
-    ph, pw = cfg.PATCH_SIZE  # 11, 11
+    th, tw = cfg.TILE_SIZE
+    C = cfg.IN_CHANNELS  # 9
 
     with h5py.File(tmp, "w") as f:
         f.attrs.update({
-            "format": "samples_v3",
-            "task": "precip_classification",
+            "format": "tiles_v1",
+            "task": "precip_regression",
             "agri_datetime": agri_dt.strftime("%Y%m%d%H%M%S"),
             "gpm_datetime": gpm_dt.strftime("%Y%m%d%H%M%S"),
-            "agri_channels": [c - 1 for c in cfg.AGRI_PHYSICAL_CHANNELS],
-            "patch_size": list(cfg.PATCH_SIZE),
-            "num_classes": cfg.PRECIP_CLASSES,
-            "class_names": ",".join(cfg.PRECIP_CLASS_NAMES),
-            "precip_thresholds": cfg.PRECIP_THRESHOLDS,
+            "tile_size": list(cfg.TILE_SIZE),
+            "tile_stride": list(cfg.TILE_STRIDE),
+            "in_channels": C,
             "mode": mode,
         })
 
-        s = f.create_group("Samples")
-        ds_agri  = _create_ds(s, "agri",  (C, ph, pw))
-        ds_geo   = _create_ds(s, "geo",   (2, ph, pw))
-        ds_label = _create_ds(s, "label", (), np.int32)
-        ds_precip = _create_ds(s, "precip", ())
-        ds_lat   = _create_ds(s, "gpm_lat", ())
-        ds_lon   = _create_ds(s, "gpm_lon", ())
-        ds_dt    = _create_ds(s, "dt_min", ())
+        s = f.create_group("Tiles")
+        ds_agri  = _create_ds(s, "agri",  (C, th, tw))
+        ds_gpm   = _create_ds(s, "gpm",   (1, th, tw))
+        ds_lat   = _create_ds(s, "lat_center", ())
+        ds_lon   = _create_ds(s, "lon_center", ())
+        ds_rain  = _create_ds(s, "has_rain", (), np.bool_)
 
         for sample in samples:
-            _append(ds_agri,   sample["agri"].astype(np.float32))
-            _append(ds_geo,    sample["geo"].astype(np.float32))
-            _append(ds_label,  np.int32(sample["label"]))
-            _append(ds_precip, np.float32(sample["precip"]))
-            _append(ds_lat,    np.float32(sample["gpm_lat"]))
-            _append(ds_lon,    np.float32(sample["gpm_lon"]))
-            _append(ds_dt,     np.float32(sample["dt_min"]))
+            _append(ds_agri,  sample["agri_tile"].astype(np.float32))
+            _append(ds_gpm,   sample["gpm_tile"].astype(np.float32))
+            _append(ds_lat,   np.float32(sample["lat_center"]))
+            _append(ds_lon,   np.float32(sample["lon_center"]))
+            _append(ds_rain,  bool(sample["has_rain"]))
 
         f.attrs["num_samples"] = int(ds_agri.shape[0])
 
-    # 校验
-    _validate_gpm_fused(tmp, out_path, agri_dt)
+    _validate_gpm_fused_tiles(tmp, out_path, agri_dt)
     return len(samples)
 
 
-def _validate_gpm_fused(tmp: Path, final: Path, agri_dt: datetime):
+def _validate_gpm_fused_tiles(tmp: Path, final: Path, agri_dt: datetime):
     with h5py.File(tmp, "r") as f:
-        assert f.attrs.get("format") == "samples_v3"
+        assert f.attrs.get("format") == "tiles_v1"
         assert f.attrs.get("agri_datetime") == agri_dt.strftime("%Y%m%d%H%M%S")
-        s = f["Samples"]
+        s = f["Tiles"]
         n = int(s["agri"].shape[0])
         assert n > 0
-        assert s["label"].shape[0] == n
-        assert s["geo"].shape[0] == n
+        assert s["gpm"].shape[0] == n
+        assert s["lat_center"].shape[0] == n
 
     final.parent.mkdir(parents=True, exist_ok=True)
     tmp.rename(final)
-    log.info("Finalised %s (%d samples)", final.name, n)
+    log.info("Finalised %s (%d tiles)", final.name, n)

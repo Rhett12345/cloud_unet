@@ -1,15 +1,14 @@
 """
 dataset.py
 ==========
-PyTorch Dataset for AGRI → GPM precipitation classification.
+PyTorch Dataset for AGRI → GPM precipitation regression (tile-level).
 
 Key design decisions
 --------------------
-- **Lazy loading**: __init__ builds a patch index. Each __getitem__ opens the
-  HDF5 file, reads the required patch, and closes immediately. Memory is O(1)
-  regardless of dataset size.
-- **NormStats** is pre-computed once and loaded from disk.
-- Each sample: X=(7,11,11) AGRI patch, Y=scalar label 0-3
+- **Lazy loading**: __init__ builds a tile index. Each __getitem__ opens the
+  HDF5 file, reads the required tile, and closes immediately.
+- **NormStats** is pre-computed once and loaded from disk (BT channels only).
+- Each sample: X=(9,128,128) BT+geo, Y=(1,128,128) precipitation (log1p).
 """
 
 import logging
@@ -52,7 +51,7 @@ def _filter_h5_files_by_dates(h5_files: List[Path], mode: str) -> List[Path]:
 # ─────────────────────────────────────────────────────────────────────────────
 
 class NormStats:
-    """Container for per-channel AGRI BT mean/std."""
+    """Container for per-channel AGRI BT mean/std (7 channels only)."""
 
     def __init__(self, agri_mean: np.ndarray, agri_std: np.ndarray):
         self.agri_mean = agri_mean.astype(np.float32)
@@ -74,16 +73,13 @@ class NormStats:
 # ─────────────────────────────────────────────────────────────────────────────
 
 def _stats_worker(h5_path: str) -> Optional[dict]:
-    import h5py
-    import numpy as np
     try:
         with h5py.File(h5_path, "r") as f:
-            if "Samples" not in f or "agri" not in f["Samples"]:
+            if "Tiles" not in f or "agri" not in f["Tiles"]:
                 return None
-            bt = f["Samples/agri"][()].astype(np.float64)  # (N, C, H, W)
-            n_agri = bt.shape[1]
-            if n_agri != cfg.AGRI_CHANNELS:
-                return None
+            agri = f["Tiles/agri"][()].astype(np.float64)  # (N, 9, H, W)
+            n_agri = cfg.AGRI_CHANNELS  # 7
+            bt = agri[:, :n_agri, :, :]  # only BT channels
             flat_bt = bt.transpose(0, 2, 3, 1).reshape(-1, n_agri)
     except Exception:
         return None
@@ -105,7 +101,7 @@ def compute_and_save_stats(
     out_path: Path = cfg.STATS_FILE,
     n_workers: int = min(8, os.cpu_count() or 1),
 ) -> "NormStats":
-    """Compute normalisation statistics from all paired HDF5 files."""
+    """Compute normalisation statistics from all paired HDF5 tile files."""
     log.info("Computing normalisation statistics from %s (workers=%d)", paired_dir, n_workers)
 
     h5_files = _filter_h5_files_by_dates(sorted(paired_dir.rglob("*.h5")), "train")
@@ -146,20 +142,22 @@ def compute_and_save_stats(
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Patch index builder
+# Tile index builder
 # ─────────────────────────────────────────────────────────────────────────────
 
-def _build_patch_index(h5_files: List[Path], mode: str) -> List[Tuple[Path, int]]:
-    """Scan all HDF5 files and return list of (file_path, sample_idx) tuples."""
-    index: List[Tuple[Path, int]] = []
+def _build_tile_index(h5_files: List[Path], mode: str) -> List[Tuple[Path, int, bool]]:
+    """Scan all HDF5 files and return list of (file_path, tile_idx, has_rain) tuples."""
+    index: List[Tuple[Path, int, bool]] = []
     for h5f in h5_files:
         try:
             with h5py.File(h5f, "r") as f:
-                if "Samples" not in f or "agri" not in f["Samples"]:
+                if "Tiles" not in f or "agri" not in f["Tiles"]:
                     continue
-                n = int(f["Samples/agri"].shape[0])
+                n = int(f["Tiles/agri"].shape[0])
+                has_rain_arr = f["Tiles/has_rain"][()] if "Tiles/has_rain" in f else None
                 for s in range(n):
-                    index.append((h5f, s))
+                    hr = bool(has_rain_arr[s]) if has_rain_arr is not None else False
+                    index.append((h5f, s, hr))
         except Exception:
             continue
     return index
@@ -169,48 +167,41 @@ def _build_patch_index(h5_files: List[Path], mode: str) -> List[Tuple[Path, int]
 # Dataset
 # ─────────────────────────────────────────────────────────────────────────────
 
-class PrecipDataset(Dataset):
+class PrecipTileDataset(Dataset):
     """
-    PyTorch Dataset for AGRI → GPM precipitation classification.
+    PyTorch Dataset for AGRI → GPM precipitation regression (tile-level).
 
     Each item:
-        agri  : FloatTensor (7, H, W) – z-score normalised BT
-        geo   : FloatTensor (4, H, W) – [lat/90, lon/180, VZA/90, SZA/90]
-        label : LongTensor (H, W) – integer class label 0-3 (broadcast)
+        x : FloatTensor (9, 128, 128)  — z-score BT + geo
+        y : FloatTensor (1, 128, 128)  — precip mm/h (NaN→0)
     """
 
     def __init__(self,
                  paired_dir: Path,
                  stats: NormStats,
-                 patch_size: Tuple[int, int] = cfg.PATCH_SIZE,
                  mode: str = "train"):
-        self.stats      = stats
-        self.patch_size = patch_size
-        self.mode       = mode
-        self.ph, self.pw = patch_size
+        self.stats = stats
+        self.mode  = mode
 
         h5_files = _filter_h5_files_by_dates(sorted(paired_dir.rglob("*.h5")), mode)
         if not h5_files:
             raise FileNotFoundError(f"No .h5 files found in {paired_dir}")
 
-        log.info("Building patch index from %d files (mode=%s)...", len(h5_files), mode)
-        self._index = _build_patch_index(h5_files, mode)
-        log.info("Dataset ready – %d samples (from %d files, mode=%s)",
+        log.info("Building tile index from %d files (mode=%s)...", len(h5_files), mode)
+        self._index = _build_tile_index(h5_files, mode)
+        log.info("Dataset ready – %d tiles (from %d files, mode=%s)",
                  len(self._index), len(h5_files), mode)
 
         self._warned_files = set()
-        # Per-worker file handle cache: avoid open/close on every __getitem__
-        self._fh_cache: dict = {}   # {Path: h5py.File}
+        self._fh_cache: dict = {}
 
     def __len__(self) -> int:
         return len(self._index)
 
     def _get_fh(self, h5f: Path) -> h5py.File:
-        """Return cached file handle, opening if needed."""
         fh = self._fh_cache.get(h5f)
         if fh is None or not fh.id.valid:
-            # Evict oldest if cache grew too large
-            if len(self._fh_cache) >= 12:
+            if len(self._fh_cache) >= 300:
                 oldest = next(iter(self._fh_cache))
                 try:
                     self._fh_cache[oldest].close()
@@ -222,16 +213,14 @@ class PrecipDataset(Dataset):
         return fh
 
     def __getitem__(self, idx: int):
-        h5f, s_idx = self._index[idx]
-        ph, pw = self.ph, self.pw
+        h5f, s_idx, has_rain = self._index[idx]
 
         for attempt in range(10):
             try:
                 fh = self._get_fh(h5f)
-                samples = fh["Samples"]
-                agri_patch = samples["agri"][s_idx].astype(np.float32)   # (7, H, W)
-                geo_patch  = samples["geo"][s_idx].astype(np.float32)    # (2, H, W): lat, lon
-                label_val  = int(samples["label"][s_idx])                 # scalar 0-3
+                tiles = fh["Tiles"]
+                agri_tile = tiles["agri"][s_idx].astype(np.float32)  # (9, 128, 128)
+                gpm_tile  = tiles["gpm"][s_idx].astype(np.float32)   # (1, 128, 128)
                 break
             except Exception:
                 try:
@@ -242,56 +231,59 @@ class PrecipDataset(Dataset):
                     log.warning("Read error at %s [%d]", h5f.name, s_idx)
                     self._warned_files.add(h5f)
                 if attempt == 9:
-                    log.error("All read retries exhausted, returning zero sample")
+                    log.error("All read retries exhausted, returning zero tile")
                     return (
-                        torch.zeros(cfg.AGRI_CHANNELS + cfg.GEO_CHANNELS, ph, pw),
-                        torch.tensor(-100, dtype=torch.long),
+                        torch.zeros(cfg.IN_CHANNELS, *cfg.TILE_SIZE),
+                        torch.zeros(1, *cfg.TILE_SIZE),
                     )
-                h5f, s_idx = self._index[np.random.randint(0, len(self._index))]
+                h5f, s_idx, has_rain = self._index[np.random.randint(0, len(self._index))]
 
-        # ── BT normalisation ──
-        agri_norm = (agri_patch - self.stats.agri_mean[:, None, None]) / \
-                     (self.stats.agri_std[:, None, None] + 1e-8)
+        n_agri = cfg.AGRI_CHANNELS  # 7
+
+        # ── BT normalisation (first 7 channels) ──
+        agri_norm = agri_tile.copy()
+        agri_norm[:n_agri] = (agri_norm[:n_agri] - self.stats.agri_mean[:, None, None]) / \
+                              (self.stats.agri_std[:, None, None] + 1e-8)
         agri_norm = np.nan_to_num(agri_norm, nan=0.0)
 
-        # ── Geo normalisation: lat/90, lon/180 ──
-        geo_norm = np.stack([
-            geo_patch[0] / 90.0,
-            geo_patch[1] / 180.0,
-        ], axis=0).astype(np.float32)
-        geo_norm = np.nan_to_num(geo_norm, nan=0.0)
+        # ── GPM: fill NaN → 0, keep linear mm/h ──
+        gpm = np.where(np.isfinite(gpm_tile), gpm_tile, 0.0).astype(np.float32)
 
-        # ── Train augmentations (applied to BT + geo together) ──
+        # ── Train augmentations ──
         if self.mode == "train":
-            agri_norm = agri_norm + np.random.randn(*agri_norm.shape).astype(np.float32) * 0.02
+            # Gaussian noise on BT channels
+            noise = np.random.randn(n_agri, *cfg.TILE_SIZE).astype(np.float32) * 0.05
+            agri_norm[:n_agri] = agri_norm[:n_agri] + noise
 
+            # Channel dropout (20% prob, zero 1-2 BT channels)
+            if np.random.rand() < 0.20:
+                n_drop = np.random.randint(1, 3)
+                drop_ch = np.random.choice(n_agri, size=n_drop, replace=False)
+                agri_norm[drop_ch] = 0.0
+
+            # Random flips (BT + geo + GPM all together)
             if np.random.rand() < 0.5:
                 agri_norm = np.flip(agri_norm, axis=2).copy()
-                geo_norm  = np.flip(geo_norm,  axis=2).copy()
+                gpm = np.flip(gpm, axis=2).copy()
             if np.random.rand() < 0.5:
                 agri_norm = np.flip(agri_norm, axis=1).copy()
-                geo_norm  = np.flip(geo_norm,  axis=1).copy()
+                gpm = np.flip(gpm, axis=1).copy()
 
+            # Random 90° rotation
             k = np.random.randint(0, 4)
             if k:
                 agri_norm = np.rot90(agri_norm, k=k, axes=(1, 2)).copy()
-                geo_norm  = np.rot90(geo_norm,  k=k, axes=(1, 2)).copy()
+                gpm = np.rot90(gpm, k=k, axes=(1, 2)).copy()
 
-        # ── Concat BT + geo → single tensor (C+2, H, W) ──
-        x = np.concatenate([agri_norm, geo_norm], axis=0)   # (9, H, W)
-        x = torch.from_numpy(x.copy())
-        lbl = torch.tensor(label_val, dtype=torch.long)
+        x = torch.from_numpy(agri_norm.copy())
+        y = torch.from_numpy(gpm.copy())
 
-        return x, lbl
+        return x, y
 
-
-# ─────────────────────────────────────────────────────────────────────────────
-# Convenience factory
-# ─────────────────────────────────────────────────────────────────────────────
 
 def build_test_dataloader(stats: NormStats):
     """Return only the test DataLoader."""
-    test_ds = PrecipDataset(cfg.PAIRED_TEST_DIR, stats, mode="test")
+    test_ds = PrecipTileDataset(cfg.PAIRED_TEST_DIR, stats, mode="test")
     return DataLoader(test_ds, batch_size=cfg.BATCH_SIZE, shuffle=False,
                       pin_memory=True, num_workers=cfg.NUM_WORKERS,
                       persistent_workers=True, prefetch_factor=4)

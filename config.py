@@ -128,53 +128,58 @@ GPM_FILL_VALUE = -9999.9      # GPM IMERG fill value
 AGRI_PIXEL_DEG = 0.036
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 9.  Patch / dataset parameters
+# 9.  Tile / dataset parameters
 # ─────────────────────────────────────────────────────────────────────────────
-PATCH_SIZE    = (33, 33)
-PATCH_OVERLAP = (16, 16)      # pixels overlap for inference sliding window
+TILE_SIZE   = (128, 128)     # pixels, ~4.6°×4.6° at 0.036°/pixel
+TILE_STRIDE = (128, 128)     # training/val: zero overlap (128 = tile size)
+INFERENCE_STRIDE = 64        # inference: 50% overlap, Gaussian blending
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 9b.  Class weights & sampling
+# 9b.  Rain sampling weight (for WeightedRandomSampler)
 # ─────────────────────────────────────────────────────────────────────────────
-# Hard loss weights per class
-CLASS_WEIGHTS = [1.0, 1.5, 2.0, 3.0]
-
-# Target batch composition ratios
-TARGET_RATIOS = [0.40, 0.25, 0.20, 0.15]
+RAIN_SAMPLE_WEIGHT = 1.5       # multiplier for has_rain=True tiles in sampler
+RAIN_THRESHOLD = 0.1            # mm/h threshold for rain/no-rain detection
 
 # Fraction of training data used per epoch (random subsample)
-SUBSAMPLE_FRAC = float(os.environ.get("UNET_SUBSAMPLE_FRAC", "0.2"))
+SUBSAMPLE_FRAC = float(os.environ.get("UNET_SUBSAMPLE_FRAC", "1.0"))
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 10. Train / val / test date split
 # ─────────────────────────────────────────────────────────────────────────────
 TRAIN_DATES = _env_list("UNET_TRAIN_DATES", [
     "20190101", "20190102", "20190103", "20190104", "20190105",
-    "20190106", "20190107", "20190108", "20190109", "20190110",
-    "20190111", "20190112",
+    "20190106", "20190107", "20190108", "20190109", "20190111",
+    "20190113", "20190114", "20190115", "20190116", "20190118",
+    "20190119", "20190122", "20190123", "20190125", "20190126",
+    "20190127", "20190128", "20190129", "20190130", "20190131",
+    "20190201", "20190202", "20190204", "20190205", "20190206",
+    "20190207", "20190208", "20190209", "20190210", "20190211",
+    "20190212", "20190213", "20190215", "20190217", "20190218",
+    "20190219", "20190220", "20190221", "20190222", "20190225",
+    "20190226", "20190228",
 ])
 VAL_DATES   = _env_list("UNET_VAL_DATES", [
-    "20190113", "20190114", "20190115",
+    "20190110", "20190120", "20190203", "20190216", "20190224", "20190227",
 ])
 TEST_DATES  = _env_list("UNET_TEST_DATES", [
-    "20190116", "20190117", "20190118", "20190119",
+    "20190112", "20190117", "20190121", "20190124", "20190214", "20190223",
 ])
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 11. Model hyper-parameters
 # ─────────────────────────────────────────────────────────────────────────────
 AGRI_CHANNELS  = len(AGRI_PHYSICAL_CHANNELS)   # 7
-GEO_CHANNELS   = 2                              # lat, lon only
-NUM_CLASSES    = PRECIP_CLASSES                 # 4
+GEO_CHANNELS   = 2                              # lat, lon
+IN_CHANNELS    = AGRI_CHANNELS + GEO_CHANNELS   # 9
 
-UNET_BASE_CHANNELS = 64
+OUTPUT_TYPE = "regression"   # "regression" — continuous precipitation map
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 12. Training hyper-parameters
 # ─────────────────────────────────────────────────────────────────────────────
-BATCH_SIZE    = 512
+BATCH_SIZE    = 64
 NUM_EPOCHS    = 100
-LEARNING_RATE = 8e-4
+LEARNING_RATE = 1e-4
 LR_PATIENCE   = 6
 LR_FACTOR     = 0.5
 MIN_LR        = 1e-6
@@ -185,12 +190,12 @@ NUM_WORKERS   = 6
 EARLY_STOP_PATIENCE = 20
 
 # Loss
-LOSS_TYPE = os.environ.get("UNET_LOSS_TYPE", "weighted_ce")  # "weighted_ce" | "focal"
+LOSS_TYPE = os.environ.get("UNET_LOSS_TYPE", "dual_head")  # "dual_head" | "mse"
 
 # Sample quality filter
 SAMPLE_QUALITY_FILTER_ENABLED = _env_bool("UNET_SAMPLE_QUALITY_FILTER", False)
 
-CHECKPOINT_MONITOR = os.environ.get("UNET_CHECKPOINT_MONITOR", "val_f1_class3")
+CHECKPOINT_MONITOR = os.environ.get("UNET_CHECKPOINT_MONITOR", "val_csi")
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 13. Checkpoint naming
@@ -199,8 +204,7 @@ MODEL_NAME     = "AGRI_GPM_Precip_UNet"
 CHECKPOINT_BEST = MODEL_DIR / f"{MODEL_NAME}_best.pth"
 CHECKPOINT_LAST = MODEL_DIR / f"{MODEL_NAME}_last.pth"
 CHECKPOINT_BEST_LOSS = MODEL_DIR / f"{MODEL_NAME}_best_loss.pth"
-CHECKPOINT_BEST_OA = MODEL_DIR / f"{MODEL_NAME}_best_oa.pth"
-CHECKPOINT_BEST_F1_C3 = MODEL_DIR / f"{MODEL_NAME}_best_f1_c3.pth"
+CHECKPOINT_BEST_CSI = MODEL_DIR / f"{MODEL_NAME}_best_csi.pth"
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 14. Evaluation / inference

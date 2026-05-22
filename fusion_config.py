@@ -30,10 +30,10 @@ AGRI_SUB_LON = float(os.environ.get("FUSION_AGRI_SUB_LON", "104.7"))
 MIN_PRECIP_QUALITY = float(os.environ.get("FUSION_MIN_PRECIP_QUALITY", "0.0"))
 
 # GPM 格点采样步长（每隔 N 个格点采样一个，1=全采样）
-GPM_SAMPLE_STEP = int(os.environ.get("FUSION_GPM_SAMPLE_STEP", "1"))
+GPM_SAMPLE_STEP = int(os.environ.get("FUSION_GPM_SAMPLE_STEP", "5"))
 
 # 每景最多采样数（0=不限制）
-MAX_SAMPLES_PER_SCENE = int(os.environ.get("FUSION_MAX_SAMPLES_PER_SCENE", "0"))
+MAX_SAMPLES_PER_SCENE = int(os.environ.get("FUSION_MAX_SAMPLES_PER_SCENE", "3000"))
 
 # ─────────────────────────────────────────────────────────────────────────────
 # 空间区域过滤（GPM 格点经纬度限制）
@@ -50,10 +50,10 @@ def _parse_region_env(name, default):
     except ValueError:
         return default
 
-REGION_LAT_MIN = _parse_region_env("FUSION_REGION_LAT_MIN", -12.5)
-REGION_LAT_MAX = _parse_region_env("FUSION_REGION_LAT_MAX",  12.5)
-REGION_LON_MIN = _parse_region_env("FUSION_REGION_LON_MIN",  92.5)
-REGION_LON_MAX = _parse_region_env("FUSION_REGION_LON_MAX",  117.5)
+REGION_LAT_MIN = _parse_region_env("FUSION_REGION_LAT_MIN", -10.0)
+REGION_LAT_MAX = _parse_region_env("FUSION_REGION_LAT_MAX",  20.0)
+REGION_LON_MIN = _parse_region_env("FUSION_REGION_LON_MIN", 100.0)
+REGION_LON_MAX = _parse_region_env("FUSION_REGION_LON_MAX", 130.0)
 
 # GPM 完整覆盖：区域内 NaN 占比超过此阈值则跳过该 GPM 文件
 GPM_COVERAGE_MAX_NAN_FRAC = float(os.environ.get("FUSION_GPM_COVERAGE_MAX_NAN_FRAC", "0.05"))

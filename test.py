@@ -1,24 +1,17 @@
 """
 test.py
 =======
-Evaluation of precipitation classification model on the held-out test set.
+Evaluation of precipitation regression model on the held-out test set.
 
 Metrics reported
 ----------------
-  OA              : Overall Accuracy
-  F1 per class    : F1_class0 ~ F1_class3
-  HSS             : Heidke Skill Score
-  ETS             : Equitable Threat Score
-  Confusion matrix: numerical + image
-  Classification report: precision, recall, f1, support
+  Detection: POD, FAR, CSI, HSS
+  Regression: MAE, RMSE, CC, Bias
+  Scatter plot: pred vs true
 
 Outputs saved to cfg.EVAL_OUTPUT_DIR:
   - metrics_summary.csv
-  - confusion_matrix.{svg,pdf,png}
-  - classification_report.csv
-
-Usage:
-    python test.py [--checkpoint <path>]
+  - scatter_pred_vs_true.{svg,pdf,png}
 """
 
 import argparse
@@ -31,15 +24,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import torch
-from sklearn.metrics import confusion_matrix, classification_report
+from scipy import stats as scipy_stats
 
 import config as cfg
 from dataset import NormStats, build_test_dataloader
 from model import build_model
 
 log = logging.getLogger(__name__)
-
-CLASS_NAMES = list(cfg.PRECIP_CLASS_NAMES)
 
 # ── Style ──
 mpl.rcParams.update({
@@ -54,66 +45,22 @@ mpl.rcParams.update({
     "legend.frameon": False,
 })
 
-C_BLUE   = "#0F4D92"
-C_GREEN  = "#2E9E44"
-C_RED    = "#E53935"
-C_TEAL   = "#42949E"
-C_ORANGE = "#E8871D"
-C_NEUTRAL = "#767676"
-C_LIGHT  = "#CFCECE"
-
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Skill scores
 # ─────────────────────────────────────────────────────────────────────────────
 
-def _compute_hss(cm: np.ndarray) -> float:
-    """
-    Heidke Skill Score.
-    HSS = (Σ_correct - Σ_expected) / (N - Σ_expected)
-    where expected = sum over classes of (N_i_obs * N_i_fcst) / N
-    """
-    N = cm.sum()
+def _compute_hss(tp: int, fp: int, fn: int, tn: int) -> float:
+    """Heidke Skill Score for binary detection."""
+    N = tp + fp + fn + tn
     if N == 0:
         return 0.0
-    correct = cm.diagonal().sum()
-    expected = (cm.sum(axis=1) * cm.sum(axis=0)).sum() / N
+    correct = tp + tn
+    expected = ((tp + fp) * (tp + fn) + (tn + fp) * (tn + fn)) / N
     denom = N - expected
     if denom == 0:
         return 0.0
     return (correct - expected) / denom
-
-
-def _compute_ets(cm: np.ndarray) -> float:
-    """
-    Equitable Threat Score (Gilbert Skill Score).
-    ETS = (correct - expected) / (N + Σ_hits_per_class - expected)
-    where expected = sum over classes of (N_i_obs * N_i_fcst) / N
-    """
-    N = cm.sum()
-    if N == 0:
-        return 0.0
-    correct = cm.diagonal().sum()
-    expected = (cm.sum(axis=1) * cm.sum(axis=0)).sum() / N
-    hits_per_class = cm.diagonal().sum()
-    denom = N - expected
-    if denom == 0:
-        return 0.0
-    return (correct - expected) / (N + correct - expected)
-
-
-def _compute_f1_per_class(cm: np.ndarray) -> np.ndarray:
-    """Per-class F1 from confusion matrix."""
-    n_cls = cm.shape[0]
-    f1 = np.zeros(n_cls)
-    for c in range(n_cls):
-        tp = cm[c, c]
-        fp = cm[:, c].sum() - tp
-        fn = cm[c, :].sum() - tp
-        denom = tp + 0.5 * (fp + fn)
-        if denom > 0:
-            f1[c] = tp / denom * 100.0
-    return f1
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -128,33 +75,51 @@ def _save_pub(fig, base_path):
     log.info("Saved → %s.{svg,pdf,png}", base)
 
 
-def _plot_confusion_matrix(cm: np.ndarray, out_path: Path):
-    n_cls = cm.shape[0]
-    cm_norm = cm / cm.sum(axis=1, keepdims=True).clip(1e-9) * 100  # row-normalized
+def _plot_scatter(pred: np.ndarray, true: np.ndarray, out_path: Path):
+    """Scatter density plot: predicted vs true precipitation."""
+    mask = (true > 0.01) | (pred > 0.01)
+    p = pred[mask]
+    t = true[mask]
 
-    fig, ax = plt.subplots(figsize=(90 / 25.4, 75 / 25.4))
-    im = ax.imshow(cm_norm, cmap="Blues", vmin=0, vmax=100, aspect="auto")
+    if len(p) < 10:
+        log.warning("Not enough non-zero points for scatter plot")
+        return
 
-    for i in range(n_cls):
-        for j in range(n_cls):
-            pct = cm_norm[i, j]
-            cnt = cm[i, j]
-            color = "white" if pct > 50 else "black"
-            ax.text(j, i - 0.15, f"{cnt:,}", ha="center", va="center",
-                    fontsize=7, color=color, fontweight="bold")
-            ax.text(j, i + 0.18, f"({pct:.1f}%)", ha="center", va="center",
-                    fontsize=5.5, color=color)
+    # Subsample for plotting if too many points
+    if len(p) > 50000:
+        idx = np.random.choice(len(p), size=50000, replace=False)
+        p = p[idx]
+        t = t[idx]
 
-    ax.set_xticks(range(n_cls))
-    ax.set_yticks(range(n_cls))
-    ax.set_xticklabels(CLASS_NAMES, fontsize=6)
-    ax.set_yticklabels(CLASS_NAMES, fontsize=6)
-    ax.set_xlabel("Predicted", fontsize=6.5)
-    ax.set_ylabel("True", fontsize=6.5)
-    ax.tick_params(length=0)
+    fig, ax = plt.subplots(figsize=(85 / 25.4, 80 / 25.4))
 
-    cbar = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
-    cbar.set_label("Row %", fontsize=5.5)
+    # 2D histogram / density
+    max_val = max(np.percentile(p, 99), np.percentile(t, 99), 10)
+    ax.hist2d(t, p, bins=80, range=[[0, max_val], [0, max_val]],
+              cmap="Blues", cmin=1)
+
+    # 1:1 line
+    ax.plot([0, max_val], [0, max_val], "k--", linewidth=0.6, alpha=0.5)
+
+    ax.set_xlabel("GPM Precipitation (mm/h)", fontsize=7)
+    ax.set_ylabel("Predicted Precipitation (mm/h)", fontsize=7)
+    ax.set_xlim(0, max_val)
+    ax.set_ylim(0, max_val)
+
+    # Stats annotation
+    mask_rain = true > cfg.RAIN_THRESHOLD
+    if mask_rain.sum() >= 2:
+        r, _ = scipy_stats.pearsonr(pred[mask_rain], true[mask_rain])
+        mae = float(np.mean(np.abs(pred[mask_rain] - true[mask_rain])))
+        rmse = float(np.sqrt(np.mean((pred[mask_rain] - true[mask_rain]) ** 2)))
+    else:
+        r, mae, rmse = 0.0, 0.0, 0.0
+
+    ax.text(0.97, 0.25,
+            f"CC = {r:.3f}\nMAE = {mae:.2f} mm/h\nRMSE = {rmse:.2f} mm/h",
+            transform=ax.transAxes, ha="right", va="top",
+            fontsize=6,
+            bbox=dict(boxstyle="round,pad=0.3", facecolor="white", alpha=0.8))
 
     _save_pub(fig, out_path)
     plt.close(fig)
@@ -181,25 +146,26 @@ def collect_test_predictions(
     if test_dl is None:
         test_dl = build_test_dataloader(stats)
 
-    all_true = []
-    all_pred = []
+    all_preds = []
+    all_trues = []
 
     with torch.no_grad():
-        for x, labels in test_dl:
+        for x, y in test_dl:
             x = x.to(device)
-            labels = labels.to(device)
+            y = y.to(device)
 
-            logits = model(x)              # (B, 4)
-            preds = logits.argmax(dim=1)   # (B,)
+            logits, rain = model(x)
+            pred_mmh = (torch.sigmoid(logits) * rain).cpu().numpy().ravel()
+            true_mmh = y.cpu().numpy().ravel()
 
-            valid = (labels >= 0) & (labels < cfg.NUM_CLASSES)
+            valid = np.isfinite(true_mmh)
             if valid.any():
-                all_true.append(labels[valid].cpu().numpy())
-                all_pred.append(preds[valid].cpu().numpy())
+                all_preds.append(pred_mmh[valid])
+                all_trues.append(true_mmh[valid])
 
     return {
-        "y_true": np.concatenate(all_true) if all_true else np.array([], dtype=np.int64),
-        "y_pred": np.concatenate(all_pred) if all_pred else np.array([], dtype=np.int64),
+        "y_pred": np.concatenate(all_preds) if all_preds else np.array([], dtype=np.float32),
+        "y_true": np.concatenate(all_trues) if all_trues else np.array([], dtype=np.float32),
     }
 
 
@@ -214,87 +180,73 @@ def evaluate(stats: NormStats, checkpoint: Optional[Path] = None):
         log.error("Checkpoint not found: %s", checkpoint)
         return
 
-    y_true = arrays["y_true"]
-    y_pred = arrays["y_pred"]
+    pred = arrays["y_pred"]
+    true = arrays["y_true"]
 
-    if len(y_true) == 0:
+    if len(true) == 0:
         log.warning("No valid predictions found")
         return
 
-    # ── Confusion matrix ──
-    cm = confusion_matrix(y_true, y_pred, labels=list(range(cfg.NUM_CLASSES)))
-    n_cls = cm.shape[0]
+    # ── Detection metrics ──
+    threshold = cfg.RAIN_THRESHOLD
+    pred_rain = pred > threshold
+    true_rain = true > threshold
 
-    # ── OA ──
-    oa = float((y_true == y_pred).mean() * 100.0)
+    tp = int((pred_rain & true_rain).sum())
+    fp = int((pred_rain & ~true_rain).sum())
+    fn = int((~pred_rain & true_rain).sum())
+    tn = int((~pred_rain & ~true_rain).sum())
 
-    # ── Per-class F1 ──
-    f1_per = _compute_f1_per_class(cm)
+    pod = tp / max(tp + fn, 1)
+    far = fp / max(tp + fp, 1)
+    csi = tp / max(tp + fp + fn, 1)
+    hss = _compute_hss(tp, fp, fn, tn)
 
-    # ── HSS ──
-    hss = _compute_hss(cm)
-
-    # ── ETS ──
-    ets = _compute_ets(cm)
-
-    # ── Classification report ──
-    report = classification_report(y_true, y_pred, target_names=CLASS_NAMES,
-                                    labels=list(range(n_cls)), zero_division=0,
-                                    output_dict=True)
+    # ── Regression metrics ──
+    rain_mask = true > threshold
+    if rain_mask.sum() >= 2:
+        p_rain = pred[rain_mask]
+        t_rain = true[rain_mask]
+        mae  = float(np.mean(np.abs(p_rain - t_rain)))
+        rmse = float(np.sqrt(np.mean((p_rain - t_rain) ** 2)))
+        bias = float(np.mean(p_rain - t_rain))
+        cc, _ = scipy_stats.pearsonr(p_rain, t_rain)
+        cc = max(-1.0, min(1.0, float(cc))) if np.isfinite(cc) else 0.0
+    else:
+        mae, rmse, bias, cc = 0.0, 0.0, 0.0, 0.0
 
     # ── Print summary ──
     log.info("─" * 60)
-    log.info("Overall Accuracy (OA): %.2f%%", oa)
-    log.info("Heidke Skill Score (HSS): %.4f", hss)
-    log.info("Equitable Threat Score (ETS): %.4f", ets)
+    log.info("Detection (threshold=%.1f mm/h):", threshold)
+    log.info("  POD=%.4f  FAR=%.4f  CSI=%.4f  HSS=%.4f", pod, far, csi, hss)
+    log.info("  TP=%d  FP=%d  FN=%d  TN=%d", tp, fp, fn, tn)
     log.info("─" * 60)
-    for c, name in enumerate(CLASS_NAMES):
-        sup = int(cm[c].sum())
-        log.info("  %-14s  F1=%.2f%%  Prec=%.2f%%  Rec=%.2f%%  Support=%d",
-                 name,
-                 f1_per[c],
-                 report[name]["precision"] * 100 if name in report else 0,
-                 report[name]["recall"] * 100 if name in report else 0,
-                 sup)
+    log.info("Regression (rain pixels only, n=%d):", int(rain_mask.sum()))
+    log.info("  MAE=%.3f mm/h  RMSE=%.3f mm/h  CC=%.3f  Bias=%.3f mm/h",
+             mae, rmse, cc, bias)
     log.info("─" * 60)
-    log.info("Macro F1: %.2f%%", float(np.mean(f1_per)))
+    log.info("All pixels (n=%d): mean pred=%.3f  mean true=%.3f",
+             len(true), float(np.mean(pred)), float(np.mean(true)))
     log.info("─" * 60)
 
     # ── Save outputs ──
     cfg.EVAL_OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     rows = [
-        {"metric": "OA",          "value": oa,    "unit": "%"},
-        {"metric": "HSS",         "value": hss,   "unit": "score"},
-        {"metric": "ETS",         "value": ets,   "unit": "score"},
-        {"metric": "Macro_F1",    "value": float(np.mean(f1_per)), "unit": "%"},
-        {"metric": "Total_samples","value": len(y_true), "unit": "count"},
+        {"metric": "POD",  "value": pod,  "unit": "score"},
+        {"metric": "FAR",  "value": far,  "unit": "score"},
+        {"metric": "CSI",  "value": csi,  "unit": "score"},
+        {"metric": "HSS",  "value": hss,  "unit": "score"},
+        {"metric": "MAE",  "value": mae,  "unit": "mm/h"},
+        {"metric": "RMSE", "value": rmse, "unit": "mm/h"},
+        {"metric": "CC",   "value": cc,   "unit": "correlation"},
+        {"metric": "Bias", "value": bias, "unit": "mm/h"},
+        {"metric": "N_rain", "value": int(rain_mask.sum()), "unit": "pixels"},
+        {"metric": "N_total", "value": len(true), "unit": "pixels"},
     ]
-    for c, name in enumerate(CLASS_NAMES):
-        rows.append({"metric": f"F1_{name.replace(' ','_')}", "value": f1_per[c], "unit": "%"})
-        rows.append({"metric": f"Precision_{name.replace(' ','_')}",
-                     "value": report[name]["precision"] * 100 if name in report else 0, "unit": "%"})
-        rows.append({"metric": f"Recall_{name.replace(' ','_')}",
-                     "value": report[name]["recall"] * 100 if name in report else 0, "unit": "%"})
-        rows.append({"metric": f"Support_{name.replace(' ','_')}",
-                     "value": int(cm[c].sum()), "unit": "count"})
-
     pd.DataFrame(rows).to_csv(cfg.EVAL_OUTPUT_DIR / "metrics_summary.csv", index=False)
 
-    # ── Classification report CSV ──
-    report_rows = []
-    for c, name in enumerate(CLASS_NAMES):
-        if name in report:
-            report_rows.append({
-                "class": name,
-                "precision": report[name]["precision"],
-                "recall": report[name]["recall"],
-                "f1-score": report[name]["f1-score"],
-                "support": int(report[name]["support"]),
-            })
-    pd.DataFrame(report_rows).to_csv(cfg.EVAL_OUTPUT_DIR / "classification_report.csv", index=False)
-
-    _plot_confusion_matrix(cm, cfg.EVAL_OUTPUT_DIR / "confusion_matrix")
+    _plot_scatter(pred, true, cfg.EVAL_OUTPUT_DIR / "scatter_pred_vs_true")
 
     log.info("Evaluation complete – results in %s", cfg.EVAL_OUTPUT_DIR)
 
@@ -304,7 +256,7 @@ def main():
         level=getattr(logging, cfg.LOG_LEVEL),
         format="%(asctime)s [%(levelname)s] %(name)s – %(message)s",
     )
-    parser = argparse.ArgumentParser(description="Evaluate Precipitation Classification Model")
+    parser = argparse.ArgumentParser(description="Evaluate Precipitation Regression Model")
     parser.add_argument("--checkpoint", default=None)
     args = parser.parse_args()
 
